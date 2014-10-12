@@ -15,7 +15,6 @@ tags:
 - visual studio
 comments: []
 ---
-## TL; DR; [click here](#solution)
 
 I myself have always struggled with proper versioning of .NET software. I'm not alone:
 
@@ -24,6 +23,10 @@ I myself have always struggled with proper versioning of .NET software. I'm not 
 
 A linked issue, which adds to the complexity is mixing .NET versioning with NuGet SemVer guidelines.
 This has been described for example in this [blog post](http://ruthlesslyhelpful.net/2012/03/05/build-numbering-and-versioning/)
+
+<!--more-->
+
+TL; DR; [click here](#solution)
 
 ## Setting version numbers in .NET projects
 
