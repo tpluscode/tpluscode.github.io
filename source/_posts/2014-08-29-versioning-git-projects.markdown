@@ -56,8 +56,8 @@ actually? Exact same source code would yield a different number on a build serve
 And what about revision number? With centralized version control systems like SVN traditionally I would see the commit
 number be used here. So the above would mean that the code was built from revision 1556. This has a number of problems:
 
-1. <strong>each version segment cannot exceed 65535</strong> - a problem for large repositories, probably shared between multiple projects in an organization
-1. <strong>this will not work with git or mercurial </strong> - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters</li><br />
+1. __each version segment cannot exceed 65535__ - a problem for large repositories, probably shared between multiple projects in an organization
+1. __this will not work with git or mercurial__ - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters</li><br />
 
 ### The other microsoft way
 
@@ -96,10 +96,10 @@ stored. If you want to create a tag for each version you have to also remember!
 ## <a name="solution">Simple, better way</a>
 I've just recently come across a simple solution for projects that use git as their version control. Here's how it works:
 
-1. You create a tag in your repository to set the major and minor version, for example <strong>v2.3</strong>.
-1. You apply some more changes in <strong>13</strong> commits.
+1. You create a tag in your repository to set the major and minor version, for example __v2.3__.
+1. You apply some more changes in __13__ commits.
 1. You build your project
-1. The version is calculated as <strong>2.3.13</strong>, which means that the program was built from source code <strong>13</strong> commits ahead of tag <strong>v2.3</strong>.
+1. The version is calculated as __2.3.13__, which means that the program was built from source code __13__ commits ahead of tag __v2.3__.
 
 ![get-ver](http://t-code.pl/wp-content/uploads/2014/08/git-ver.png)
 
