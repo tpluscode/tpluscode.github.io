@@ -1,0 +1,34 @@
+---
+layout: post
+status: publish
+published: true
+title: x86 != x64
+author:
+  display_name: Tomasz Pluskiewicz
+  login: admin
+  email: tomasz@t-code.pl
+  url: http://www.t-code.pl
+author_login: admin
+author_email: tomasz@t-code.pl
+author_url: http://www.t-code.pl
+wordpress_id: 264
+wordpress_url: http://t-code.pl/?p=264
+date: !binary |-
+  MjAxMS0xMS0yMyAxODo0MToyNyAtMDUwMA==
+date_gmt: !binary |-
+  MjAxMS0xMS0yMyAxNzo0MToyNyAtMDUwMA==
+categories:
+- Uncategorized
+tags:
+- virtuoso
+comments: []
+---
+<p><img class="aligncenter" title="Visual C++ Redistributable 2008" alt="" src="http:&#47;&#47;4.bp.blogspot.com&#47;-L6L_vY6EFvo&#47;TfbhMqXDMuI&#47;AAAAAAAABRc&#47;4xG_MonmI70&#47;s1600&#47;957161.jpg" width="450" height="151" &#47;><&#47;p></p>
+<p style="text-align: justify;">Ever tried running some piece of application compiled for the 64bit platform? After a few years there finally are more and more applications fully (I think) benefiting from the extra 32 bits.<&#47;p></p>
+<p style="text-align: justify;">So I am exploring <a href="http:&#47;&#47;openlinksw.com&#47;">OpenLink<&#47;a> <a href="http:&#47;&#47;virtuoso.openlinksw.com&#47;">Virtuoso<&#47;a>, which in it's open source variation comes as a humble downloadable zip. Runs fine on my laptop but didn't work at first on my VPS. Why? Because&nbsp;msvcr100.dll was missing. The commercial flavour of this server comes with an installer, which does include all required dependencies.<&#47;p></p>
+<p style="text-align: justify;">Easy though. All I needed was Visual C++ Redistributable 2010 <strong>(x86)<&#47;strong>, right? Right. So I downloaded, installed and it didn't help, which left me baffled for a moment.<&#47;p></p>
+<p style="text-align: center;">Time flies...<&#47;p></p>
+<p>[caption id="attachment_265" align="aligncenter" width="263"]<a href="http:&#47;&#47;t-code.pl&#47;wp-content&#47;uploads&#47;2011&#47;11&#47;105440hletokbai.jpg"><img class="size-full wp-image-265 " title="Small hourglass" alt="" src="http:&#47;&#47;t-code.pl&#47;wp-content&#47;uploads&#47;2011&#47;11&#47;105440hletokbai.jpg" width="263" height="280" &#47;><&#47;a> Copyright &copy; Salvatore Vuono[&#47;caption]<&#47;p></p>
+<p style="text-align: center;">...and flies some more...<&#47;p></p>
+<p style="text-align: justify;">What did I realize? I was installing... <strong>the wrong redist package<&#47;strong>! Install Microsoft Visual C++ 2010 Redistributable Package <strong>(x64) <&#47;strong>and all is fine.<&#47;p></p>
+<p style="text-align: justify;">And I was blaming OpenLink. How lame :P<&#47;p></p>

@@ -1,0 +1,24 @@
+---
+layout: nav_menu_item
+status: publish
+published: true
+title: About T+Code
+author:
+  display_name: Tomasz Pluskiewicz
+  login: admin
+  email: tomasz@t-code.pl
+  url: http://www.t-code.pl
+author_login: admin
+author_email: tomasz@t-code.pl
+author_url: http://www.t-code.pl
+wordpress_id: 361
+wordpress_url: http://t-code.pl/?p=361
+date: !binary |-
+  MjAxNC0wOC0yOSAxMzoyNjowNyAtMDQwMA==
+date_gmt: !binary |-
+  MjAxNC0wOC0yOSAxMToyNjowNyAtMDQwMA==
+categories: []
+tags: []
+comments: []
+---
+
