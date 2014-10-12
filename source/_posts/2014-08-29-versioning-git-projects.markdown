@@ -112,7 +112,7 @@ AssemblyInfo.cs and install the nuget package. Now whenever you create a new tag
 be up to date and aligned with changes in your repository. Also when some other developer (or build server) clones your
 code and checks out some previous revision, the version will be always in line with the point in your source code history.
 
-#s## Limitations
+### Limitations
 
 The only requirement is that the .git folder is present (ie. code must be a clone). Git however is not required, because
 the package uses [LibGit2Sharp](https://www.nuget.org/packages/LibGit2Sharp) internally to find tags and process commit
