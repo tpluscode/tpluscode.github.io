@@ -15,16 +15,17 @@ tags:
 - visual studio
 comments: []
 ---
-# TL; DR; [click here](#solution)
+## TL; DR; [click here](#solution)
 
 I myself have always struggled with proper versioning of .NET software. I'm not alone:
+
 * [Best practices/guidance for maintaining assembly version numbers](http://stackoverflow.com/questions/3768261/best-practices-guidance-for-maintaining-assembly-version-numbers)
 * [What are differences between AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion?](http://stackoverflow.com/questions/64602/what-are-differences-between-assemblyversion-assemblyfileversion-and-assemblyin)
 
 A linked issue, which adds to the complexity is mixing .NET versioning with NuGet SemVer guidelines.
 This has been described for example in this [blog post](http://ruthlesslyhelpful.net/2012/03/05/build-numbering-and-versioning/)
 
-# Setting version numbers in .NET projects
+## Setting version numbers in .NET projects
 
 Empty .NET projects come with a AssemblyInfo.cs file, which contains assembly attributes, most notably
 
@@ -38,8 +39,8 @@ reference to library version 2.3. The second number is a more detailed number wh
 example to distinguish subsequent versions, which did not introduce any breaking changes. Although there is no such
 requirement, it's probably sensible to keep the first two numbers aligned.
 
-# Constructing version numbers
-## (One of) the Microsoft way(s)
+## Constructing version numbers
+### (One of) the Microsoft way(s)
 
 Let's take the assembly version number from above: `2.3.4.1556`. It is constructed from four integers
 separated by dots.
@@ -58,7 +59,7 @@ number be used here. So the above would mean that the code was built from revisi
 1. <strong>each version segment cannot exceed 65535</strong> - a problem for large repositories, probably shared between multiple projects in an organization
 1. <strong>this will not work with git or mercurial </strong> - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters</li><br />
 
-## The other microsoft way
+### The other microsoft way
 
 Out of the box .NET projects offer another way of automatically numbering assemblies at each build. It is possible to
 declare the assembly version attribute as
@@ -73,7 +74,7 @@ a project is built a different number will be calculated. However this is a very
 discouraged. Most importantly there is no link between the number and the source code used. You could build you software
 and the build it again from outdated files and get a higher version number (sic!).
 
-## MSBuild community tasks
+### MSBuild community tasks
 
 There is a project on [GitHub](https://github.com/loresoft/msbuildtasks) and [NuGet](https://nuget.org/packages/MSBuildTasks), 
 which contains various [MSBuild tasks](http://msdn.microsoft.com/en-us/library/ms171466.aspx), which can extend the build 
@@ -86,16 +87,16 @@ fitting into your build process by modifying the msbuild targets.
 The version file as another down side if you want to use a build server, because in some cases you would have to alter 
 the build process to commit the changed version file.
 
-## And what about major and minor
+### And what about major and minor
 
 Another obstacle is actually managing the major and minor numbers. You can keep it in the AssemblyInfo.cs, version file 
 or MSBuild task declaration. When you want to increment the version you have to remember to modify the wherever it is 
 stored. If you want to create a tag for each version you have to also remember!
 
-# <a name="solution">Simple, better way</a>
+## <a name="solution">Simple, better way</a>
 I've just recently come across a simple solution for projects that use git as their version control. Here's how it works:
 
-1. You create a tag in your repository to set the major and minor version, for example&nbsp;<strong>v2.3/strong>.
+1. You create a tag in your repository to set the major and minor version, for example <strong>v2.3</strong>.
 1. You apply some more changes in <strong>13</strong> commits.
 1. You build your project
 1. The version is calculated as <strong>2.3.13</strong>, which means that the program was built from source code <strong>13</strong> commits ahead of tag <strong>v2.3</strong>.
@@ -108,7 +109,7 @@ AssemblyInfo.cs and install the nuget package. Now whenever you create a new tag
 be up to date and aligned with changes in your repository. Also when some other developer (or build server) clones your
 code and checks out some previous revision, the version will be always in line with the point in your source code history.
 
-## Limitations
+#s## Limitations
 
 The only requirement is that the .git folder is present (ie. code must be a clone). Git however is not required, because
 the package uses [LibGit2Sharp](https://www.nuget.org/packages/LibGit2Sharp) internally to find tags and process commit
