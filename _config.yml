@@ -104,21 +104,22 @@ google_analytics_tracking_id:
 facebook_like: true
 
 prose:
-  rooturl: 'source'
   siteurl: 'http://t-code.pl'
   metadata:
-    _posts:
-    - name: "layout"
-      field:
-        element: "hidden"
-        value: "post"
-    - name: "category"
-      field: "select"
-        options:
-        - name: "Semantic Web"
-          value: "Semantic Web"
-    - name: "tags"
-      field: "multiselect"
-        alterable: true
-    - name: "title"
-      field: "text"
+    source/_posts:
+      - name: "layout"
+        field:
+          element: "hidden"
+          value: "post"
+      - name: "category"
+        field: "select"
+          options:
+            - name: "Semantic Web"
+              value: "Semantic Web"
+            - name: ".net"
+              value: ".net"
+      - name: "tags"
+        field: "multiselect"
+          alterable: true
+      - name: "title"
+        field: "text"
