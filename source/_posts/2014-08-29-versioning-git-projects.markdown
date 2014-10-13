@@ -3,6 +3,8 @@ layout: post
 status: publish
 published: true
 title: Versioning .NET git projects
+date: !binary |-
+  MjAxNC0wOC0yOSAxMzoxODoyMyAtMDQwMA==
 categories:
 - .NET
 tags:

@@ -3,6 +3,8 @@ layout: post
 status: publish
 published: true
 title: REST, RDF and Hypermedia
+date: !binary |-
+  MjAxNC0wNi0xNSAxOTozMzo1NyAtMDQwMA==
 categories:
 - Semantic Web
 tags:
