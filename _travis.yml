@@ -1,0 +1,26 @@
+branches:
+  only:
+    - source
+language: ruby
+rvm:
+  - 1.9.3
+before_script:
+  # Unpack ssh key for git
+  - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
+  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  # Disable SSH server fingerprint verification
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  # Set deployment target to github pages
+  - git pull $REPO.git _deploy
+script:
+  # Generate site
+  - rake generate
+after_script:
+  # Deploy!
+  - rake deploy
+
+env:
+  global:
+    # Repo read-write address
+    - REPO="git@github.com:tpluscode/tpluscode.github.io"
