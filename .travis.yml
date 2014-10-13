@@ -5,7 +5,7 @@ language: ruby
 rvm:
 - 1.9.3
 before_script:
-- openssl aes-256-cbc -K $encrypted_853174b23cf4_key -iv $encrypted_853174b23cf4_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
+- openssl aes-256-cbc -k "$ssh_pass" $encrypted_853174b23cf4_key -iv $encrypted_853174b23cf4_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
 - git pull $REPO.git _deploy
 script:
 - rake generate
@@ -14,3 +14,4 @@ after_script:
 env:
   global:
   - REPO="git@github.com:tpluscode/tpluscode.github.io"
+  - secure: DN4PH5POuYlb3jRslir1mySCGp+zii5N2LlRzAIUlDAqwoIPSjFR/TceHDE2ecaLB1LNuRRTs9Ul1jkS0zgG8aPHxMrTTo1YBJFZGGJZ7PL66stgOJaB13pko3emJ1Deq9Az6HW3BRW3l7WdLK96ZG0WSOhRmB1XPkqh63fSYBQ=
