@@ -105,7 +105,7 @@ I've just recently come across a simple solution for projects that use git as th
 1. You build your project
 1. The version is calculated as __2.3.13__, which means that the program was built from source code __13__ commits ahead of tag __v2.3__.
 
-![get-ver](http://t-code.pl/wp-content/uploads/2014/08/git-ver.png)
+![git-ver](http://t-code.pl/wp-content/uploads/2014/08/git-ver.png)
 
 The project is called Zoltu.Versioning and is [available from NuGet](https://www.nuget.org/packages/Zoltu.Versioning/).
 The great thing is that it requires almost no preparations whatsoever. Just remove the existing version attributes from

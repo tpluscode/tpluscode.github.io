@@ -49,7 +49,7 @@ also causes most misunderstanding and heated discussion. Uniform interface state
 * the client chooses state transitions from alternatives included in the representations (__Hypermedia as the engine of application state aka [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS)__)
 
 Lastly there is the only optional constraint, which states that servers can include (small?) fragments of code for the
-clients to execute. These could be snippets in javascript&nbsp;or another scripting language, Flash components or even
+clients to execute. These could be snippets in javascript or another scripting language, Flash components or even
 compiled code in Java or another language.
 
 ## RDF
@@ -87,14 +87,14 @@ complete set of REST constraints, because in itself it's not a hypermedia type. 
 
 The most commonly used MIME for current Web Apis, JSON also is not a hypermedia type. This causes the clients to require
 out-of-band information to interact with a service. Bare RDF is almost good enough to build read only API. For example,
-given a triple (base URI) &nbsp; We could attempt to retrieve a representation of the&nbsp;<em></em> resource. But what
+given a triple (base URI)   We could attempt to retrieve a representation of the <em></em> resource. But what
 if the resource is a web page (ie. has only a HTML representation available). Information about the nature of this
 resource could be defined in the description of the <em></em> property, but RDF has no standard way of defining hypermedia
 semantics. A bigger problem is encountered when one tries to build a read-write API based on RDF. For example here's a
 list of users interests (in Turtle):
 
 ```
-</tomasz> <interest>&nbsp;"rdf", "semantic web", "c#" .
+</tomasz> <interest> "rdf", "semantic web", "c#" .
 ```
 
 How do we state that a new item can be added to the list? What request must be sent?
@@ -112,7 +112,7 @@ making a truly RESTful service:
 
 Each on of these approaches proposes a slightly different approach. Linked data platform is a set of guidelines, which a
 conforming servers and clients should follow to allow a consistent interaction between them. RESTdesc enables server to
-embed metadata about hypermedia included in the representation in the form of <em>if..then</em>&nbsp;rules expressed in
+embed metadata about hypermedia included in the representation in the form of <em>if..then</em> rules expressed in
 RDF, which define "<em>what it means to follow a link</em>". Hydra is similar to RESTdesc in that hypermedia cen be
 included directly in representations but it also allows building a centralized metadata of possible interactions. Unlike
 traditional API documetation, Hydra metadata is itself also RDF, which can be queried by the client at runtime to decide
