@@ -104,6 +104,7 @@ google_analytics_tracking_id:
 facebook_like: true
 
 prose:
+  rooturl: 'source'
   siteurl: 'http://t-code.pl'
   metadata:
     source/_posts:
