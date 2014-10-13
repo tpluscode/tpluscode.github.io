@@ -5,7 +5,7 @@ language: ruby
 rvm:
 - 1.9.3
 before_script:
-- git pull https://${GH_TOKEN}@github.com/tpluscode/tpluscode.github.io _deploy > /dev/null 2>&1
+- git clone https://${GH_TOKEN}@github.com/tpluscode/tpluscode.github.io _deploy > /dev/null 2>&1
 script:
 - rake generate
 after_script:
