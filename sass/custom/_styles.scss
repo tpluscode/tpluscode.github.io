@@ -1,0 +1,26 @@
+.container  {
+  .mid-col {
+    .mid-col-container {
+      max-width: 100%;
+      padding: 0px 70px 0px 40px;
+
+      #content {
+        .archives {
+          font-size: 1.5em;
+          .title {
+            font-size: 1.2em;
+            font-weight: 100;
+          }
+          article {
+            padding: 10px;
+            margin-left: 100px;
+          }
+        }
+
+        .entry-content {
+          max-width: 900px;
+        }
+      }
+    }
+  }
+}
