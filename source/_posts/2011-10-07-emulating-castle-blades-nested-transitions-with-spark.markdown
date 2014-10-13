@@ -26,7 +26,6 @@ tags:
 - castle
 - blade
 comments: []
-permalink: /:year/:month/:title/
 ---
 <p><!--:en--></p>
 <h1 style="text-align: justify;">Nested transitions</h1></p>

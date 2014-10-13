@@ -25,7 +25,6 @@ tags:
 - hydra
 - rest
 comments: []
-permalink: /:year/:month/:title/
 ---
 <p><span style="color: #000000; font-size: 2.4em; line-height: 1.5em;">REST</span><br />
 <a style="font-size: 16px;" href="http://en.wikipedia.org/wiki/REST">Representational state transfer</a> or&nbsp;REST defines a number of architectural constraints, which when applied allow building software, which is fast, scalable and simply interacted with.</p>

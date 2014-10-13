@@ -33,7 +33,6 @@ comments:
   date_gmt: !binary |-
     MjAxMS0xMS0xMSAwMDo0MTo0MCAtMDUwMA==
   content: It's sokopy how clever some ppl are. Thanks!
-permalink: /:year/:month/:title/
 ---
 <p><!--:pl--></p>
 <div>

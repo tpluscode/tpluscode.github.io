@@ -23,7 +23,6 @@ tags:
 - web forms
 - asp.net
 comments: []
-permalink: /:year/:month/:title/
 ---
 <p><!--:en-->On of the common mistakes developers make when working with Web Forms pages is using client-side validation, while not checking the validation result on server-side postback.</p>
 <p>This mistake is easily noticeable with CustomValidator as it only works on the server's side. Also when Javascript is disabled you would quickly run into trouble when trying to rely solely on client-side validation.</p>

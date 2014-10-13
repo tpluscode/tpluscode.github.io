@@ -24,7 +24,6 @@ tags:
 - l2s
 - log4net
 comments: []
-permalink: /:year/:month/:title/
 ---
 <p><!--:en-->There are time when you need a quick way to debug Linq to SQL.&nbsp;Inspired by this <a title="Debugging LINQ to SQL SubmitChanges()" href="http://stackoverflow.com/questions/86685/debugging-linq-to-sql-submitchanges/90025#90025">answer to a StackOverflow question</a>&nbsp;I easily combined log4net and Linq to SQL. This way I avoided the console, which is not an option in the case of a web application.</p>
 <p>It is possible to set the Log property of your DataContext. Log is a TextWriter, so I created a simple TextWriter implementation. Not sure which methods L2S uses, I overrided Write and WriteLine where they take string and object parameters. Each implementation simply logs to log4net but, naturally, it could use any logging library.</p>

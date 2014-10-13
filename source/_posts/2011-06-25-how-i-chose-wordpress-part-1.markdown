@@ -24,7 +24,6 @@ tags:
 - wordpress
 - web platform installer
 comments: []
-permalink: /:year/:month/:title/
 ---
 <p><!--:pl--></p>
 <div>
