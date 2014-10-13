@@ -44,6 +44,7 @@ example to distinguish subsequent versions, which did not introduce any breaking
 requirement, it's probably sensible to keep the first two numbers aligned.
 
 ## Constructing version numbers
+
 ### (One of) the Microsoft way(s)
 
 Let's take the assembly version number from above: `2.3.4.1556`. It is constructed from four integers
