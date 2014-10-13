@@ -24,6 +24,7 @@ tags:
 - .net
 - c#
 comments: []
+permalink: /:year/:month/:title/
 ---
 <p style="text-align: justify;">Without further ado, here's an implementation of <a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-types-custom">IUserType</a>, which allows writing and reading instances of <a title="IPAddress class on MSDN" href="http://msdn.microsoft.com/en-us/library/system.net.ipaddress.aspx">IPAddress</a> from a nvarchar column.</p></p>
 <p style="text-align: justify;">The class inherits from the abstract UserType class described in my <a title="Mapowanie typu Enum na int z użyciem NHibernate" href="http://t-code.pl/2011/07/enum-int-custom-mapping-nhibernate/">previous post</a>.</p></p>

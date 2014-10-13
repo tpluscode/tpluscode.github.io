@@ -34,6 +34,7 @@ comments:
   date_gmt: !binary |-
     MjAxMS0xMS0xMCAyMzo0NDozMiAtMDUwMA==
   content: Real brain power on display. Thanks for that aswner!
+permalink: /:year/:month/:title/
 ---
 <p><!--:pl--></p>
 <div>

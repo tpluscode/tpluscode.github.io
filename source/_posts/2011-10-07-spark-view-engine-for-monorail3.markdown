@@ -27,6 +27,7 @@ tags:
 - castle
 - blade
 comments: []
+permalink: /:year/:month/:title/
 ---
 <p><!--:en--></p>
 <p style="text-align: justify;"><a href="http://hammett.castleproject.org">Hamilton Verissimo</a>&nbsp;currently develops a next version of Monorail, which uses a new view engine called Blade. As much as I'd love to use Monorail 3 in the (near) future, Spark is bound to stay my view engine of choice.</p></p>

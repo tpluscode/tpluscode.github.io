@@ -33,6 +33,7 @@ comments:
   content: ! '[...] T+Code   var blog = T + Code; blog += new Content();    Skip to
     content HomeAbout meAbout T+CodeContact        &larr; Mapping Enum to int with
     NHibernate [...]'
+permalink: /:year/:month/:title/
 ---
 <p><!--:pl--></p>
 <div>

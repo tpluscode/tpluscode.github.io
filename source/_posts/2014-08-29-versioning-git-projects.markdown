@@ -14,6 +14,7 @@ tags:
 - c#
 - visual studio
 comments: []
+permalink: /:year/:month/:title/
 ---
 
 I myself have always struggled with proper versioning of .NET software. I'm not alone:

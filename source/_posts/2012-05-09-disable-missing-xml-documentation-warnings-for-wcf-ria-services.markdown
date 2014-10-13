@@ -25,6 +25,7 @@ tags:
 - visual studio
 - ria
 comments: []
+permalink: /:year/:month/:title/
 ---
 <p><!--:en-->Every project should be well documented and Visual Studio has the option to enforce XML code documentation by generating warnings when there is a comment missing, a parameter description missing and such. It can be enabled per project by enabling XML documentation file option on the Build tab.</p>
 <p>There are however cases, when it is not necessary for XML docs to be present. If so, C# has the #pragma keyword. In a single file you can use it as shown below:</p>

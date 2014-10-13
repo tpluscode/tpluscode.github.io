@@ -21,6 +21,7 @@ categories:
 - Uncategorized
 tags: []
 comments: []
+permalink: /:year/:month/:title/
 ---
 <p><!--:en--></p>
 <p style="text-align: center;"><img class="aligncenter" title="SOPA protest" alt="" src="http://upload.wikimedia.org/wikipedia/commons/9/98/WP_SOPA_Splash_Full.jpg" width="565" height="489" /></p><br />

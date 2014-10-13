@@ -24,6 +24,7 @@ tags:
 - c#
 - datasets
 comments: []
+permalink: /:year/:month/:title/
 ---
 <p><!--:en-->We are currently refactoring a web application, which uses ObjectDataSources extensively. There are places in our app, where they are used for sorting grids, but there is a problem. We switched from DataTables to collections and now an exception occurs:</p>
 <pre class="brush: text; gutter: true">The data source &lsquo;ods_DataSource&rsquo; does not support sorting with IEnumerable data.<br />

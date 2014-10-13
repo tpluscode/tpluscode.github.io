@@ -24,6 +24,7 @@ tags:
 - virtuoso
 - ontowiki
 comments: []
+permalink: /:year/:month/:title/
 ---
 <p><!--:en--><img class="alignright" title="Semantic Web" alt="Semantic Web logo" src="http://semanticweb.org/images/Semantic-Web-Logo-by-W3C.png" width="129" height="155" />Recently I've been experimenting with <a href="http://semanticweb.org">Semantic Web</a> techonogies. Currently I'm trying to choose tools for editing the ontology and more importantly instances. There are a number of tools, both commercial and free including my favourites:&nbsp;<a href="http://protege.stanford.edu">Prot&eacute;g&eacute;</a>, <a href="http://neon-toolkit.org">NeON Toolkit</a>&nbsp;or <a href="http://www.topquadrant.com/composer/">Top Braid Composer</a>. Each of those have some problem. NeON is nice but desktop only, Top Braid is not free and&nbsp;Prot&eacute;g&eacute; is very complex. Not to mention it comes in versions 3.x and 4.x with <a href="http://protegewiki.stanford.edu/wiki/Protege4Migration">different set of functions</a> which only makes the confusion grow...</p>
 <p>In my search I have found <a href="http://ontowiki.net/Projects/OntoWiki">OntoWiki</a>. It is web-based, seems user-friendly and it's recommended backend is Virtuoso, which I chose for it is Open Source and presumably mature and feature-rich. There is a walkthrough on <a href="http://code.google.com/p/ontowiki/wiki/UsingOntoWikiWithVirtuoso">setting up OntoWiki with Virtuoso</a>, which I followed. Unfortunately things don't always go right. Below are the problems I encountered and solutions which helped.</p>
