@@ -1,5 +1,17 @@
+branches:
+  only:
+  - source
 language: ruby
 rvm:
-  - 2.0.0
-  - 1.9.3
-script: bundle exec rake install; bundle exec rake generate
+- 1.9.3
+before_script:
+- openssl aes-256-cbc -K $encrypted_853174b23cf4_key -iv $encrypted_853174b23cf4_iv
+  -in id_rsa.enc -out ~\/.ssh/id_rsa -d
+- git pull $REPO.git _deploy
+script:
+- rake generate
+after_script:
+- rake deploy
+env:
+  global:
+  - REPO="git@github.com:tpluscode/tpluscode.github.io"
