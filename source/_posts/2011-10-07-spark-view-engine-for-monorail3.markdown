@@ -16,6 +16,7 @@ tags:
 - blade
 redirect_from:
 - /2011/10/emulating-castle-blades-nested-transitions-with-spark/
+comments: true
 ---
 
 [Hamilton Verissimo](http://hammett.castleproject.org) currently develops a next version of Monorail, which uses a new

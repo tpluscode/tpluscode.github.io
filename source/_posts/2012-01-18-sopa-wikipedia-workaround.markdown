@@ -9,6 +9,7 @@ categories:
 - various
 redirect_from:
 - /2012/01/sopa-wikipedia-workaround/
+comments: true
 ---
 
 {% img center /uploads/2011/01/WP_SOPA_Splash_Full.jpg 565 489 'SOPA protest' %}

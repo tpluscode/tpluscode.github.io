@@ -13,6 +13,7 @@ tags:
 - datasets
 redirect_from:
 - /2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data/
+comments: true
 ---
 
 We are currently refactoring a web application, which uses ObjectDataSources extensively. There are places in our app, 

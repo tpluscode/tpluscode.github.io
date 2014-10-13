@@ -12,6 +12,7 @@ tags:
 - asp.net
 redirect_from:
 - /2011/10/comparevalidator-bug-remember-to-call-page-isvalid/
+comments: true
 ---
 
 One of the common mistakes developers make when working with Web Forms pages is using client-side validation, while not 

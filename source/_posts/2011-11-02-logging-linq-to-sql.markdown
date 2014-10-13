@@ -13,6 +13,7 @@ tags:
 - log4net
 redirect_from:
 - /2011/11/logging-linq-to-sql/
+comments: true
 ---
 There are times when you need a quick way to debug Linq to SQL. Inspired by this [answer to a StackOverflow question][soverflow] 
 I easily combined log4net and Linq to SQL. This way I avoided the console, which is not an option in the case of a web application.

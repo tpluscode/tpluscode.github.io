@@ -14,7 +14,8 @@ tags:
 - git
  versioning
 redirect_from:
-- /2014/08/versioning-git-projects/ 
+- /2014/08/versioning-git-projects/
+comments: true
 ---
 
 I myself have always struggled with proper versioning of .NET software. I'm not alone:

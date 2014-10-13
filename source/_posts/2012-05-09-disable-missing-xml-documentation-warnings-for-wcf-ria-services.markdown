@@ -14,6 +14,7 @@ tags:
 - ria
 redirect_from:
 - /2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/
+comments: true
 ---
 
 Every project should be well documented and Visual Studio has the option to enforce XML code documentation by generating

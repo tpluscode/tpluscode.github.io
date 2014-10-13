@@ -12,6 +12,7 @@ tags:
 - ontowiki
 redirect_from:
 - /2011/11/installing-ontowiki-on-windows-with-virtuoso/
+comments: true
 ---
 
 {% img right http://semanticweb.org/images/Semantic-Web-Logo-by-W3C.png 129 155 'Semantic Web' 'Semantic Web logo' %}

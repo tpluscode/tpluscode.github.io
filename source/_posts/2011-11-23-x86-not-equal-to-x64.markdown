@@ -11,6 +11,7 @@ tags:
 - virtuoso
 redirect_from:
 - /2011/11/x86-not-equal-to-x64/
+comments: true
 ---
 
 {% img center /uploads/2011/11/957161.jpg 450 151 'Visual C++ Redistributable 2008' %}

@@ -14,6 +14,7 @@ tags:
 - rest
 redirect_from:
 - /2014/06/rest-rdf-and-hypermedia/
+comments: true
 ---
 ## REST
 [Representational state transfer](http://en.wikipedia.org/wiki/REST) or REST defines a number of architectural constraints,
