@@ -147,7 +147,7 @@ from the University of Lepzig.
 What I did was first log in to OntoWiki using Virtuoso's admin credentials, which works as access for <em>SuperAdmin</em>.
 Then I deleted Configuration KB as shown below.
 
-{% img center http://t-code.pl/wp-content/uploads/2011/11/delete-knowledgebase.png 515 305 'delete knowledgebase' %}
+{% img center uploads/2011/11/delete-knowledgebase.png 515 305 'delete knowledgebase' %}
 
 This caused Virtuoso to complain it could not get access to `%OntoWikiRoot%/libraries\Erfurt\Erfurt\include\SysOntLocal.rdf`
 due to configuration. However this was not the case.
