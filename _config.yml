@@ -2,9 +2,9 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://tpluscode.github.io
+url: http://t-code.pl
 title: Blog of Tomasz Pluskiewicz
-subtitle: A blogging framework for hackers.
+subtitle:
 author: Tomasz Pluskiewicz
 simple_search: https://www.google.com/search
 description:
