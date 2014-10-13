@@ -7,13 +7,28 @@
       #content {
         .archives {
           font-size: 1.5em;
+
           .title {
             font-size: 1.2em;
             font-weight: 100;
           }
+
           article {
-            padding: 10px;
             margin-left: 100px;
+            padding: 10px;
+
+            .meta {
+              font-size: 0.9em;
+            }
+          }
+        }
+
+        article {
+          padding-top: 30px;
+          padding-bottom: 30px;
+
+          .meta {
+            font-size: 1.5em;
           }
         }
 
