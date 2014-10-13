@@ -14,6 +14,8 @@ tags:
 - c#
 - visual studio
 comments: []
+redirect_from:
+- /2014/08/versioning-git-projects/ 
 ---
 
 I myself have always struggled with proper versioning of .NET software. I'm not alone:
