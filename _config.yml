@@ -55,7 +55,7 @@ gems:
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html, custom/asides/nuget.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
@@ -103,3 +103,8 @@ google_analytics_tracking_id: UA-24217426-1
 
 # Facebook Like
 facebook_like: true
+
+# NuGet packages
+nuget_user: tpluscode
+nuget_author: tpluscode
+nuget_package_count: 5
