@@ -25,8 +25,8 @@ tags:
 - c#
 comments: []
 ---
-<p style="text-align: justify;">Without further ado, here's an implementation of <a href="http:&#47;&#47;www.nhforge.org&#47;doc&#47;nh&#47;en&#47;index.html#mapping-types-custom">IUserType<&#47;a>, which allows writing and reading instances of <a title="IPAddress class on MSDN" href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.net.ipaddress.aspx">IPAddress<&#47;a> from a nvarchar column.<&#47;p></p>
-<p style="text-align: justify;">The class inherits from the abstract UserType class described in my <a title="Mapowanie typu Enum na int z użyciem NHibernate" href="http:&#47;&#47;t-code.pl&#47;2011&#47;07&#47;enum-int-custom-mapping-nhibernate&#47;">previous post<&#47;a>.<&#47;p></p>
+<p style="text-align: justify;">Without further ado, here's an implementation of <a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-types-custom">IUserType</a>, which allows writing and reading instances of <a title="IPAddress class on MSDN" href="http://msdn.microsoft.com/en-us/library/system.net.ipaddress.aspx">IPAddress</a> from a nvarchar column.</p></p>
+<p style="text-align: justify;">The class inherits from the abstract UserType class described in my <a title="Mapowanie typu Enum na int z użyciem NHibernate" href="http://t-code.pl/2011/07/enum-int-custom-mapping-nhibernate/">previous post</a>.</p></p>
 <pre class="brush: csharp; gutter: true">public class IpAddressAsString : UserType<br />
 {<br />
   #region Overrides of UserType</p>
@@ -60,7 +60,7 @@ comments: []
     get { return typeof(IPAddress); }<br />
   }</p>
 <p>  #endregion<br />
-}<&#47;pre></p>
-<p style="text-align: justify;">I'd recently used this class to stored failed and successful logon attempts. Again it's just too simple but I'm happy to share.<&#47;p></p>
-<p style="text-align: justify;">I'm awaiting comments!<&#47;p><br />
+}</pre></p>
+<p style="text-align: justify;">I'd recently used this class to stored failed and successful logon attempts. Again it's just too simple but I'm happy to share.</p></p>
+<p style="text-align: justify;">I'm awaiting comments!</p><br />
 <!--:--></p>

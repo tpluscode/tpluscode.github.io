@@ -30,12 +30,12 @@ comments: []
 <pre class="brush: xml; gutter: true"><asp:CompareValidator Type="Date" Operator="DataTypeCheck"<br />
    runat="server" ControlToValidate="SomeTB" Display="Dynamic"><br />
    Message<br />
-<&#47;asp:CompareValidator><&#47;pre><br />
+</asp:CompareValidator></pre><br />
 And on the server side:</p>
 <pre class="brush: csharp; gutter: true">protected void HandleEvent(object sender, EventArgs e)<br />
 {<br />
    DateTime.Parse(SomeTB.Text);<br />
-}<&#47;pre><br />
+}</pre><br />
 There is an obvious problem. Page.IsValid is not checked to ensure the submitted form is valid. With built-in validators and JS enabled this shouldn't be a problem.</p>
 <p>However the ComapreValidator is a bit picky. It works fine for input like 2000-10-10, or 2000-00-00. Also writing for example 20-10-10 validates correctly and parsing it would not be a problem.</p>
 <p>Surprisingly though date 25-25-25, which is not valid causes the JS validation to fail inside ScripResource.axd with an exception and postback is not stopped even though the form is not valid. So what happens then? Event handler throws an exception where it tries to parse the input. For that reason always remember to write your handlers like</p>
@@ -44,7 +44,7 @@ There is an obvious problem. Page.IsValid is not checked to ensure the submitted
    if(!IsValid)<br />
       return;</p>
 <p>   DateTime.Parse(SomeTB.Text);<br />
-}<&#47;pre><br />
+}</pre><br />
 or</p>
 <pre class="brush: csharp; gutter: true">protected void HandleEvent(object sender, EventArgs e)<br />
 {<br />
@@ -52,5 +52,5 @@ or</p>
    {<br />
       DateTime.Parse(SomeTB.Text);<br />
    }<br />
-}<&#47;pre><br />
+}</pre><br />
 <!--:--></p>

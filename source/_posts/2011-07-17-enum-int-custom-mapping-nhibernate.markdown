@@ -37,22 +37,22 @@ comments:
 <p><!--:pl--></p>
 <div>
 <p>I am pretty sure this subject has been raised numerous times already, but a quick google didn't really give that many results, hence this post.</p>
-<p><&#47;div></p>
-<h2>Is there a problem officer?<&#47;h2><br />
-Some time ago, while still newbie with <a title="NHibernate" href="http:&#47;&#47;www.nhforge.org">NHibernate<&#47;a> I struggled with the default way Enum properties are mapped to database columns.</p>
+<p></div></p>
+<h2>Is there a problem officer?</h2><br />
+Some time ago, while still newbie with <a title="NHibernate" href="http://www.nhforge.org">NHibernate</a> I struggled with the default way Enum properties are mapped to database columns.</p>
 <p>The problem with NHibernate is that by default it maps enums as nvarchar columns. In my beginnings with NH this caused me some data type mismatch related exceptions and to some extent minor frustration.</p>
 <p>Personally I wanted enum values mapped as integer, my rationale being space requirements and better performance, especially if an index is applied over the column in question. As an example I will be using the minimalist mapping below:</p>
 <pre class="brush: xml; gutter: false">
-<property name="UserType" type="Example.UserTypeEnum" &#47;><&#47;pre><br />
-Now, as I metioned earlier, the above does not satisfy my expectations. In order to have the UserType property mapped to an int column I implemented a custom <a title="NHibernate manual: Custom Value Types" href="http:&#47;&#47;www.nhforge.org&#47;doc&#47;nh&#47;en&#47;index.html#mapping-types-custom">IUserType<&#47;a>.</p>
-<h2>The solution: Custom Value Type<&#47;h2><br />
-The idea of a custom type is simple. Developers can get NHibernate to persist your property's value to columns of types not supported by the default persisters. It could even be used to persist a property to multiple columns, somewhat like <a title="NHibernate manual: Components" href="http:&#47;&#47;www.nhforge.org&#47;doc&#47;nh&#47;en&#47;index.html#mapping-declaration-component">components<&#47;a>.</p>
+<property name="UserType" type="Example.UserTypeEnum" /></pre><br />
+Now, as I metioned earlier, the above does not satisfy my expectations. In order to have the UserType property mapped to an int column I implemented a custom <a title="NHibernate manual: Custom Value Types" href="http://www.nhforge.org/doc/nh/en/index.html#mapping-types-custom">IUserType</a>.</p>
+<h2>The solution: Custom Value Type</h2><br />
+The idea of a custom type is simple. Developers can get NHibernate to persist your property's value to columns of types not supported by the default persisters. It could even be used to persist a property to multiple columns, somewhat like <a title="NHibernate manual: Components" href="http://www.nhforge.org/doc/nh/en/index.html#mapping-declaration-component">components</a>.</p>
 <p>My solution is simpler than that though. Implementation consists of three classes:</p>
 <ul>
-<li>abstract UserType class, extending IUserType interface,<&#47;li>
-<li>generic EnumAsInt32 class,<&#47;li>
-<li>finally, implementation of the above.<&#47;li><br />
-<&#47;ul><br />
+<li>abstract UserType class, extending IUserType interface,</li>
+<li>generic EnumAsInt32 class,</li>
+<li>finally, implementation of the above.</li><br />
+</ul><br />
 The first class exists to simplify further implementations. The IUserType contains definitions for many more method than are actually required to tackle the issue at hand.</p>
 <pre class="brush: csharp; gutter: true">public abstract class UserType : IUserType<br />
 {<br />
@@ -83,22 +83,22 @@ The first class exists to simplify further implementations. The IUserType contai
     {<br />
         return value;<br />
     }<br />
-    &#47;&#47;&#47;<br />
+    ///<br />
 <summary>
-    &#47;&#47;&#47; The SQL types for the columns mapped by this type.<br />
-    &#47;&#47;&#47; <&#47;summary><br />
+    /// The SQL types for the columns mapped by this type.<br />
+    /// </summary><br />
     public abstract SqlType[] SqlTypes{ get;}</p>
-<p>    &#47;&#47;&#47;<br />
+<p>    ///<br />
 <summary>
-    &#47;&#47;&#47; The type returned by <c>NullSafeGet()<&#47;c><br />
-    &#47;&#47;&#47; <&#47;summary><br />
+    /// The type returned by <c>NullSafeGet()</c><br />
+    /// </summary><br />
     public abstract Type ReturnedType { get; }</p>
 <p>    public bool IsMutable<br />
     {<br />
         get { return false; }<br />
     }</p>
 <p>    #endregion<br />
-}<&#47;pre><br />
+}</pre><br />
 The EnumAsInt32 class overrides the abstract methods of UserType and requires one generic argument - the type of mapped Enum type.</p>
 <pre class="brush: csharp; gutter: true">public class EnumAsInt32<T> : UserType<br />
 {<br />
@@ -135,14 +135,14 @@ The EnumAsInt32 class overrides the abstract methods of UserType and requires on
         get { return typeof(T); }<br />
     }</p>
 <p>    #endregion<br />
-}<&#47;pre><br />
+}</pre><br />
 Implementation could end here, but with XML mappings, using generic types is pretty cumbersome. Personally I can never get the syntax right. For that reason it is easier to further extend&nbsp;EnumAsInt32.</p>
 <pre class="brush: csharp; gutter: true">public class UserTypeEnumAsInt32<br />
     : EnumAsInt32<Example.UserTypeEnum><br />
 {<br />
-}<&#47;pre><br />
+}</pre><br />
 Simple as that. Too simple even, but the result is cleaner XML mapping:</p>
 <pre class="brush: xml; gutter: true">
-<property name="UserType" type="UserTypeEnumAsInt32" &#47;><&#47;pre><br />
+<property name="UserType" type="UserTypeEnumAsInt32" /></pre><br />
 Of course the example lack namespaces, but otherwise it's a fully functional code.</p>
 <p>Have fun coding! :)<!--:--></p>
