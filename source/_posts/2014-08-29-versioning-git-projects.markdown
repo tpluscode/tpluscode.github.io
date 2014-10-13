@@ -3,17 +3,14 @@ layout: post
 status: publish
 published: true
 title: Versioning .NET git projects
-date: !binary |-
-  MjAxNC0wOC0yOSAxMzoxODoyMyAtMDQwMA==
-date_gmt: !binary |-
-  MjAxNC0wOC0yOSAxMToxODoyMyAtMDQwMA==
 categories:
-- Uncategorized
+- .NET
 tags:
 - .net
 - c#
 - visual studio
-comments: []
+- git
+ versioning
 redirect_from:
 - /2014/08/versioning-git-projects/ 
 ---
