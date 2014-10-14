@@ -12,6 +12,7 @@ tags:
 redirect_from:
 - /2011/11/x86-not-equal-to-x64/
 comments: true
+description: How I struggled with installing wrong Visual C++ redist package
 ---
 
 {% img center /uploads/2011/11/957161.jpg 450 151 'Visual C++ Redistributable 2008' %}

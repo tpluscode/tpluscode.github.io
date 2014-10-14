@@ -15,6 +15,7 @@ tags:
 redirect_from:
 - /2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/
 comments: true
+description: Disabling 'missing XML documentation' warnings in WCF RIA services generated files
 ---
 
 Every project should be well documented and Visual Studio has the option to enforce XML code documentation by generating
