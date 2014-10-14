@@ -103,3 +103,14 @@ google_analytics_tracking_id: UA-24217426-1
 
 # Facebook Like
 facebook_like: true
+
+# Linkedin
+linkedin_user: tpluskiewicz
+
+# StackOverflow
+stackoverflow_user: tomasz-pluskiewicz
+stackoverflow_user_id: 1103498
+
+# Semantic Web answers
+semanticweb_user_id: 1788
+semanticweb_user: tomasz-pluskiewicz

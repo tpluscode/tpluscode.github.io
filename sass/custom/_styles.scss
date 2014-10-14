@@ -45,3 +45,25 @@ $maxWidth: 900px;
     }
   }
 }
+
+@media screen and (max-width: 830px) {
+
+  #smallFlairs {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1040px) {
+
+  #smallFlairs {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1040px) {
+
+  #flairs {
+    display: none;
+  }
+
+}

@@ -362,13 +362,27 @@ $header-height: 30px;
 					border: 1px solid darken(#3E8DCC, 10%);
 				}
 			}
-			&.stackoverflow{
-				background: image-url('social/stackoverflow.png') center no-repeat #EF7522;
-				border:1px solid #EF7522;
-				&:hover{
-					border:1px solid #CC7A00;
-				}
-			}
+            &.stackoverflow{
+              background: image-url('social/stackoverflow.png') center no-repeat #EF7522;
+              border:1px solid #EF7522;
+              &:hover{
+                border:1px solid #CC7A00;
+              }
+            }
+            &.semanticweb{
+              background: image-url('social/SemanticOverflow-favicon.gif') center no-repeat white;
+              border:1px solid white;
+              &:hover{
+                border:1px solid lightgray;
+              }
+            }
+            &.ohloh{
+              background: image-url('https://www.openhub.net/accounts/132022/widgets/account_rank.gif') center no-repeat white;
+              border:1px solid white;
+              &:hover{
+                border:1px solid lightgray;
+              }
+            }
 			&.linkedin{
 				background: image-url('social/linkedin.png') center no-repeat #005A87;
 				border: 1px solid #005A87;
