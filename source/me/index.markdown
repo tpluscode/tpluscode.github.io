@@ -5,6 +5,7 @@ published: true
 title: About me
 date: !binary |-
   MjAxMS0wNi0yNSAxOTo0MzoxNiAtMDQwMA==
+sharing: false
 ---
 My name is Tomasz Pluskiewicz
 
