@@ -7,9 +7,7 @@ date: !binary |-
   MjAxMS0xMS0wMiAxMDo1NDozNCAtMDQwMA==
 categories:
 - .net
-tags:
 - linq to sql
-- l2s
 - log4net
 redirect_from:
 - /2011/11/logging-linq-to-sql/

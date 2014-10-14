@@ -7,10 +7,7 @@ date: !binary |-
   MjAxMS0wNy0xOCAyMDoxMTo1NiAtMDQwMA==
 categories:
 - .net
-tags:
 - nhibernate
-- .net
-- c#
 redirect_from:
 - /2011/07/ipaddress-nvarchar-nhibernate-custom-mapping/
 ---

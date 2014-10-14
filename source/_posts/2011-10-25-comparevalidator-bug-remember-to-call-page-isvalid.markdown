@@ -7,8 +7,6 @@ date: !binary |-
   MjAxMS0xMC0yNSAxMDowODowNiAtMDQwMA==
 categories:
 - .net
-tags:
-- web forms
 - asp.net
 redirect_from:
 - /2011/10/comparevalidator-bug-remember-to-call-page-isvalid/

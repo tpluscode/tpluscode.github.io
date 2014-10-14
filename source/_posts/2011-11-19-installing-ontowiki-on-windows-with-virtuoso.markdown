@@ -7,7 +7,6 @@ date: !binary |-
   MjAxMS0xMS0xOSAxNjo1MjozMyAtMDUwMA==
 categories:
 - Semantic Web
-tags:
 - virtuoso
 - ontowiki
 redirect_from:

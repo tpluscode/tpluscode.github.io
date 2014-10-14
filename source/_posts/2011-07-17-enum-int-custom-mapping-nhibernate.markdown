@@ -7,7 +7,6 @@ date: !binary |-
   MjAxMS0wNy0xNyAyMzoyMTo0MSAtMDQwMA==
 categories:
 - .net
-tags:
 - nhibernate
 redirect_from:
 - /2011/07/enum-int-custom-mapping-nhibernate/

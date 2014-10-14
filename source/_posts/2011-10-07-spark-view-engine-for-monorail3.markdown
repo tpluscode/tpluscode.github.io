@@ -7,12 +7,9 @@ date: !binary |-
   MjAxMS0xMC0wNyAxOTo0MzoxMSAtMDQwMA==
 categories:
 - .net
-tags:
-- .net
-- monorail
+- castle monorail
 - spark
 - razor
-- castle
 - blade
 redirect_from:
 - /2011/10/emulating-castle-blades-nested-transitions-with-spark/

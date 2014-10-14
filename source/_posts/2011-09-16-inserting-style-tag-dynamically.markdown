@@ -7,10 +7,7 @@ date: !binary |-
   MjAxMS0wOS0xNiAwMTo0NDoxNSAtMDQwMA==
 categories:
 - javascript
-tags:
 - prototype
-- javascript
-- ie
 redirect_from:
 - /2011/09/inserting-style-tag-dynamically/
 ---

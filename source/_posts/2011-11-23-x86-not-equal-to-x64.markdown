@@ -7,7 +7,6 @@ date: !binary |-
   MjAxMS0xMS0yMyAxODo0MToyNyAtMDUwMA==
 categories:
 - Semantic Web
-tags:
 - virtuoso
 redirect_from:
 - /2011/11/x86-not-equal-to-x64/

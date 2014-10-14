@@ -7,11 +7,7 @@ date: !binary |-
   MjAxMi0wNS0wOSAxMTozODoyNCAtMDQwMA==
 categories:
 - .net
-tags:
-- .net
 - silverlight
-- visual studio
-- ria
 redirect_from:
 - /2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/
 comments: true

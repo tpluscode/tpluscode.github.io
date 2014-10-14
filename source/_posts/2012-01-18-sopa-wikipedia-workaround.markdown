@@ -6,7 +6,7 @@ title: SOPA Wikipedia workaround
 date: !binary |-
   MjAxMi0wMS0xOCAxMDowNDoyOCAtMDUwMA==
 categories:
-- various
+- blog
 redirect_from:
 - /2012/01/sopa-wikipedia-workaround/
 comments: true

@@ -7,11 +7,9 @@ date: !binary |-
   MjAxNC0wNi0xNSAxOTozMzo1NyAtMDQwMA==
 categories:
 - Semantic Web
-tags:
 - rdf
-- hateoas
-- hydra
 - rest
+- hydra
 redirect_from:
 - /2014/06/rest-rdf-and-hypermedia/
 comments: true

@@ -7,10 +7,7 @@ date: !binary |-
   MjAxMS0xMS0yMSAxMDowMTo1NyAtMDUwMA==
 categories:
 - .net
-tags:
-- .net
 - c#
-- datasets
 redirect_from:
 - /2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data/
 comments: true

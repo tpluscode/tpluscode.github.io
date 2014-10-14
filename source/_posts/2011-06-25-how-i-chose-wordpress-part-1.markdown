@@ -6,11 +6,8 @@ title: How I chose WordPress. Part 1
 date: !binary |-
   MjAxMS0wNi0yNSAyMTo1NzoyNCAtMDQwMA==
 categories:
-- various
-tags:
-- cms
+- blog
 - wordpress
-- web platform installer
 redirect_from:
 - /2011/06/how-i-chose-wordpress-part-1/
 ---

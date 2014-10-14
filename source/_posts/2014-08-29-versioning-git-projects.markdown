@@ -7,12 +7,7 @@ date: !binary |-
   MjAxNC0wOC0yOSAxMzoxODoyMyAtMDQwMA==
 categories:
 - .NET
-tags:
-- .net
-- c#
-- visual studio
 - git
- versioning
 redirect_from:
 - /2014/08/versioning-git-projects/
 description: Ever struggled with setting assembly versions in .NET projects? Here's a simple a elegant way!

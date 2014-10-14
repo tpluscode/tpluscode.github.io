@@ -7,9 +7,7 @@ date: !binary |-
   MjAxMS0wNy0wMiAxNDo0NDo1MyAtMDQwMA==
 categories:
 - Semantic Web
-tags:
-- plesk
-- virtuozzo
+- plesk virtuozzo
 - mssql
 - iis
 redirect_from:
