@@ -26,7 +26,7 @@ Video (PL): [https://www.youtube.com/watch?v=IOF15K0gN8U](https://www.youtube.co
 
 ## Introduction to dotNetRDF
 
-Presented at [MakoLab S.A.](http://makolab.net)
+Presented at [The Łódź Semantic Forum](http://makolab.pl/pl/o-makolab/aktualnosci/%C5%81%C3%B3dzkie-Forum-Semantic-Web-najbli%C5%BCsze-spotkanie-ju%C5%BC-7-marca-2013)
 
 Slides: [http://www.slideshare.net/tpluskiewicz/dotnetrdf](http://www.slideshare.net/tpluskiewicz/dotnetrdf)
 
