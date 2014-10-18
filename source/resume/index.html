@@ -52,7 +52,7 @@ technical:
             </div>
             <div class="yui-u">
               <p class="enlarge">
-                {% page.profile %}
+                {{ page.profile }}
               </p>
             </div>
           </div><!--// .yui-gf -->
@@ -65,8 +65,8 @@ technical:
 
               {% for skill in page.skills %}
               <div class="talent">
-                <h2>{% skill.title %}</h2>
-                <p>{% skill.description %}</p>
+                <h2>{{ skill.title }}</h2>
+                <p>{{ skill.description }}</p>
               </div>
 
               {% enfor %}
@@ -92,7 +92,7 @@ technical:
                 <li>
               {% endif %}
 
-                {% tech %}</li>
+                {{ tech }}</li>
 
               {% if modulo == '2' or forloop.last %}
               </ul>
