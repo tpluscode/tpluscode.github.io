@@ -8,6 +8,7 @@ before_script:
 - git config --global user.email "tpluscode@users.noreply.github.com"
 - git config --global user.name "tpluscode"
 - git clone https://${GH_TOKEN}@github.com/tpluscode/tpluscode.github.io _deploy > /dev/null 2>&1
+- rm -rf public
 script:
 - rake generate
 after_script:
