@@ -6,3 +6,6 @@
   display: block;
 }
 
+.job, .school {
+  page-break-inside: avoid;
+}
