@@ -9,3 +9,9 @@
 .job, .school {
   page-break-inside: avoid;
 }
+
+.contact-info {
+  .email, .phone, .website {
+    margin-top: 25px;
+  }
+}
