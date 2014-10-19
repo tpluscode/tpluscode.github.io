@@ -1,8 +1,8 @@
-#resume {
+.left-col, .topImage, #footer, #resume a#pdf {
+  display: none;
+}
 
-  .left-col, .topImage, #footer, #resume a#pdf {
-    display: none;
-  }
+#resume {
 
   .legal, #resume img#mugshot {
     display: block;
