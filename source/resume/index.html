@@ -168,7 +168,7 @@ languages:
 
               {% for job in page.jobs %}
 
-              <div class="job{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
+              <div typeof="Organization" class="job{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
                 <h2 property="name">{{ job.company }}</h2>
                 <h3>{{ job.title }}</h3>
                 <h4>{{ job.from }}-{% if job.to %}{{ job.to }}{% endif %}</h4>
@@ -187,7 +187,7 @@ languages:
             <div class="yui-u" id="education">
 
               {% for school in page.education %}
-              <div property="alumniOf" class="school">
+              <div property="alumniOf" typeof="EducationalOrganization" class="school">
                 <h2 property="name">{{ school.name }}</h2>
                 <h3>{{ school.course }}</h3>
                 <h4>{{ school.from }}-{% if school.to %}{{ school.to }}{% endif %}</h4>
