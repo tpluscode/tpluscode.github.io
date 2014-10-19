@@ -8,6 +8,10 @@
 
 .job, .school {
   page-break-inside: avoid;
+
+  p {
+    margin-bottom: 0px;
+  }
 }
 
 .contact-info {
