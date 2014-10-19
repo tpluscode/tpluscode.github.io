@@ -40,6 +40,10 @@
       .email, .phone, .website {
         margin-top: 15px;
       }
+
+      .website {
+        display: none;
+      }
     }
 
     .first h2 { font-style: italic; }
