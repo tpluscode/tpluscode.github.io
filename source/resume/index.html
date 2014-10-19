@@ -58,6 +58,13 @@ education:
     course: Master - Computer science, speciality <em>Data Processing Systems Engineering</em>
     from: 2005
     to: 2010
+languages:
+  - language: Polish
+    level: native
+  - language: English
+    level: C2
+  - language: German
+    level: B1
 ---
 
 <section id="resume">
@@ -165,7 +172,7 @@ education:
             </div><!--// .yui-u -->
           </div><!--// .yui-gf -->
 
-          <div class="yui-gf last">
+          <div class="yui-gf">
             <div class="yui-u first">
               <h2>Education</h2>
             </div>
@@ -182,6 +189,22 @@ education:
 
             </div>
           </div><!--// .yui-gf -->
+
+          <div class="yui-gf last">
+            <div class="yui-u first">
+              <h2>Languages</h2>
+            </div>
+
+            <div class="yui-u">
+              {% for language in page.languages %}
+              <div class="language">
+                <h2>{{ language.language }}</h2>
+                <p>{{ language.level }}</p>
+              </div>
+
+              {% endfor %}
+            </div>
+          </div>
 
         </div><!--// .yui-b -->
       </div><!--// yui-main -->
