@@ -1,7 +1,15 @@
 ---
 layout: personal
 
-profile: I strive to excel through constant learning and experimenting with new technologies and by actively taking part in the programming community.
+profile:
+  - name: Tomasz Pluskiewicz
+  - jobTitle: Semantic Web Programmer
+  - identifier: /#tomasz
+  - photo: /uploads/2014/10/mugshot.png
+  - email: tomasz (at) pluskiewicz.pl
+  - phone: +48 608 329 086
+  - resumeUrl: http://t-code.pl/resume
+  - description: I strive to excel through constant learning and experimenting with new technologies and by actively taking part in the programming community.
 skills:
   - title: Programming
     description: Throughout my career I face many programming challenges through which are opportunities to learn programming patterns.
@@ -74,24 +82,24 @@ languages:
     level: B1
 ---
 
-<section id="resume" vocab="http://schema.org/" typeof="Person" resource="/about#me">
+<section id="resume" vocab="http://schema.org/" typeof="Person" resource="{{ page.profile.identifier }}">
 <div id="doc2" class="yui-t7 yui3-cssreset">
   <div id="inner">
 
     <div id="hd">
       <div class="yui-gc">
         <div class="yui-u first">
-          <img property="image" id="mugshot" src="/uploads/2014/10/mugshot.png" alt="Portrait"/>
-          <h1 property="name">Tomasz Pluskiewicz</h1>
-          <h2 property="jobTitle">Semantic Web Programmer</h2>
+          <img property="image" id="mugshot" src="{{ page.profile.photo }}" alt="Portrait"/>
+          <h1 property="name">{{ page.profile.name }}</h1>
+          <h2 property="jobTitle">{{ page.profile.jobTitle }}</h2>
         </div>
 
         <div class="yui-u">
           <div class="contact-info">
             <h3><a id="pdf" href="javascript:window.print()">Download CV</a></h3>
-            <h3 class="website" property="url">More at <a href="http://t-code.pl/resume">http://t-code.pl/resume</a></h3>
-            <h3 class="email" property="email">tomasz (at) pluskiewicz.pl</h3>
-            <h3 class="phone" property="telephone">+48 608 329 086</h3>
+            <h3 class="website" property="url">More at <a href="{{ page.profile.resumeUrl }}">{{ page.profile.resumeUrl }}</a></h3>
+            <h3 class="email" property="email">{{ page.profile.email }}</h3>
+            <h3 class="phone" property="telephone">{{ page.profile.phone }}</h3>
           </div><!--// .contact-info -->
         </div>
       </div><!--// .yui-gc -->
@@ -107,7 +115,7 @@ languages:
             </div>
             <div class="yui-u">
               <p class="enlarge">
-                {{ page.profile }}
+                {{ page.profile.description }}
               </p>
             </div>
           </div><!--// .yui-gf -->
