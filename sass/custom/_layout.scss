@@ -1,0 +1,9 @@
+@media print {
+  .left-col, .topImage {
+    display: none;
+  }
+
+  .legal {
+    display: block;
+  }
+}
