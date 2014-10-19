@@ -1,25 +1,29 @@
-.left-col, .topImage, #footer, #resume a#pdf {
-  display: none;
-}
+#resume {
 
-.legal, #resume img#mugshot {
-  display: block;
-}
-
-.job, .school {
-  page-break-inside: avoid;
-
-  p {
-    margin-bottom: 0px;
+  .left-col, .topImage, #footer, #resume a#pdf {
+    display: none;
   }
-}
 
-.job.no-print {
-  display: none;
-}
-
-#resume .contact-info {
-  .email, .phone, .website {
-    margin-top: 25px;
+  .legal, #resume img#mugshot {
+    display: block;
   }
+
+  .job, .school {
+    page-break-inside: avoid;
+
+    p {
+      margin-bottom: 0px;
+    }
+  }
+
+  .job.no-print {
+    display: none;
+  }
+
+  .contact-info {
+    .email, .phone, .website {
+      margin-top: 25px;
+    }
+  }
+
 }

@@ -164,11 +164,11 @@ languages:
               <h2>Experience</h2>
             </div><!--// .yui-u -->
 
-            <div class="yui-u">
+            <div class="yui-u" id="jobs">
 
               {% for job in page.jobs %}
 
-              <div class="job{% if forloop.last %} last{% endif %}{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
+              <div class="job{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
                 <h2 property="name">{{ job.company }}</h2>
                 <h3>{{ job.title }}</h3>
                 <h4>{{ job.from }}-{% if job.to %}{{ job.to }}{% endif %}</h4>
@@ -184,10 +184,10 @@ languages:
               <h2>Education</h2>
             </div>
 
-            <div class="yui-u">
+            <div class="yui-u" id="education">
 
               {% for school in page.education %}
-              <div property="alumniOf" class="school{% if forloop.last %} last{% endif %}">
+              <div property="alumniOf" class="school">
                 <h2 property="name">{{ school.name }}</h2>
                 <h3>{{ school.course }}</h3>
                 <h4>{{ school.from }}-{% if school.to %}{{ school.to }}{% endif %}</h4>

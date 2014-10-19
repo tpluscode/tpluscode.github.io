@@ -42,7 +42,6 @@
     }
 
     .first h2 { font-style: italic; }
-    .last { border-bottom: 0 }
 
     /* //-- section styles -- */
 
@@ -53,14 +52,12 @@
       position: relative;
       margin-bottom: 1em;
       padding-bottom: 1em;
-      border-bottom: 1px solid #ccc;
 
       h4 { position: absolute; top: 0.35em; right: 0 }
 
       p { margin: 0.75em 0 3em 0; }
     }
 
-    .last { border: none; }
     .skills-list {  }
     .skills-list ul { margin: 0; }
     .skills-list li { margin: 3px 0; padding: 3px 0; }
@@ -85,5 +82,11 @@
     .legal {
       display: none;
       border-top: 1px solid #ccc;
+    }
+
+    #jobs, #education {
+      :first-child {
+        border-top: 1px solid #ccc;
+      }
     }
 }
