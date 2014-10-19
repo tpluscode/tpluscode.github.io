@@ -47,7 +47,7 @@ jobs:
   - company: Midware technologies
     title: .NET programmer
     description: Implementation of an accounting web application (ASP.NET Web Forms, SQL Server 2005)
-    form: 03/2007
+    from: 03/2007
     to: 06/2007
 ---
 
@@ -148,7 +148,7 @@ jobs:
               <div class="job {% if forloop.last %} last {% endif %}">
                 <h2>{{ job.company }}</h2>
                 <h3>{{ job.title }}</h3>
-                <h4>{{ job.from }}{% if job.to %}-{{ job.to }}{% endif %}</h4>
+                <h4>{{ job.from }}-{% if job.to %}{{ job.to }}{% endif %}</h4>
                 <p>{{ job.description }}</p>
               </div>
 
