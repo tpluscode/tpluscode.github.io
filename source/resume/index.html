@@ -49,6 +49,15 @@ jobs:
     description: Implementation of an accounting web application (ASP.NET Web Forms, SQL Server 2005)
     from: 03/2007
     to: 06/2007
+education:
+  - name: Polish school of IT
+    course: Advanced database-oriented programming
+    from: 10/2008
+    to: 04/2009
+  - name: Wrocław University of Technology
+    course: Master - Computer science, speciality <em>Data Processing Systems Engineering</em>
+    from: 2005
+    to: 2010
 ---
 
 <section id="resume">
@@ -145,7 +154,7 @@ jobs:
 
               {% for job in page.jobs %}
 
-              <div class="job {% if forloop.last %} last {% endif %}">
+              <div class="job{% if forloop.last %} last{% endif %}">
                 <h2>{{ job.company }}</h2>
                 <h3>{{ job.title }}</h3>
                 <h4>{{ job.from }}-{% if job.to %}{{ job.to }}{% endif %}</h4>
@@ -160,9 +169,17 @@ jobs:
             <div class="yui-u first">
               <h2>Education</h2>
             </div>
+
             <div class="yui-u">
-              <h2>Indiana University - Bloomington, Indiana</h2>
-              <h3>Dual Major, Economics and English &mdash; <strong>4.0 GPA</strong> </h3>
+
+              {% for school in page.education %}
+              <div class="school{% if forloop.last %} last{% endif %}">
+                <h2>{{ school.name }}</h2>
+                <h3>{{ school.course }}</h3>
+                <h4>{{ school.from }}-{% if school.to %}{{ school.to }}{% endif %}</h4>
+               </div>
+              {% endfor %}
+
             </div>
           </div><!--// .yui-gf -->
 
