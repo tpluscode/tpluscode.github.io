@@ -1,23 +1,28 @@
 ---
-layout: default
-title: Blog
+layout: personal
+status: publish
+published: true
+title: About me
+date: !binary |-
+  MjAxMS0wNi0yNSAxOTo0MzoxNiAtMDQwMA==
+sharing: false
 ---
+<div vocab="http://schema.org/" typeof="Person" resource="#tomasz">
+  <p>
+    My name is <span property="name">Tomasz Pluskiewicz</span>
+  </p>
 
-{% assign index = true %}
-<div itemscope itemtype="http://schema.org/Blog">
-{% for post in paginator.posts %}
-{% assign content = post.content %}
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">{% include article.html %}</article>
-{% endfor %}
+  <p>
+    I was born in <span property="birthDate" content="1986-05-23">1986</span> in <a property="http://dbpedia.org/ontology/birthPlace" resource="http://dbpedia.org/resource/Zabrze" href="http://en.wikipedia.org/wiki/Zabrze">Zabrze, Poland</a>
+  </p>
+
+  <p property="alumniOf" typeof="EducationalOrganization" resource="http://dbpedia.org/resource/Wrocław_University_of_Technology">
+    In 2010 I graduated Computer Science (Data Processing System Engineering speciality) on the <a href="http://eka.pwr.wroc.pl">Electronics Faculty</a>
+    at <a property="name" href="http//www.portal.pwr.wroc.pl">Wrocław University of Technology</a>.
+    I gained a master degree, my thesis titled <em>"Design the modelling methods of object database system using Sybase PowerDesigner tools"</em>
+  </p>
+
+  <p property="worksFor" typeof="Organization">
+    I currently work as a Semantic Web programmer at Łódź-based company <a property="name" href="http://makolab.net">MakoLab S.A.</a>
+  </p>
 </div>
-<nav id="pagenavi">
-    {% if paginator.previous_page and paginator.page > 1 %}
-        <a href="/blog/posts/{{paginator.previous_page}}" class="prev">Prev</a>
-    {% elsif paginator.previous_page %}
-        <a href="/" class="prev">Prev</a>
-    {% endif %}
-    {% if paginator.next_page %}
-        <a href="/blog/posts/{{paginator.next_page}}" class="next">Next</a>
-    {% endif %}
-    <div class="center"><a href="{{ root_url }}/blog/archives">Blog Archives</a></div>
-</nav>
