@@ -53,7 +53,7 @@
     a#pdf { display: block; background: #666; color: white; padding: 6px 50px 6px 12px; margin-bottom: 6px; text-decoration: none;  }
     a#pdf:hover { background: #222; }
 
-    .job, .school {
+    .job, .school, .project {
       position: relative;
       margin-top: 1em;
       padding-top: 1em;
@@ -61,7 +61,19 @@
 
       h4 { position: absolute; top: 0.35em; right: 0 }
 
-      p { margin: 0.75em 0 3em 0; }
+      p {
+        margin-top: 0.75em;
+        margin-right: 0;
+        margin-left: 0;
+      }
+    }
+
+    .project {
+      p { margin-bottom: 1em; }
+    }
+
+    .job, .school {
+      p { margin-bottom: 3em; }
     }
 
     .last { border: none; }
@@ -90,7 +102,7 @@
       display: none;
     }
 
-    #jobs .job:first-child, #education .school:first-child {
+    #jobs .job:first-child, #education .school:first-child, #projects .project:first-child {
       border-top: none;
       margin-top: 0px;
       padding-top: 0px;
