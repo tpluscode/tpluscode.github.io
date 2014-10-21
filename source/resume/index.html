@@ -101,6 +101,7 @@ projects:
     print: true
   - name: r2rml4net
     href: http://r2rml.net
+    when: Freelance
     description: A side project I implemented as an open source implementation of the W3C R2RML recommendation
     print: false
   - name: kochamsport.pl - Soccer tournaments for children
@@ -237,7 +238,7 @@ languages:
                   {% for project in page.projects %}
                   <div class="project{% if project.print == false %} no-print{% endif %}">
                       <h2>
-                          {% if project.href %}<a href="{{ project.href }}">{% endif %}
+                          {% if project.href %}<a href="{{ project.href }}" target="_blank">{% endif %}
                           {{ project.name }}
                           {% if project.href %}</a>{% endif %}
                       </h2>

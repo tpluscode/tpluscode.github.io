@@ -16,7 +16,7 @@
     }
   }
 
-  .job.no-print, #skills, .project.no-print {
+  .job.no-print, #skills, .project.no-print, #projects .talent {
     display: none;
   }
 
@@ -30,4 +30,5 @@
     padding-top: 0.75em;
   }
 
+  a { text-decoration: none; }
 }
