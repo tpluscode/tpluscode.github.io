@@ -4,7 +4,7 @@
 
 #resume {
 
-  .legal, img#mugshot {
+  .legal, img#mugshot, .contact-info .website {
     display: block;
   }
 
@@ -18,6 +18,16 @@
 
   .job.no-print, #skills {
     display: none;
+  }
+
+  #hd {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+  }
+
+  .yui-gf {
+    margin-top: 0.75em;
+    padding-top: 0.75em;
   }
 
 }
