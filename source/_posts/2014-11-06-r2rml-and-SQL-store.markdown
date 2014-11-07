@@ -4,8 +4,9 @@ published: false
 title: Using R2RML to translate SPARQL to SQL
 date: 2014-11-06 10:00
 categories:
-- .NET
-- git
+- r2rml
+- sparql
+- sqlserver
 description: About the .NET R2RML library for querying SQL with SPARQL
 comments: true
 ---
@@ -26,11 +27,19 @@ I started the project not only to learn but with the intent to actually use it. 
 
 My choice at the time was to quickly assembly a Windows Forms app backed by SQL Server database. The databse also holds all my books and magazine issues. Initially I wanted that database to be the base for a knowledge base about buses, trams and other aspects of public transport. A project I've been planning for many years. I even have set up a MediaWiki site at some point. In the meantime I discovered the Semantic Web and RDF, which completely changed my view of publishing data on the web.
 
-## Mapping isn't enough
+### Mapping isn't enough
 
-..
+Converting entire relational database to triples isn't perfect. It makes sense only for small databases, because each change forces regeneration, at least partial. And what about the result? Do we keep it in memory? Or maybe put it in another database at the cost of duplication?
+
+## dotnetr2rmlstore
+
+My long-term idea was indeed to create a SPARQL-SQL translator, which would dynamically query the tables. I haven't had time to do that and in the meantime it got beaten to it by Miloš Chaloupka, who implements an SQL backed SPARQL endpoint. 
+
+It reads the r2rml metadata, translates SPARQL queries to SQL and can exposes an endpoint by integrating with dotNetRDF. Fingers crossed :)
 
 [r2rml]: http://www.w3.org/TR/r2rml/
 [dotNetRDF]: http://dotnetrdf.org
 [ld]: http://en.wikipedia.org/wiki/Linked_data
 [dm]: http://www.w3.org/TR/rdb-direct-mapping/
+[d2rq]: http://d2rq.org/
+[Ultrawrap]: http://capsenta.com/architecture/
