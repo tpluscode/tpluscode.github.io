@@ -15,6 +15,8 @@ A long time ago, back in 2011, I have implemented the [R2RML][r2rml] using [dotN
 
 R2RML is a specification, which defines how to map SQL databases to RDF triples. This way it is possible to publish existing data from relational databases as [Linked Data][ld] to give one example
 
+<!--more-->
+
 ## Do we need it?
 
 One could argue that there are other implementations of R2RML or similar such as D2RQ. Unfortunately some are not free and none existed (and I think still don't as of late 2014) for the .NET platform. Also I treated the work I did as training ground for my programming skills. I guess many developers will sympathize with coding to learn.
