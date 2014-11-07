@@ -1,6 +1,6 @@
 ---
 layout: post
-published: false
+published: true
 title: Using R2RML to translate SPARQL to SQL
 date: 2014-11-06 10:00
 categories:
@@ -35,7 +35,9 @@ Converting entire relational database to triples isn't perfect. It makes sense o
 
 My long-term idea was indeed to create a SPARQL-SQL translator, which would dynamically query the tables. I haven't had time to do that and in the meantime it got beaten to it by Miloš Chaloupka, who implements an SQL backed SPARQL endpoint. 
 
-It reads the r2rml metadata, translates SPARQL queries to SQL and can exposes an endpoint by integrating with dotNetRDF. Fingers crossed :)
+It reads the r2rml metadata, translates SPARQL queries to SQL and can exposes an endpoint by integrating with dotNetRDF.
+
+The project isn't yet published and is mostly unfinished but I have high hopes. Fingers crossed :)
 
 [r2rml]: http://www.w3.org/TR/r2rml/
 [dotNetRDF]: http://dotnetrdf.org
