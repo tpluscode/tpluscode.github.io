@@ -37,7 +37,7 @@ Converting entire relational database to triples isn't perfect. It makes sense o
 
 My long-term idea was indeed to create a SPARQL-SQL translator, which would dynamically query the tables. I haven't had time to do that and in the meantime it got beaten to it by Miloš Chaloupka, who implements an SQL backed SPARQL endpoint. 
 
-It reads the r2rml metadata, translates SPARQL queries to SQL and can exposes an endpoint by integrating with dotNetRDF.
+It reads the r2rml metadata, translates SPARQL queries to SQL and can exposes an endpoint by integrating with dotNetRDF. Miloš is developing the project as part of his master thesis and will continue on during doctoral studies.
 
 The project isn't yet published and is mostly unfinished but I have high hopes. Fingers crossed :)
 
