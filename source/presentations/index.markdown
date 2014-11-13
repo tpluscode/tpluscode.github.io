@@ -13,7 +13,7 @@ Below is a reverse chronological list of presentations I have given.
 
 Presented at [Wrocław meet.js](https://www.facebook.com/events/697079347044630/)
 
-Slides: [http://t-code.pl/jsonld-hydra-presentation](http://t-code.pl/jsonld-hydra-presentation)
+Slides: [http://hydra.t-code.pl/](http://hydra.t-code.pl/)
 
 ## Fody: code weaving made fun
 
