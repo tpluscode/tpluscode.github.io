@@ -59,7 +59,7 @@ And what about revision number? With centralized version control systems like SV
 number be used here. So the above would mean that the code was built from revision 1556. This has a number of problems:
 
 1. __each version segment cannot exceed 65535__ - a problem for large repositories, probably shared between multiple projects in an organization
-1. __this will not work with git or mercurial__ - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters</li><br />
+1. __this will not work with git or mercurial__ - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters<br />
 
 ### The other microsoft way
 
