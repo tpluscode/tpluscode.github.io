@@ -9,6 +9,18 @@ footer: true
 
 Below is a reverse chronological list of presentations I have given.
 
+## Versioning .NET projects with git repositories
+
+Presented at [Wrocław .NET user Group](http://www.meetup.com/wrocnet/events/218648469/)
+
+Slides: [git-versioning.t-code.pl](git-versioning.t-code.pl)
+
+## GitLink - Easy debugging NuGet packages
+
+Presented at [Wrocław .NET user Group](http://www.meetup.com/wrocnet/events/218648469/)
+
+Slides: [gitlink.t-code.pl/](http://gitlink.t-code.pl/)
+
 ## JSON-LD and Hydra - Hypermedia API alternatively
 
 Presented at [Wrocław meet.js](https://www.facebook.com/events/697079347044630/)
