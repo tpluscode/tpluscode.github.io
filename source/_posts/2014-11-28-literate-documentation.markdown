@@ -1,6 +1,6 @@
 ---
 layout: post
-published: false
+published: true
 title: Living documentation with Literate Programming
 date: 2014-12-05 20:00
 categories:
