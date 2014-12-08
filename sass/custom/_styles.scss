@@ -66,6 +66,10 @@ $maxWidth: 900px;
   #smallFlairs {
     display: none;
   }
+  
+  #flairs a {
+    display: block;
+  }
 }
 
 @media screen and (max-width: 1040px) {
