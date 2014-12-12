@@ -3,6 +3,7 @@ layout: post
 published: true
 title: Living documentation with Literate Programming
 date: 2014-12-05 20:00
+updated: 2014-12-12 12:30
 categories:
 - c#
 - unit tests
@@ -17,6 +18,8 @@ He currently works for Credit Suisse - the Swiss-American investment bank where 
 counting a lot of money :).
 
 <!--more-->
+
+__EDIT__: I've update the `.csproj` snippet, because previous code put all markdowns into project root. See [diff here](https://github.com/tpluscode/tpluscode.github.io/commits/source/source/_posts/2014-11-28-literate-documentation.markdown)
 
 ## Literate programming
 
@@ -131,7 +134,8 @@ my documentation target in MSBuild
   <Compile Include="Readme.cs" />
 </ItemGroup>
 <Target Name="Generate Doc" AfterTargets="Build">
-  <Exec Command="$(path)\llite.exe %(Compile.Identity) -l csharp -co &quot;``` c#&quot; -cc ```" />
+  <Exec Command="$(path)\llite.exe %(Compile.FullPath) -l csharp -co &quot;``` c#&quot; -cc ```"
+        WorkingDirectory="%(Compile.RelativeDir)"/>
 </Target>
 ```
 
