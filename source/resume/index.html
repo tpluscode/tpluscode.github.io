@@ -74,44 +74,6 @@ education:
     course: Master - Computer science, speciality <em>Data Processing Systems Engineering</em>
     from: 2005
     to: 2010
-projects:
-  - name: Semantic CMS
-    when: MakoLab S.A.
-    description: Being a research/experimental project this was a great opportunity to work with the Semantic Web and test-drive some fresh design patterns like DDD or CQRS/ES
-    technologies:
-      - NancyFx (MVC)
-      - AngularJS
-      - RDF, SPARQL
-    print: true
-  - name: Romantic Web
-    href: http://romanticweb.net
-    when: MakoLab S.A.
-    description: First complete ORM for RDF for the .NET platform. An offshoot of the Semantic CMS project released on GitHub.
-    technologies:
-      - Mono Cecil
-      - RDF, SPARQL
-    print: true
-  - name: Scheduling solution
-    when: Infusion
-    description: Being part of an international team the projects for Credit Suisse taught me much about being part of a dynamic SCRUM environment
-    technologies:
-      - Quartz.NET
-      - WPF
-      - SQL Server
-    print: true
-  - name: r2rml4net
-    href: http://r2rml.net
-    when: Freelance
-    description: A side project I implemented as an open source implementation of the W3C R2RML recommendation
-    print: false
-  - name: kochamsport.pl - Soccer tournaments for children
-    href: http://kochamsport.pl
-    when: Freelance
-    description: An early project where I learned much about thoroughly managing a project, client interaction and web app design
-    technologies:
-      - Castle Monorail (MVC)
-      - SQL Server / NHibernate
-    print: true
 languages:
   - language: Polish
     level: native
@@ -235,7 +197,7 @@ languages:
 
               <div class="yui-u" id="projects">
 
-                  {% for project in page.projects %}
+                  {% for project in site.projects %}
                   <div class="project{% if project.print == false %} no-print{% endif %}">
                       <h2>
                           {% if project.href %}<a href="{{ project.href }}" target="_blank">{% endif %}

@@ -1,0 +1,10 @@
+---
+name: Semantic CMS
+when: MakoLab S.A.
+description: Being a research/experimental project this was a great opportunity to work with the Semantic Web and test-drive some fresh design patterns like DDD or CQRS/ES
+technologies:
+  - NancyFx (MVC)
+  - AngularJS
+  - RDF, SPARQL
+print: true
+---

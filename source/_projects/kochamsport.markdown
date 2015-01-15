@@ -1,0 +1,10 @@
+---
+name: kochamsport.pl - Soccer tournaments for children
+href: http://kochamsport.pl
+when: Freelance
+description: An early project where I learned much about thoroughly managing a project, client interaction and web app design
+technologies:
+  - Castle Monorail (MVC)
+  - SQL Server / NHibernate
+print: true
+---
