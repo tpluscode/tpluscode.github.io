@@ -1,0 +1,15 @@
+---
+layout: page
+title: "Interesting links"
+date: 2015-05-15 10:16
+comments: false
+sharing: false
+footer: true
+---
+
+<div>
+  {% for link in site.links | sort 'category' %}
+  {% include custom/link.html %}
+  {% endfor %}
+</section>
+</div>
