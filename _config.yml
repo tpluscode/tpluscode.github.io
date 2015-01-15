@@ -66,6 +66,7 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 collections:
   - links
   - projects
+  - jobs
 
 # ----------------------- #
 #   3rd Party Settings    #

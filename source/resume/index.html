@@ -28,43 +28,6 @@ technical:
   - Design Patterns
   - Domain-Driven Design
   - REST
-jobs:
-  - company: MakoLab S.A.
-    title: Semantic Web Programmer
-    description: Design and deveopment of an innovative Semantic CMS (NancyFx, AngularJs, REST). Implementation of a custom ORM tool for working with graph RDF data (.NET 4.5, dotNetRDF, Mono Cecil)
-    from: 09/2013
-    current: true
-    print: true
-  - company: T+Code
-    title: Self-employed
-    description: Design, implementation and maintenance of numerous web projects for various clients. (ASP.NET, Castle Monorail, NHibernate, Crystal Reports, JavaScript, MySQL, Windows Server 2008, Visual Studio Lightswitch)
-    from: 10/2010
-    current: true
-    print: false
-  - company: Infusion Development Poland
-    title: .NET Consultant
-    description: Implementing and designing scheduling solution in a SCRUM team. Work on-site at the client. (WPF, WCF, SQL Server, Quartz.NET)
-    from: 09/2012
-    to: 08/2013
-    print: true
-  - company: ITeam S.A.
-    title: .NET Programmer
-    description: Development of .NET web applications in various technologies (ASP.NET 3.5, MVP, Linq to SQL, Silverlight, WCF, Entity Framework)
-    from: 05/2011
-    to: 08/2012
-    print: true
-  - company: CodeTeam
-    title: .NET programmer
-    description: Part time contribution in multiple .NET projects (ASP.NET WebForms, Windows.Forms, SQL Server)
-    from: 2007
-    to: 2010
-    print: false
-  - company: Midware technologies
-    title: .NET programmer
-    description: Implementation of an accounting web application (ASP.NET Web Forms, SQL Server 2005)
-    from: 03/2007
-    to: 06/2007
-    print: false
 education:
   - name: Polish school of IT
     course: Advanced database-oriented programming
@@ -177,7 +140,7 @@ languages:
 
             <div class="yui-u" id="jobs">
 
-              {% for job in page.jobs %}
+              {% for job in site.jobs | sort 'year' %}
 
               <div typeof="Organization" class="job{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
                 <h2 property="name">{{ job.company }}</h2>

@@ -1,0 +1,9 @@
+---
+company: Infusion Development Poland
+title: .NET Consultant
+description: Implementing and designing scheduling solution in a SCRUM team. Work on-site at the client. (WPF, WCF, SQL Server, Quartz.NET)
+from: 09/2012
+to: 08/2013
+print: true
+year: 2012
+---

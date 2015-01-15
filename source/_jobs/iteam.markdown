@@ -1,0 +1,9 @@
+---
+company: ITeam S.A.
+title: .NET Programmer
+description: Development of .NET web applications in various technologies (ASP.NET 3.5, MVP, Linq to SQL, Silverlight, WCF, Entity Framework)
+from: 05/2011
+to: 08/2012
+print: true
+year: 2011
+---
