@@ -160,7 +160,7 @@ languages:
 
               <div class="yui-u" id="projects">
 
-                  {% for project in site.projects %}
+                  {% for project in site.projects | sort 'order' | reverse %}
                   <div class="project{% if project.print == false %} no-print{% endif %}">
                       <h2>
                           {% if project.href %}<a href="{{ project.href }}" target="_blank">{% endif %}
