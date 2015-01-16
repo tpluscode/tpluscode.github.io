@@ -5,5 +5,4 @@ description: Implementation of an accounting web application (ASP.NET Web Forms,
 from: 03/2007
 to: 06/2007
 print: false
-order: 1
 ---

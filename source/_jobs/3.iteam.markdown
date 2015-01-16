@@ -5,5 +5,4 @@ description: Development of .NET web applications in various technologies (ASP.N
 from: 05/2011
 to: 08/2012
 print: true
-order: 3
 ---

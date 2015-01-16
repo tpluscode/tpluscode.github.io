@@ -6,5 +6,4 @@ from: 09/2013
 to: 12/2014
 current: true
 print: true
-order: 5
 ---

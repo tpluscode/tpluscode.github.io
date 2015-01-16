@@ -140,7 +140,7 @@ languages:
 
             <div class="yui-u" id="jobs">
 
-              {% for job in site.jobs | sort 'order' %}
+              {% for job in site.jobs reversed %}
 
               <div typeof="Organization" class="job{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
                 <h2 property="name">{{ job.company }}</h2>
@@ -160,7 +160,7 @@ languages:
 
               <div class="yui-u" id="projects">
 
-                  {% for project in site.projects | sort 'order' %}
+                  {% for project in site.projects reversed %}
                   <div class="project{% if project.print == false %} no-print{% endif %}">
                       <h2>
                           {% if project.href %}<a href="{{ project.href }}" target="_blank">{% endif %}
