@@ -140,7 +140,7 @@ languages:
 
             <div class="yui-u" id="jobs">
 
-              {% for job in site.jobs | sort 'year' %}
+              {% for job in site.jobs | sort 'order' | reverse %}
 
               <div typeof="Organization" class="job{% if job.print == false %} no-print{% endif %}" {% if job.current %}property="worksFor"{%endif%}>
                 <h2 property="name">{{ job.company }}</h2>

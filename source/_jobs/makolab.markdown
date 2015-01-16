@@ -3,7 +3,8 @@ company: MakoLab S.A.
 title: Semantic Web Programmer
 description: Design and deveopment of an innovative Semantic CMS (NancyFx, AngularJs, REST). Implementation of a custom ORM tool for working with graph RDF data (.NET 4.5, dotNetRDF, Mono Cecil)
 from: 09/2013
+to: 12/2014
 current: true
 print: true
-year: 2013
+order: 5
 ---
