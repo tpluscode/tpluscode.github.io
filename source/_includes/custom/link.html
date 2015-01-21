@@ -7,9 +7,9 @@
   </h1>
   <article>
     <div class="meta">
+      <span>{{ link.author }}</span>
+      <br />
       <span class="tags">
-        <span class="date">{{ link.author }}</span>
-        <br />
         {% for tag in link.tags %}
         <a class="category" href="#{{ tag }}">{{ tag }}</a>{% unless forloop.last %},{% endunless %}
         {% endfor %}
