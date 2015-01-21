@@ -18,13 +18,17 @@ $maxWidth: 900px;
         .archives {
           font-size: 1.5em;
 
+          .year {
+            padding-top: 8px;
+          }
+
           .title {
             font-size: 1.2em;
             font-weight: 100;
           }
 
           article {
-            margin-left: 100px;
+            margin-left: 200px;
             padding: 10px;
 
             .meta {
