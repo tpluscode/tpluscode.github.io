@@ -7,7 +7,7 @@ footer: true
 ---
 
 <div>
-  {% for link in site.links | sort 'category' %}
+  {% for link in site.links | sort: 'category' %}
   {% include custom/link.html %}
   {% endfor %}
 </section>
