@@ -8,6 +8,7 @@ categories:
 - js
 description: Managing application state in a RESTful client in a declarative way
 comments: true
+  - hateoas
 ---
 
 Lately I have been considering employing Web Components in my ever-upcoming hobby
@@ -92,7 +93,7 @@ real self-descriptive back ends by introducing out-of-band information. After al
 the REST paradigm states that the resource is the one and only place where clients
 get information necessary to perform requests. Path on the client is not.
 
-We are effectively falling back to inferior design and the real "gain" is usually increased maintenance.
+We are inadvertedly falling back to inferior design and the real "gain" is usually increased maintenance.
 
 ### HATEOAS as if you meant it
 
