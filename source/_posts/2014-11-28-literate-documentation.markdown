@@ -9,11 +9,7 @@ categories:
 - unit tests
 description: Practical application of the Literate Programming idea
 comments: true
-keywords:
-  - c#
-  - literate programming
-  - visual studio
-  - documentation
+keywords: c#, literate programming, visual studio, documentation
 ---
 
 Two months ago, at the [Wrocław .NET USer Groups][spotkanie-69], [Luca Bolognese][luca] talked about Literate Programming.

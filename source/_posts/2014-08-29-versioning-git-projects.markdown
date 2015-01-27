@@ -12,11 +12,7 @@ redirect_from:
 - /2014/08/versioning-git-projects/
 description: Ever struggled with setting assembly versions in .NET projects? Here's a simple a elegant way!
 comments: true
-keywords:
-  - assembly version
-  - git
-  - versioning software
-  - .net framework
+keywords: assembly version, git, versioning software, .net framework
 ---
 
 I myself have always struggled with proper versioning of .NET software. I'm not alone:

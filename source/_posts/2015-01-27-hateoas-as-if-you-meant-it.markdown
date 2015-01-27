@@ -8,13 +8,7 @@ categories:
 - js
 description: Managing application state in a RESTful client in a declarative way
 comments: true
-keywords:
-  - hateoas
-  - hypermedia
-  - rest
-  - routing
-  - linked data
-  - semantic web
+keywords: hateoas, hypermedia, rest, routing, linked data, semantic web
 ---
 
 Lately I have been considering employing Web Components in my ever-upcoming hobby

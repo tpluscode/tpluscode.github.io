@@ -14,11 +14,7 @@ redirect_from:
 - /2014/06/rest-rdf-and-hypermedia/
 comments: true
 description: My thoughts what is REST and how it comes together with RDF
-keywords:
-  - rdf
-  - hypermedia
-  - rest
-  - hateoas
+keywords: rdf, hypermedia, rest, hateoas
 ---
 ## REST
 [Representational state transfer](http://en.wikipedia.org/wiki/REST) or REST defines a number of architectural constraints,
