@@ -9,6 +9,12 @@ categories:
 - sqlserver
 description: About the .NET R2RML library for querying SQL with SPARQL
 comments: true
+keywords:
+  - r2rml
+  - sql server
+  - sql
+  - sparql
+  - semantic web
 ---
 
 A long time ago, back in 2011, I have implemented the [R2RML][r2rml] using [dotNetRDF][dotNetRDF]. 
