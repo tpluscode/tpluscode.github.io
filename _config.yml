@@ -119,3 +119,5 @@ stackoverflow_user_id: 1103498
 # Semantic Web answers
 semanticweb_user_id: 1788
 semanticweb_user: tomasz-pluskiewicz
+
+emoji_dir: ./images/emoji
