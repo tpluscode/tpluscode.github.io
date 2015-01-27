@@ -10,11 +10,6 @@ description: Managing application state in a RESTful client in a declarative way
 comments: true
 ---
 
-For a long time now W3C has been working on [Web Components][wc], the groundbreaking
-specification, which will dramatically change the way web applications are
-created. Google's own [Eric Bidelman][eric] calls it a [Tectonic Shift][shift]
-and for good reason.
-
 Lately I have been considering employing Web Components in my ever-upcoming hobby
 project. The missing piece I haven't found in modern web app frameworks is UI
 based on application state (think [REST][rest]). Typically the UI displayed to the use
@@ -136,11 +131,11 @@ or whatever.
 With Linked Data the URI is king. If you accept the fact that your resource is identified by the
 address `http://example.com/users/10`, there will be little incentive to unnecessarily transform it.
 Of course in real-life web application one would prefer `http://example.com/app/#!/users/10`
-over an ugly slug `http://example.com/app/#!/http://example.com/users/10`. Still this is not only
+over an ugly slug similar to `http://example.com/app/#!/http://example.com/users/10`. Still this is not only
 browser-specific and originally a solution for handling history in single-page applications but
 actually completely optional. A hypermedia-driven web app can happily work without any routing and
 browser history management. Granted it may be unfriendly and not bookmarkable beyond the entry point,
-__it will still work__.
+but __it will still work__.
 
 ## Further read
 
