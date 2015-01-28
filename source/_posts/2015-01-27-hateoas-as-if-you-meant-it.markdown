@@ -4,8 +4,9 @@ published: true
 title: HATEOAS as if you meant it
 date: 2015-01-27 21:00
 categories:
-- html
-- js
+- rest
+- linked data
+- semantic web
 description: Managing application state in a RESTful client in a declarative way
 comments: true
 keywords: hateoas, hypermedia, rest, routing, linked data, semantic web
