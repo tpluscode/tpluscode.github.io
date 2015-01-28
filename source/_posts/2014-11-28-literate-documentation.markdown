@@ -12,7 +12,7 @@ comments: true
 keywords: c#, literate programming, visual studio, documentation
 ---
 
-Two months ago, at the [Wrocław .NET USer Groups][spotkanie-69], [Luca Bolognese][luca] talked about Literate Programming.
+Two months ago, at the [Wrocław .NET User Group][spotkanie-69], [Luca Bolognese][luca] talked about Literate Programming.
 
 For those who don't know, Luca Bolognese is best known for being the father of Microsoft's functional language __F#__.
 He currently works for Credit Suisse - the Swiss-American investment bank where he implements uber-geek algorithms for
