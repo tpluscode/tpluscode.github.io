@@ -6,5 +6,5 @@ tags:
   - rdf
   - soa
   - web services
-category: Semantic Web
+category: Sem Web
 ---
