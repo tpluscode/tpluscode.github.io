@@ -15,5 +15,5 @@
         {% endfor %}
       </span>
     </div>
-    <h1 class="title" itemprop="name"><a href="{{ link.href }}" target="_blank">{{link.title}}</a></h1>
+    <h1 class="title" itemprop="name"><a href="{{ link.href | downcase }}" target="_blank">{{link.title}}</a></h1>
   </article>
