@@ -58,7 +58,7 @@ The above is indeed cool but the readability is not great in my opinion. In Spar
 
 Unfortunately porting the syntax of nested transitions to Spark was not exactly easy. My initial solution was to use
 [macros][spark-macro]macros. I wrote about it on [Spark's discussions group][group]. However this solution was far from
-perfect and following Robert's suggestions I changed the implementation to [bindings[]bindings] and helper methods.
+perfect and following Robert's suggestions I changed the implementation to [bindings][bindings] and helper methods.
 
 ## Nested tra... what?
 
