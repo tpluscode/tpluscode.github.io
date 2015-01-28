@@ -2,9 +2,13 @@
 </section>
 {% endunless %}
 <section class="archives">
+  {% unless link.category == current_category %}
+  {% assign current_category = link.category %}
   <h1 class="year">
     <a name="{{ link.category }}">{{ link.category }}</a>
   </h1>
+  {% endunless %}
+  {% endif %}
   <article>
     <div class="meta">
       <span>{{ link.author }}</span>
