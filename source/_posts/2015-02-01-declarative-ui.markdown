@@ -43,10 +43,10 @@ simple as shown below.
 
 <style>
     google-map {
-        height: 200px;
+        height: 400px;
         display: block;
-        padding-top: 15px;
-        padding-bottom: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
 </style>
 
@@ -65,10 +65,10 @@ simple as shown below.
 
 <style>
     google-map {
-        height: 200px;
+        height: 400px;
         display: block;
-        padding-top: 15px;
-        padding-bottom: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
 </style>
 
