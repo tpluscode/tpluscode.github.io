@@ -55,7 +55,7 @@ simple as shown below.
 </google-map>
 ```
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.min.js" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.min.js" ></script>
 <link rel="import" href="http://googlewebcomponents.github.io/google-map/components/google-map/google-map.html" />
 
 <style>
