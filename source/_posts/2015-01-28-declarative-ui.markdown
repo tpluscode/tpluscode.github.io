@@ -1,6 +1,6 @@
 ---
 layout: post
-published: false
+published: true
 title: Declarative UI "routing" with Web Components
 date: 2015-01-27 10:00
 categories:
