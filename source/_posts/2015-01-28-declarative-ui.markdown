@@ -173,7 +173,7 @@ that the can be updated.
 ![flux](/uploads/2015/02/flux.png)
 
 What's important, is that stores and views never communicate directly. This way it is easier to keep things decoupled and
-synchronized.
+synchronized. Note that in Reflux's case there is no dispatcher. Stores listen directly to actions.
 
 ### Using Reflux to handle a Linked Data API
 
