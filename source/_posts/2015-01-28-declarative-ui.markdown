@@ -167,7 +167,7 @@ Either way the model must come from somewhere. For a complete solution the [Flux
 to achieve low coupling. Out of a number of solutions [reflux][reflux] appealed to me most, but the idea is similar
 regardless of the implementation. The idea behind Flux is that all communication should be unidirectional. The views fire
 actions, which are simply events. Those events are handled by stores. Stores are anything ranging from simple local storage
-to proxies for a remote service. When stores are ready they also signal changes via events to all listeneing views so 
+to proxies for a remote service. When stores are ready they also signal changes via events to all listening views so
 that the can be updated. 
 
 ![flux](/uploads/2015/02/flux.png)
@@ -202,8 +202,8 @@ That model could be displayed using the template below (think Polymer/mustache s
 </template>
 ```
 
-The link will by default navigate the browser to a new address, so the clicke must be handled to prevent that from
-happening. Instead an action will be triggered. Below's how that could work with Reflux and requirejs. First we define
+The link will by default navigate the browser to a new address, so the click event must be handled to prevent that from
+happening. Instead an action will be triggered. Below is how that could work with Reflux and requirejs. First we define
 the actions.
 
 ``` javascript
