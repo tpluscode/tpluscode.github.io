@@ -141,9 +141,146 @@ Responsibility Principle][srp]. History could be handled by another custom eleme
 Dropping the above anywhere in the page would automatically change the page URL (by using hashes or HTML5 history)
 whenever the model changes.
 
-### So where is the model actually?
+### So where is the model actually? And how is it retrieved? 
 
-I like the
+The approach to build UI based on a model has an important implication - it has to be connected to some remote (RESTful)
+data source. Because the `<ld-presenter>` is only responsible for handling UI changes, a separate object is needed to
+retrieve the model. 
+
+Speaking of single responsibilities, the `<ld-presenter>` should probably work simply by being bound to the object displayed.
+This would be achieved by setting a model attribute on the presenter's node.
+
+``` html
+<!-- set declaratively -->
+<ld-presenter model="{{ boundModel }}" id="main-content">
+  <!-- routes here -->
+</ld-presenter>
+
+<!-- set from javascript -->
+<script>
+  var model = { };
+  document.querySelector("#main-content").model = model;
+</script>
+```
+
+Either way the model must come from somewhere. For a complete solution the [Flux pattern from Facebook][flux] can be used
+to achieve low coupling. Out of a number of solutions [reflux][reflux] appealed to me most, but the idea is similar
+regardless of the implementation. The idea behind Flux is that all communication should be unidirectional. The views fire
+actions, which are simply events. Those events are handled by stores. Stores are anything ranging from simple local storage
+to proxies for a remote service. When stores are ready they also signal changes via events to all listeneing views so 
+that the can be updated. 
+
+![flux](/uploads/2015/02/flux.png)
+
+What's important, is that stores and views never communicate directly. This way it is easier to keep things decoupled and
+synchronized.
+
+### Using Reflux to handle a Linked Data API
+
+Because in Linked Data any identifier is a URI, readible links can be rendered simply as an anchor `<a>`. Let's take a
+simple JSON-LD model of a person (`@context` ignored for brevity):
+
+``` javascript
+{
+  "@id": "/person/tomasz"
+  "foaf:givenName": "Tomasz",
+  "ex:friends": {
+    "@id": "/person/tomasz/friends"
+  }
+}
+```
+
+That model could be displayed using the template below (think Polymer/mustache syntax)
+
+``` html
+<template>
+  <p>Hi, my name is {{ model['foaf:givenName'] }}</p>
+  <p>
+    Here's a list of my 
+    <a id="friendsLink" href="{{ model['ex:friends'] }}">friends</a>.
+  </p>
+</template>
+```
+
+The link will by default navigate the browser to a new address, so the clicke must be handled to prevent that from
+happening. Instead an action will be triggered. Below's how that could work with Reflux and requirejs. First we define
+the actions.
+
+``` javascript
+define('navigation', ['Reflux'], function(Reflux) {
+	return Reflux.createAction({
+    children: [ 'success' ]
+  });
+});
+```
+
+We fire the action when the link is clicked.
+
+``` javascript
+require(['navigation'], function(navigation) {
+  var friendsLink = document.getElementById('friendsLink');
+  friendsLink.addEventListener('click', function(ev) {
+    ev.preventDefault();
+  
+    navigation(ev.target.href);
+  });
+});
+```
+
+It is handled in a store. When that happens, a GET request is fired. After the request has been processed (JSON-LD here),
+it is forwarded with the child action `success`.
+
+``` javascript
+define(
+  'modelStore', 
+  ['navigation', 'jsonld'], 
+  function(navigation, jsonld) {
+    var promises = jsonld.Promises;
+
+    return Reflux.createStore({
+      model: {},
+      init: function() {
+        this.listenTo(navigation, this.loadResource);
+      },
+      loadResource: function(uri) {
+        var self = this;
+      
+        executeXhr(uri)
+          .then(function(resource) {
+            return promises.expand(xhr);
+          })
+          .then(function(expanded) {
+            navigation.success(expanded);
+          });
+      }
+    });
+  }
+);
+```
+
+Lastly the `navigation.success` action is handled to update the ld-presenter.
+
+``` javascript
+require(['navigation'], function(navigation) {
+  navigation.success.listen(fuction(resource) {
+    var presenter = document.querySelector('ld-presenter');
+    
+    presenter.model = resource;
+  });
+});
+```
+
+### Rough edges
+
+My current [experiment I've implemented][polymer-flux] more or less follows this pattern but the `<ld-presenter>` 
+(there called `<hydra-router>`) is tied to the navigation actions, which means that anyone using such presenter is 
+automatically required to use Reflux. Real presenter should be independent from any third party components. Such
+integration could be achieved with minimal javascript code. Preferably by [extending the custom element][extend] or
+inside an angular directive, etc.
+
+Also with a hard dependency on navigation action, any instance of the presenter element in DOM would every time react to 
+the action being fired. This may be less than ideal when multiple and maybe nested presenters are used on a page. In a 
+real app there could be multiple model stores for various parts of the UI like main menu or master-detail kind of view.
 
 [wc]: http://webcomponents.org/
 [eric]: https://twitter.com/ebidel
@@ -154,3 +291,7 @@ I like the
 [templates]: https://html.spec.whatwg.org/multipage/scripting.html#the-template-element
 [approuter]: https://github.com/erikringsmuth/app-router
 [srp]: http://www.oodesign.com/single-responsibility-principle.html
+[flux]: https://facebook.github.io/flux/
+[reflux]: https://github.com/spoike/refluxjs
+[polymer-flux]: https://github.com/tpluscode/polymer-flux/tree/master
+[extend]: http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
