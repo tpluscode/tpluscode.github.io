@@ -44,10 +44,13 @@ simple as shown below.
 <style>
     google-map {
         height: 200px;
+        display: block;
+        padding-top: 15px;
+        padding-bottom: 15px;
     }
 </style>
 
-<google-map latitude="51.110921" longitude="17.028160">
+<google-map latitude="51.110921" longitude="17.028160" zoom="15">
   <google-map-marker latitude="51.110921" longitude="17.028160"
                      title="Wrocław .NET user group">
     <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
@@ -61,10 +64,13 @@ simple as shown below.
 <style>
     google-map {
         height: 200px;
+        display: block;
+        padding-top: 15px;
+        padding-bottom: 15px;
     }
 </style>
 
-<google-map latitude="51.110921" longitude="17.028160">
+<google-map latitude="51.110921" longitude="17.028160" zoom="15">
   <google-map-marker latitude="51.110921" longitude="17.028160"
                      title="Wrocław .NET user group">
     <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
