@@ -53,7 +53,9 @@ simple as shown below.
 <google-map latitude="51.110921" longitude="17.028160" zoom="15">
   <google-map-marker latitude="51.110921" longitude="17.028160"
                      title="Wrocław .NET user group">
-    <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    <a href="http://wrocnet.github.io" target="_blank">
+      <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    </a>
   </google-map-marker>
 </google-map>
 ```
@@ -73,7 +75,9 @@ simple as shown below.
 <google-map latitude="51.110921" longitude="17.028160" zoom="15">
   <google-map-marker latitude="51.110921" longitude="17.028160"
                      title="Wrocław .NET user group">
-    <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    <a href="http://wrocnet.github.io" target="_blank">
+      <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    </a>
   </google-map-marker>
 </google-map>
 
