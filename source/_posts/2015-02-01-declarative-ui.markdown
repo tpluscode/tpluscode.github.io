@@ -38,8 +38,8 @@ in ways unimagined before. For example, there is a custom google maps element, w
 simple as shown below.
 
 ``` html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.min.js" />
-<link rel="import" href="http://googlewebcomponents.github.io/google-map/components/google-map/google-map.html" />
+<script src="/bower_components/webcomponentsjs/webcomponents.min.js" ></script>
+<link rel="import" href="/bower_components/google-map/google-map.html" />
 
 <style>
     google-map {
@@ -55,8 +55,8 @@ simple as shown below.
 </google-map>
 ```
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.min.js" ></script>
-<link rel="import" href="http://googlewebcomponents.github.io/google-map/components/google-map/google-map.html" />
+<script src="/bower_components/webcomponentsjs/webcomponents.min.js" ></script>
+<link rel="import" href="/bower_components/google-map/google-map.html" />
 
 <style>
     google-map {

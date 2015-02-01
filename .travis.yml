@@ -4,11 +4,17 @@ branches:
 language: ruby
 rvm:
 - 1.9.3
+node:
+- 0.10
 before_script:
 - git config --global user.email "tpluscode@users.noreply.github.com"
 - git config --global user.name "tpluscode"
 - git clone https://${GH_TOKEN}@github.com/tpluscode/tpluscode.github.io _deploy > /dev/null 2>&1
 script:
+- npm install -g bower
+- cd source
+- bower install
+- cd ..
 - rake generate
 after_script:
 - rake deploy

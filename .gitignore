@@ -17,3 +17,4 @@ Gemfile.lock
 .idea/workspace.xml
 .idea/**/*.iws
 .idea/tasks.xml
+bower_components
