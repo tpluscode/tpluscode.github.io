@@ -162,7 +162,7 @@ This would be achieved by setting a model attribute on the presenter's node.
 
 ``` html
 <!-- set declaratively -->
-<ld-presenter model="{{ boundModel }}" id="main-content">
+{% raw %}<ld-presenter model="{{ boundModel }}" id="main-content">{% endraw %}
   <!-- routes here -->
 </ld-presenter>
 
