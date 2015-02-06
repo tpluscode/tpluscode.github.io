@@ -207,7 +207,7 @@ That model could be displayed using the template below (think Polymer/mustache s
 {% raw %}<p>Hi, my name is {{ model['foaf:givenName'] }}</p>{% endraw %}
   <p>
     Here's a list of my 
-{% raw %}<a id="friendsLink" href="{{ model['ex:friends'] }}">friends</a>.{% endraw %}
+{% raw %}    <a id="friendsLink" href="{{ model['ex:friends'] }}">friends</a>.{% endraw %}
   </p>
 </template>
 ```
