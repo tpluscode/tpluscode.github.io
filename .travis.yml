@@ -18,6 +18,3 @@ script:
 - rake generate
 after_script:
 - rake deploy
-env:
-  global:
-  - secure: ZpTpBdudsw3M0VzlAcj/Teib3gv+dLWECOiRRgC35KX5lZrG5yUJ+bc+8lOK3Z5i9AU/bf4vC3KAniCCKCyqVT/O6eftwnCXT4kZUk82F8Eo04F82sy/lfqFBSrqnuBvDQpE/hVTuCRJywZDXCBBianHxNOkSzCNfxtXrjpvE9E=
