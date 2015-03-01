@@ -86,10 +86,10 @@ $maxWidth: 900px;
     .year {
       position: relative
     }
+  }
 
-    article {
-      margin-left: 0px;
-      padding-left: 0px;
-    }
+  .container .mid-col .mid-col-container #content .archives article {
+    margin-left: 0px;
+    padding-left: 0px;
   }
 }
