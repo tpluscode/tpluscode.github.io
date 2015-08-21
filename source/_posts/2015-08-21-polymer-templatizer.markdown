@@ -41,28 +41,37 @@ an array of `members`:
 }
 ```
 
-A simple way to display such collection would be to create a `<template is="dom-repeat">` to iterate over the memebers.
+A simple way to display such collection would be to create a `<template is="dom-repeat">` to iterate over the members.
 However this isn't perfect and I wanted a better component, where the item's template is supplied in the Light DOM.
 This way it can be reused for rendering various collections and also extended with `<content>` tags to support stuff 
-like custom header/footer or paging controls (see [PagedCollection][paged-collection]). For the time being, I call it simply
-`<hydra-collection>`. 
+like custom header/footer or paging controls (see [PagedCollection][paged-collection]). For the time being, I call it 
+simply `<hydra-collection>`. 
 
-## 
+## First attempt _(¡doesn't work!)_
+
+My naive attempt was to distribute an item template inside a repeater.
 
 ``` html
+<!-- The Light DOM declares an .item element, which is used as the template -->
 <hydra-collection collection="{{myCollection}}">
-  <div class="item">
+  <div class="member">
+    Label: <span>{{member.label}}</span>
   </div>
 </hydra-collection>
+
+<!-- Now in my element I place <content> in <dom-repeat> -->
+<dom-module id="hydra-collection">
+  <template>
+    <template is="dom-repeat" items="{{collection.members}}">
+      <content select=".member"></content>
+    </template>
+  </template>
+</dom-module>
+
 ```
 
-
-My first naive attempt was to distribute an item template inside a repeater:
-
-``` html
-
-
-```
+Unfortunately this cannot work, because it is not how `<content>` tags are used. Basically, the first time
+the repeating template iterats
 
 [dom]: http://webcomponents.org/polyfills/shadow-dom/
 [templatizer]: https://github.com/Polymer/polymer/blob/master/src/lib/template/templatizer.html
