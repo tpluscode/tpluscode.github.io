@@ -73,14 +73,14 @@ My naive attempt was to distribute an item template inside a repeater.
 
 Unfortunately this cannot work, because it is not how `<content>` tags are used. Basically, the first time
 the repeating template iterates, all nodes matched by `<content>` are distributed and subsequent iterations 
-render nothing. The other problem is with data binding, which is done in the parent scope. Obvviously I need a 
+render nothing. The other problem is with data binding, which is done in the parent scope. Obviously I need a 
 template in the Light DOM.
 
 ## <template> in Light DOM _(¡almost works!)_
 
 Inspired by a [google group post](https://groups.google.com/d/msg/polymer-dev/sEyfXJMAkQc/Ga5_8YGPksEJ) by 
 Eric Bidelman I thought that I could define a template in the Light DOM and then clone and bind it inside my 
-compponent. This will first solve the binding problem
+component. This will first solve the binding problem
 
 ``` html
 <!-- Template in the Light DOM -->
@@ -121,7 +121,7 @@ compponent. This will first solve the binding problem
 </script>
 ```
 
-This time I tried instantiate the templates byt using native [Web Components API][templates]. Unfortunately
+This time I tried instantiate the templates by using native [Web Components API][templates]. Unfortunately
 the template cloned from a node distributed by Polymer contains only an empty `#document-fragment`. It may be a problem
 with [Shady DOM][shady] so other Polymer quirk (it definitely works with pure-WC with Shadow DOM). Also the native
 way doesn't help with data binding anyway.
@@ -131,8 +131,8 @@ Polymer.Templatizer.
 
 ## Polymer.Templatzier <a name="templatizer"></a>
 
-Polymer.Templatizer is the Plymer way to create instances of templates and takes care of data binding too. It can be 
-added to any Polymer element as a [behaviour][behaviors] and adds a number of methods, out wf which the most
+Polymer.Templatizer is the Polymer way to create instances of templates and takes care of data binding too. It can be 
+added to any Polymer element as a [behaviour][behaviors] and adds a number of methods, out of which the most
 important are `templatize` and `stamp`, which prepare the template and create actual instance respectively.
 
 
@@ -186,7 +186,7 @@ important are `templatize` and `stamp`, which prepare the template and create ac
 </script>
 ```
 
-This works like charm but I find two minor issues with this API. First, tt is weird that `templatize` doesn't return
+This works like charm but I find two minor issues with this API. First, it is weird that `templatize` doesn't return
 a value, but rather modifies some internal state used by `stamp`. I would prefer that to be more functional:
 
 ``` js
@@ -212,7 +212,7 @@ var clone = this.stamp(template, { });
 clone.member = items[i];
 ```
 
-I'm not sur why I had this problem though, becuase it sure as hell [works in plunker](http://plnkr.co/edit/MyPOz12b2MkTpfravUGy).
+I'm not sure why I had this problem though, because it sure as hell [works in plunker](http://plnkr.co/edit/MyPOz12b2MkTpfravUGy).
 
 ## Bottom line
 
