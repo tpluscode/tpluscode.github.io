@@ -212,6 +212,8 @@ var clone = this.stamp(template, { });
 clone.member = items[i];
 ```
 
+I'm not sur why I had this problem though, becuase it sure as hell [works in plunker](http://plnkr.co/edit/MyPOz12b2MkTpfravUGy).
+
 ## Bottom line
 
 I very much like the Templatizer :heart_eyes:. It makes it possible to create very rich and composable web components 
