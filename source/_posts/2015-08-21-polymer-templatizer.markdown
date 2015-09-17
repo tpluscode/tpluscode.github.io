@@ -76,7 +76,7 @@ the repeating template iterates, all nodes matched by `<content>` are distribute
 render nothing. The other problem is with data binding, which is done in the parent scope. Obviously I need a 
 template in the Light DOM.
 
-## {% raw %}<template>{% endraw %} in Light DOM _(¡almost works!)_
+## %lt;template%gt; in Light DOM _(¡almost works!)_
 
 Inspired by a [google group post](https://groups.google.com/d/msg/polymer-dev/sEyfXJMAkQc/Ga5_8YGPksEJ) by 
 Eric Bidelman I thought that I could define a template in the Light DOM and then clone and bind it inside my 
