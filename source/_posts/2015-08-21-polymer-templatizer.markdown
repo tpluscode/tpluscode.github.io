@@ -55,7 +55,7 @@ My naive attempt was to distribute an item template inside a repeater.
 
 ``` html
 <!-- The Light DOM declares an .item element, which is used as the template -->
-<hydra-collection collection="{{myCollection}}">
+<hydra-collection collection="{{ "{{ myCollection " }}}}">
   <div class="member">
     Label: <span>{{member.label}}</span>
   </div>
