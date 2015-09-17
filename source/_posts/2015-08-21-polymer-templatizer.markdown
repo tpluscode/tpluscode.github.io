@@ -64,7 +64,7 @@ My naive attempt was to distribute an item template inside a repeater.
 <!-- Now in my element I place <content> in <dom-repeat> -->
 <dom-module id="hydra-collection">
   <template>
-    <template is="dom-repeat" items="{{collection.members}}">
+    <template is="dom-repeat" items="{% raw %}{{collection.members}}{% endraw %}">
       <content select=".member" member="{{item}}"></content>
     </template>
   </template>
