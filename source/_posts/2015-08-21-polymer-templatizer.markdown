@@ -55,9 +55,9 @@ My naive attempt was to distribute an item template inside a repeater.
 
 ``` html
 <!-- The Light DOM declares an .item element, which is used as the template -->
-<hydra-collection collection="{{ "{{ myCollection " }}}}">
+<hydra-collection collection="{% raw %}{{myCollection}}{% endraw %}">
   <div class="member">
-    Label: <span>{{member.label}}</span>
+    Label: <span>{% raw %}{{member.label}}{% endraw %}</span>
   </div>
 </hydra-collection>
 
@@ -65,7 +65,7 @@ My naive attempt was to distribute an item template inside a repeater.
 <dom-module id="hydra-collection">
   <template>
     <template is="dom-repeat" items="{% raw %}{{collection.members}}{% endraw %}">
-      <content select=".member" member="{{item}}"></content>
+      <content select=".member" member="{% raw %}{{item}}{% endraw %}"></content>
     </template>
   </template>
 </dom-module>
@@ -84,9 +84,9 @@ component. This will first solve the binding problem
 
 ``` html
 <!-- Template in the Light DOM -->
-<hydra-collection collection="{{myCollection}}">
+<hydra-collection collection="{% raw %}{{myCollection}}{% endraw %}">
   <template class="member">
-    Label: <span>{{member.label}}</span>
+    Label: <span>{% raw %}{{member.label}}{% endraw %}</span>
   </template>
 </hydra-collection>
 
@@ -138,9 +138,9 @@ important are `templatize` and `stamp`, which prepare the template and create ac
 
 ``` html
 <!-- Same as above, <template> is used in Light DOM -->
-<hydra-collection collection="{{myCollection}}">
+<hydra-collection collection="{% raw %}{{myCollection}}{% endraw %}">
   <template class="member">
-    Label: <span>{{member.label}}</span>
+    Label: <span>{% raw %}{{member.label}}{% endraw %}</span>
   </template>
 </hydra-collection>
 
