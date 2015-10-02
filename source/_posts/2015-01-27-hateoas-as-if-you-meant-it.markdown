@@ -22,14 +22,14 @@ a truly [hypermedia-driven application][hateoas].
 
 I have already written about [Hypermedia-driven applications with RDF
 backend](/2014/06/rest-rdf-and-hypermedia/). There I explained what is REST and
-how it fist the Semantic Web. This time I'll delve into effectively managing
+how it fits the Semantic Web. This time I'll delve into effectively managing
 client state using resource representations.
 
 ## Haters gonna HATEOAS
 
 _FYI I pronounce HATOAS as __hideous___
 
-REST has become a de-facto standard for many we services out there. Actual
+REST has become a de-facto standard for many web services out there. Actual
 understanding varies but the general community has long ago recognized its
 elegance in building services. At the same however there has been too little
 adoption of what many find the crucial bit - Hypermedia. The idea is strikingly
@@ -90,7 +90,7 @@ that the flow is reversed. With routing client-side navigation works like this:
 There is more than one issue here. Managing the route paths is unnecessary burden.
 And what if the server returns something we didn't expect? Not to mention that
 parametrized routes are effectively holding developers back from building
-real self-descriptive back ends by introducing out-of-band information. After all
+real, self-descriptive back ends by introducing out-of-band information. After all
 the REST paradigm states that the resource is the one and only place where clients
 get information necessary to perform requests. Path on the client is not.
 
