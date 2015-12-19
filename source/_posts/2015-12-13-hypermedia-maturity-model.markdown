@@ -92,6 +92,8 @@ overcomes the problems I described above.
  
 ## How I would model a process
 
+### Way 1: follow your nose
+
 Instead of defining a process and its steps an API should advertise possible state transitions. Each interaction returns
 another representation, which has more hypermedia attached. 
 
@@ -172,7 +174,25 @@ and server responds with a freshly created yet unfinished tweet, which has the u
 representation provides the client with various hypermedia controls to delete the attachment, upload another or finally
 update the status. 
 
-### REST client is a state machine
+### Way 2: server advertises a 'next tweet' resource
+
+Alternatively I would have the server prepare an identifiers for the next tweet and attachment upload endpoints
+
+{% highlight http %}
+GET /
+
+{
+  "nextTweet": {
+    "@id": "/tweet/d56336e0-48ea-453c-848f-1e38525c5859",
+    "attachments": "/tweet/d56336e0-48ea-453c-848f-1e38525c5859/attachments"
+  }
+}
+{% endhighlight %}
+
+I'm leaving affordances out for brevity. With the above, to change status the client `PUT`s the `nextTweet` resource.
+To tweet with an attachment the client must first `POST` to the `attachments` link and `PUT` afterwards.
+
+## REST client is a state machine
 
 You could image a very complex data flow designed in this fashion. Every client's operation returns the next representation
 with more possible actions. Simple as that unlike describing all possible paths in the form of a workflow. This is best
