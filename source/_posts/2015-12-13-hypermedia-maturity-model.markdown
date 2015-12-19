@@ -176,7 +176,7 @@ update the status.
 
 ### Way 2: server advertises a 'next tweet' resource
 
-Alternatively I would have the server prepare an identifiers for the next tweet and attachment upload endpoints
+Alternatively I would have the server prepare identifiers for the next tweet and attachment upload resources.
 
 {% highlight http %}
 GET /
@@ -190,7 +190,8 @@ GET /
 {% endhighlight %}
 
 I'm leaving affordances out for brevity. With the above, to change status the client `PUT`s the `nextTweet` resource.
-To tweet with an attachment the client must first `POST` to the `attachments` link and `PUT` afterwards.
+To tweet with an attachment the client must first `POST` to the `attachments` link and `PUT` afterwards. Of course before
+either `GET` would respond with 404.
 
 ## REST client is a state machine
 
