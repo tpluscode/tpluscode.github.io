@@ -19,23 +19,11 @@ applicable only to Level 3 REST APIs. I'm not convinced that all proposed criter
 
 The model proposes a bit-flag scale, which defines a total hypermedia score of any media type
  
-1. ***where can you go***, where API defines links
-2. ***what can you do***, where API defines link methods
-<ol start="4">
-<li>
-***what you need to do things***, where API describes operation inputs
-</li>
-</ol>
-<ol start="8">
-<li>
-***what can't you do and why***, where API gives reason why operation is not available
-</li>
-</ol>
-<ol start="16">
-<li>
-***how you do things***, where API describes processes, which consist of multiple actions
-</li>
-</ol>
+* ***01: where can you go***, where API defines links
+* ***02: what can you do***, where API defines link methods
+* ***04: what you need to do things***, where API describes operation inputs
+* ***08: what can't you do and why***, where API gives reason why operation is not available
+* ***16: how you do things***, where API describes processes, which consist of multiple actions
 
 The first three are dead simple and no one should argue about them. The fourth is also useful, although it is possible
 that not all APIs out there would really need that capability. The last however I think is not necessary. I even consider
