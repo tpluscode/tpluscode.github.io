@@ -37,11 +37,11 @@ task. API handyman gives a simple example of Twitter's API, where it is possible
 to tweet with an attachment and the step, which the client is currently at. Here's the sample interaction as proposed by
 Arnaud
 
-> GET https://api.twitter.com/1.1/
-> discover that to "tweet with media" you must "upload media" (*current step*) and "update status" (two HTTP POST requests)
-> POST https://twitter.com/1.1/media/upload.json
-> in response discover that current step is "update status"
-> POST https://api.twitter.com/1.1/statuses/update.json with media_id in body
+1. GET https://api.twitter.com/1.1/
+1. discover that to "tweet with media" you must "upload media" (*current step*) and "update status" (two HTTP POST requests)
+1. POST https://twitter.com/1.1/media/upload.json
+1. in response discover that current step is "update status"
+1. POST https://api.twitter.com/1.1/statuses/update.json with media_id in body
 
 You can have a look at the sample payload excerpts on the [original post][HAMM2].
 
