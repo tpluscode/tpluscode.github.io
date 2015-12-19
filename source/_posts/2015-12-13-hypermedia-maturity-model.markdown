@@ -68,11 +68,11 @@ Oh, and not to mention that it's easy to imagine APIs where upload is a standalo
 
 I mean, why does the process start with POSTing to an `upload.json` resource anyway? Sure, it is the first step of a business
 process. But what if we wanted to upload a media to tweet but instead of updating status, save a draft for later? 
- 
+
 ```
-uploadMedia -------------------- updateStatus
-            \                   /
-             `--- saveDraft ---' 
+uploadMedia ─┬─────────────────────┬─ updateStatus
+             │                     │
+             └───── saveDraft ─────┘
 ```
 
 Uh oh, process with branches. Workflow territory warning :warning:. Does it mean that a complete implementation of such 
@@ -98,7 +98,7 @@ another representation, which has more hypermedia attached.
 On way that comes to my mind as an alternative to the above process is to provide link for both simple tweet and tweet
 with attached media. Here's my pseudo-Hydra sample.
  
-```
+{% highlight http %}
 GET /
 
 {  
@@ -116,11 +116,11 @@ GET /
     }]
   }
 }
-```
+{% endhighlight %}
 
 Tweeting is simple as 01 10 11.
 
-```
+{% highlight http %}
 POST /tweets
 Content-type: application/json
 
@@ -132,11 +132,11 @@ Content-type: application/json
 
 HTTP 201 Created
 Location: /tweets/7bed7868-ee90-43d0-a94c-2062746c4668
-```
+{% endhighlight %}
 
 To tweet with attachment we post to the other resource
 
-```
+{% highlight http %}
 POST /tweetAttachments
 
 // file content here
@@ -165,7 +165,7 @@ HTTP 200 OK
     "parameters": [ /* tweet text like above */]
   }]
 }
-```
+{% endhighlight %}
 
 Deeply nested representation like this may not be easy on the eye. The general idea is tha the client posts to `/tweetAttachments`
 and server responds with a freshly created yet unfinished tweet, which has the uploaded media attached. This example 
