@@ -11,9 +11,9 @@ comments: true
 ---
 
 I the process of preparing my talk at [Boiling Frogs conference][frogs] in Wrocław I've been reading a lot about REST 
-and Hypermedia APIs. Just today I came across two interesting [blog][HAMM1] [posts][HAMM2] by [Arnaud Lauret aka. API handyman][twitter], 
+and Hypermedia APIs. Just today I came across two interesting [blog][HAMM1] [posts][HAMM2] by [Arnaud Lauret aka API handyman][twitter], 
 who proposes a **Hypermedia API Maturity Model** (HAMM). A concept similar to the [Richardson Maturity Model][RMM], but 
-applicable only to Level 3 REST APIs. I'm not convinced that all proposed criteria are necessary.
+applicable only to Level 3 REST APIs. I'd like to share my thoughts on some of the proposal.
 
 <!--more-->
 
