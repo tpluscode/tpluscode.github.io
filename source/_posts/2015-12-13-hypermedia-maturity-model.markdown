@@ -27,7 +27,7 @@ The model proposes a bit-flag scale, which defines a total hypermedia score of a
 
 The first three are dead simple and no one should argue about them. The fourth is also useful, although it is possible
 that not all APIs out there would really need that capability. The last however I think is not necessary. I even consider
-the ***how you do things*** criteria, or rather what the media type must include to be disguised out-of-band information.
+the ***how you do things*** criteria, or rather what the media type must include, to be disguised out-of-band information.
 
 ## Why define a process in hypermedia?
 
@@ -169,7 +169,7 @@ HTTP 200 OK
 
 Deeply nested representation like this may not be easy on the eye. The general idea is tha the client posts to `/tweetAttachments`
 and server responds with a freshly created yet unfinished tweet, which has the uploaded media attached. This example 
-representation provides the client with various hypermedia controls to, delete the attachment, upload another or finally
+representation provides the client with various hypermedia controls to delete the attachment, upload another or finally
 update the status. 
 
 ### REST client is a state machine
@@ -184,7 +184,7 @@ put by Roy Fielding himself:
 
 Lastly, the client doesn't really have to know that any given request is part of larger process. It also doesn't require any 
 broader knowledge about the process itself. That information could be useful for building a rich UI but I don't think it
-should be part of a hypermedia maturity model, because it implies that a good hypermedia media type should provided that.
+should be part of a hypermedia maturity model, because it implies that a good hypermedia media type should provide that.
 
 [frogs]: http://boilingfrogs.pl/schedule/hateoas-as-if-you-meant-it/
 [HAMM1]: http://apihandyman.io/hypermedia-api-maturity-model-part-i-hypermedia-ness/
