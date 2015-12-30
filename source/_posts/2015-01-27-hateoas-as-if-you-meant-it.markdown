@@ -71,7 +71,6 @@ $stateProvider
   .state('state1', {
     url: "/state1"
   })
-})
 ```
 
 The list could go on and include Backbone, Durandal, Knockout routers and standalone
