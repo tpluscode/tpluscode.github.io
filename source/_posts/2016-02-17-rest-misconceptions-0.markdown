@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: REST misconceptions part 0 - Do you really understand the REST?
-date: 2015-02-17 22:04
+date: 2016-02-20 14:40
 categories:
 - rest
 - hypermedia
@@ -15,6 +15,14 @@ Much has been written and told about REST, yet there are a number of common mist
 this post I will introduce (again) the basics of REST as defined by Roy T. Fielding.
 
 <!--more-->
+
+In this series:
+
+1. Misuse of URIs
+1. Not linked enough
+1. Leaky business
+1. Resources are application state
+1. REST "documentation"
 
 Boy, have we been chasing our own tails since the year 2000? Why 2000, you ask? That's when Roy T. Fielding published his
 famous dissertation titled *Architectural Styles and the Design of Network-based Software Architectures*. This groundbreaking
