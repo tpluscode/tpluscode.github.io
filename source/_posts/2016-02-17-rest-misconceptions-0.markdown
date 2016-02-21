@@ -94,7 +94,7 @@ This one doesn't cause any problem, because the cons of using a server-side sess
 ### Cache
 
 REST requires that requests can be cached to decrease network load and improve performance. The server must have the 
-ability to explicitly declare that an individual resource can is cacheable or not.
+ability to explicitly declare that an individual resource is cacheable or not.
   
 Cache is very common in web applications, because it greatly decreases the amount of data sent from the server. It
 especially useful for data that doesn't change often like static content, stylesheets, images, etc.
@@ -108,7 +108,7 @@ never know whether it communicates with the server itself or a middleware.
 ### Code on demand
 
 The last of the "easy" constraints is a bit of an oddball, because it is the only *optional* constraint. It allows the 
-server to extend clients' functionality by serving code to be executable. It is optional, because it is never possible
+server to extend clients' functionality by serving code to be executed. It is optional, because it is never possible
 to extend every client. For example a server could serve portions of javascript code, by that would only be executed by 
 web browsers. Other type of clients wouldn't be able to run that code and thus the constraint cannot be made mandatory.
 
@@ -138,12 +138,12 @@ as JSON, XML or even an image. Representations are identified by media types suc
 image/png. In addition to the resource data representations also include metadata and control data. For example cache
 rules like expiration date.
 
-Lastly a representations are used to capture the indented state of a resource. In RPC the client operate on resources in
+Lastly, representations are used to capture the indented state of a resource. In RPC the client operate on resources in
 an object-oriented fashion. There could be a operation which states **publish this document**. REST however doesn't work
 that way. To achieve a similar business operation, a REST client could change the state of the representation and update
-the resource by submitting the changed data. With HTTP this could involve a PUT operation on the resource in question.
+the resource by submitting the changed data. With HTTP this would involve a PUT operation on the resource in question.
 Another option is to send the representation to another resource, which implements the business logic. This could be
-implemented as performing a POST operation on a resource, which contains all published documents:
+implemented as performing a POST operation on a resource, which contains all published documents.
  
 ``` http
 POST /published-documents
@@ -173,7 +173,7 @@ truly RESTful, only REST-like or REST-ish.
 
 What does hypermedia mean? It means data in various formats, which is all linked by hyperlinks. The last constraint is a
 composition of all the others, because for an application to act upon the resource representation it requires multiple
-element, all of which are defined by the REST constraints. Most notably:
+elements, all of which are defined by the REST constraints. Most notably:
 
 1. The media type must be known to the client and rich enough to describe all possible client-server interaction
 1. The client can only follow links included in the representation and cannot construct identifiers without user interaction
