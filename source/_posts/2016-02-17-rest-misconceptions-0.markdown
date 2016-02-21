@@ -145,13 +145,13 @@ the resource by submitting the changed data. With HTTP this would involve a PUT 
 Another option is to send the representation to another resource, which implements the business logic. This could be
 implemented as performing a POST operation on a resource, which contains all published documents.
  
-{% highlight http %}
+``` http
 POST /published-documents
 
 {
   // the document to publish
 }
-{% endhighlight %}
+```
 
 #### Self-descriptive messages
 
