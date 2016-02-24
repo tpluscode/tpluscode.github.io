@@ -19,7 +19,7 @@ so commonly break them. Let's see how this happens and what are the consequences
 
 In this series:
 
-1. [Introduction](rest-misconceptions-0)
+1. [Introduction](/blog/2016/02/rest-misconceptions-0)
 1. **Misuse of URIs**
 1. Not linked enough
 1. Leaky business
