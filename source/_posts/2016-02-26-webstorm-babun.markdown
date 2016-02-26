@@ -18,18 +18,25 @@ current working copy and not the default home path.
 I found these instructions somewhere on the web but forgot where it was. It's not that simple and required some minor 
 tweaks so here's how I have it set up.
 
-1. Go to Babun installation folder (for me it's `%USERPROFILE%\.babun`)
-1. Create a batch file. I called it `cygwin.bat`
-1. The batch script is
+**1** Go to Babun installation folder (for me it's `%USERPROFILE%\.babun`)
+
+**2** Create a batch file. I called it `cygwin.bat`
+
+**3** The batch script is
+
 ``` batch
 @echo off
 set currentdir=%cd:\=/%
 @echo cd %currentdir% > "%USERPROFILE%\.babun\cygwin\home\%USERNAME%\.bashrc_cd"
 call %USERPROFILE%\.babun\cygwin\bin\bash --login -i -ls
 ```
-1. Add the created script as terminal command in Webstorm settings
-![Webstorm settings](/uploads/2016/02/babun.png)
-1. Enjoy!
-![Webstorm terminal](/uploads/2016/02/webstorm.png)
+
+**4** Add the created script as terminal command in Webstorm settings (you cannot use `%USERPROFILE%` variable here)
+
+    ![Webstorm settings](/uploads/2016/02/babun.png)
+
+**5** Enjoy!
+
+    ![Webstorm terminal](/uploads/2016/02/webstorm.png)
 
 [Babun]: http://babun.github.io/
