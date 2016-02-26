@@ -33,10 +33,10 @@ call %USERPROFILE%\.babun\cygwin\bin\bash --login -i -ls
 
 **4** Add the created script as terminal command in Webstorm settings (you cannot use `%USERPROFILE%` variable here)
 
-    ![Webstorm settings](/uploads/2016/02/babun.png)
+![Webstorm settings](/uploads/2016/02/babun.png)
 
 **5** Enjoy!
 
-    ![Webstorm terminal](/uploads/2016/02/webstorm.png)
+![Webstorm terminal](/uploads/2016/02/webstorm.png)
 
 [Babun]: http://babun.github.io/
