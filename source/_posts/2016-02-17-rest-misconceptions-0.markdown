@@ -20,7 +20,7 @@ In this series:
 
 1. **Introduction**
 1. [Misuse of URIs](/blog/2016/02/rest-misconceptions-1)
-1. Not linked enough
+1. [Not linked enough](/blog/2016/02/rest-misconceptions-2)
 1. Leaky business
 1. Resources are application state
 1. REST "documentation"
