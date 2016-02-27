@@ -6,7 +6,7 @@ date: 2016-02-27 21:40
 categories:
 - rest
 - hypermedia
-description: Linking is a crucial part of a REST API and here are some examples
+description: Linking is a crucial part of a REST API and yet, despite being so simple, linking is often neglected
 comments: true
 ---
 
@@ -195,6 +195,35 @@ by `user_id` or `screen_name` as it currently does:
 How the client knows what are the possible values for the parameters or whether they are required is a different matter
 entirely and goes beyond links.
 
+## Not only inline links
+
+Most examples around the web show links, which are included within the response body itself. However with the HTTP in 
+particular it's not the only option. The protocol defines the [Link header][link-header], which can be used to connect
+resources on the web. It is especially important for media types, which don't define a clear link semantics or even any
+means of including links to other resources. The list includes images, video and to some extend vanilla JSON, where links
+are actually indistinguishable from simple text. Link header is also useful in media types which do allow linking, but
+the link doesn't have domain-specific meaning for a resource, etc. Common example is collection paging, where links are
+included to other pages within a larger set. Notice the use of [predefined link relations][link-relations].
+
+```
+Link: <http://book.store/books?author=Homer>; rel="first",
+      <http://book.store/books?author=Homer&page=9>; rel="next",
+      <http://book.store/books?author=Homer&page=46>; rel="last"
+```
+
+It is also possible to use custom relations, by referring to them with their URIs. This allows link relations to become
+resources in their own rights, with human- and machine-readable representations available. How cool is that for meta-REST
+programming? A common example I give is links to weakly related resources, which can help the client to build a complete
+user interface. These can include a representation of common element such as breadcrumbs, navigation menu or user's 
+authentication status.
+
+```
+Link: <http://book.store/ui/breadcrubms?for=/books>; 
+        rel="http://book.store/api/breadcrumbs",
+      <http://book.store/ui/unauthorized-user-menu>; 
+        rel="http://book.store/api/navigation/main-menu",
+```
+
 ## Is that it?
 
 As far as linking is concerned it actually is. Bottom line is that clients are interested in specific kind of data and 
@@ -211,3 +240,5 @@ subject in the next post.
 [must-be-driven]: http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
 [dissertation]: http://presentations.t-code.pl/hateoas/fielding_dissertation.pdf
 [rfc6570]: https://tools.ietf.org/html/rfc6570
+[link-header]: https://tools.ietf.org/html/rfc5988
+[link-relations]: http://www.iana.org/assignments/link-relations/link-relations.xhtml
