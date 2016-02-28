@@ -57,7 +57,7 @@ So which is more important, the details of the address or where it actually poin
 
 ### A World Wide Web analogy
 
-Another common example is the WWW and how HTML documents are linked. All the browser (and the user by extension) care 
+Another common example is the WWW and how HTML documents are linked. All the browser (and the user by extension) cares 
 about is the link type, which humans derive from the web page's context. When you see a link to a wikipedia page, you 
 can simply click it and the browser takes you there. Neither you nor the browser is too interested about the address 
 itself. It simply uses the HTTP protocol to retrieve and display the data.
@@ -97,7 +97,6 @@ the `user_timeline` resource as shown in [the documentation][timeline-doc]:
       // ...
     },
     "in_reply_to_screen_name": null,
-    "source": "<a href="//sites.google.com/site/yorufukurou/%5C%22" rel="\"nofollow\"">YoruFukurou</a>",
     "in_reply_to_status_id": null
   },
   {
@@ -124,14 +123,13 @@ the `user_timeline` resource as shown in [the documentation][timeline-doc]:
       // ...
     },
     "in_reply_to_screen_name": null,
-    "source": "<a href="//sites.google.com/site/yorufukurou/%5C%22" rel="\"nofollow\"">YoruFukurou</a>",
     "in_reply_to_status_id": null
   }
 ]
 ```
 
 I've removed some of the nested objects for brevity. Do notice the `id`, `in_reply_to_status_id` and `in_reply_to_user_id` 
-properties in the two tweets. The latter two are null in the sample representation but both are simple numeric values. 
+properties in the two tweets. The latter two are null in the sample representation but both would be simple numeric values. 
 Having retrieved such response for a GET, **the client has no way to proceed to the next state!**
 
 ## The problem: Out-of-band information
@@ -149,12 +147,13 @@ structure like this is risky business, which [I mentioned in part one of this se
 ## REST APIs must be hypertext driven
 
 The above header is the title of [a post][must-be-driven] by Roy Fielding, which is a great read as it sheds light on 
-some unclear part of his [dissertation][dissertation]. 
+some unclear part of his [dissertation][dissertation]. Here's a quote from that post:
 
 > A REST API **must not define fixed resource names or hierarchies** (an obvious coupling of client and server). Servers 
 > must have the freedom to control their own namespace. Instead, allow servers to **instruct clients on how to construct 
 > appropriate URIs**, such as is done in HTML forms and URI templates, by defining those instructions within media types 
-> and **link relations**.
+> and **link relations**. *[Failure here implies that clients are assuming a resource structure due to out-of band information,
+> such as a domain-specific standard, which is the data-oriented equivalent to RPC's functional coupling].*
 
 This passage reveals flaws in the example above. A client of Twitter's API relies on specific URI structure, which will
 break shall the server change how it assigns identifiers. Instead of that the client should be coded against a documented
@@ -181,9 +180,9 @@ properties could become `in_reply_to_user` and `in_reply_to_status` and similarl
 ### Filling in the blanks
 
 It may not always be possible to give the client complete links. The web already has a standard solution for such 
-circumstances called URI templates, which have been standardized in [RFC 6570][rfc6570] and there a readily available 
-implementations for many languages. If there is a need to let the client supply a parameter value within a URI, it can 
-serve an incomplete URI. For example Twitter could define a `user_search` relation, which allows the client to find users 
+circumstances called URI templates, which have been standardized in [RFC 6570][rfc6570]. There a readily available 
+implementations for many languages. If there is a need to let the client supply a parameter value within a URI, it can be 
+served an incomplete URI. For example Twitter could define a `user_search` relation, which allows the client to find users 
 by `user_id` or `screen_name` as it currently does:
 
 ``` json
@@ -193,17 +192,17 @@ by `user_id` or `screen_name` as it currently does:
 ```
 
 How the client knows what are the possible values for the parameters or whether they are required is a different matter
-entirely and goes beyond links.
+entirely and extends beyond links.
 
 ## Not only inline links
 
 Most examples around the web show links, which are included within the response body itself. However with the HTTP in 
 particular it's not the only option. The protocol defines the [Link header][link-header], which can be used to connect
-resources on the web. It is especially important for media types, which don't define a clear link semantics or even any
-means of including links to other resources. The list includes images, video and to some extend vanilla JSON, where links
+resources on the web. *It is especially important for media types, which don't define a clear link semantics or even any
+means of including links to other resources*. The list includes images, video and to some extent vanilla JSON, where links
 are actually indistinguishable from simple text. Link header is also useful in media types which do allow linking, but
 the link doesn't have domain-specific meaning for a resource, etc. Common example is collection paging, where links are
-included to other pages within a larger set. Notice the use of [predefined link relations][link-relations].
+included to other pages within a larger set. 
 
 ```
 Link: <http://book.store/books?author=Homer>; rel="first",
@@ -211,9 +210,10 @@ Link: <http://book.store/books?author=Homer>; rel="first",
       <http://book.store/books?author=Homer&page=46>; rel="last"
 ```
 
+Notice the use of [predefined link relations][link-relations].
 It is also possible to use custom relations, by referring to them with their URIs. This allows link relations to become
-resources in their own rights, with human- and machine-readable representations available. How cool is that for meta-REST
-programming? A common example I give is links to weakly related resources, which can help the client to build a complete
+resources in their own rights, with human- and machine-readable representations available. **How cool is that for meta-REST
+programming?** A common example I give is links to weakly related resources, which can help the client build a complete
 user interface. These can include a representation of common element such as breadcrumbs, navigation menu or user's 
 authentication status.
 
@@ -226,8 +226,8 @@ Link: <http://book.store/ui/breadcrubms?for=/books>;
 
 ## Is that it?
 
-As far as linking is concerned it actually is. Bottom line is that clients are interested in specific kind of data and 
-not details about how to get it (pun intended). 
+As far as linking is concerned it actually is. Bottom line is that **clients are interested in specific kind of data and 
+not details about how to get it** (pun intended). 
 
 Of course links are not enough for a complete description of possible client-server interaction. I will expand upon this
 subject in the next post.
