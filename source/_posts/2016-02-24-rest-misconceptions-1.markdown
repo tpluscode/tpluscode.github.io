@@ -157,7 +157,7 @@ POST /books/Hamlet/reservation
 }
 {% endhighlight %}
 
-But is the identifier more `RESTful`? No, again, because there is no such thing. **It's how the resource is used that 
+But is the identifier more *RESTful*? No, again, because there is no such thing. **It's how the resource is used that 
 determines good API design, not the URI**. 
 
 ### Content negotiation is not the URI
