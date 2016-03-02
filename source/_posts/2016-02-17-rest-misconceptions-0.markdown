@@ -147,7 +147,7 @@ Another option is to send the representation to another resource, which implemen
 implemented as performing a POST operation on a resource, which contains all published documents.
  
 ``` http
-POST /published-documents
+POST /published-documents HTTP/1.1
 
 {
   // the document to publish
