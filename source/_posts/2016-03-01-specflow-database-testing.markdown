@@ -1,14 +1,13 @@
 ---
 layout: post
 published: false
-title: Testing database access with SpecFlow and NDbUnit and LocalDb #dajsiepoznac
+title: Testing database access with SpecFlow and NDbUnit and LocalDb &#35;dajsiepoznac
 date: 2016-03-01 21:40
 categories:
 - dajsiepoznac
 - gherkin
 - specflow
-- tests
-description: A pleasant way to write specification-by-example tests against a physical database
+description: A moderately pleasant way to write specification-by-example tests against a physical database
 comments: true
 ---
 
