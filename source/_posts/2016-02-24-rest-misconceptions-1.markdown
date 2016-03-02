@@ -96,7 +96,7 @@ whether collections URI should be plural, but what about collection members. If 
 `/books` resource. I could add a book by executing the POST method on the collection resource.
 
 ``` http
-POST /books
+POST /books HTTP/1.1
 Host: http://book.store
 ```
 
