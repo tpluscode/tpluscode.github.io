@@ -17,8 +17,8 @@ My colleague [Jarek Stadnicki][jareczek] convinced me to join the competition ca
 
 ## The competition user story
 
-> As a developer
-> I want to create stuff and write about it
+> As a developer<br>
+> I want to create stuff and write about it<br>
 > So that people get to know me
 
 It's the second edition of the competition for Polish bloggers (first took place in 2010 AFAIK) ran by [Maciej Aniserowicz][maniserowicz],
