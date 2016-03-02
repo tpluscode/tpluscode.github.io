@@ -147,12 +147,15 @@ public static INDbUnitTest Initialize(SqlConnection connection)
 }
 ```
 
-As you see I had to create a `DataSet` to be able to load data in each test case. More on that later.
+As you see I had to create a `DataSet` to be able to load data in each test case. More on that later. And of course I had
+to create the dataset `Wikibus.xsd` to match the database structure:
 
-The `SqlLocalDbApi` is also of great help. Before I would first connect to `master` to create the database for tests.
-Without that it's not possible to connect to SQL Server and so I had to keep two connection strings. Now there is only
-one and the code above ensures that the instance is available and recreated every time. The only requirement is that the
-`InstanceName` matches what you have in the connection string.
+![dataset-table](/uploads/2016/03/dataset.png)
+
+The `SqlLocalDbApi` is also of great help. [Before][old-database-init] I would first connect to `master` to create the 
+database for tests. Without that it's not possible to connect to SQL Server and so I had to keep two connection strings. 
+Now there is only one and the code above ensures that the instance is available and recreated every time. The only 
+requirement is that the `InstanceName` matches what you have in the connection string.
 
 ``` xml
 <connectionStrings>
@@ -161,21 +164,54 @@ one and the code above ensures that the instance is available and recreated ever
 ```
 
 It even works out of the box on [AppVeyor][AppVeyor] and doesn't care whether developers have their SQL instance named
-that way or another! All you need is SQL Server installed (I think it's 2008 or newer). Oh and did I mention that you can
+that way or another! All you need is SQL Server installed (I think it's 2012 or newer). Oh and did I mention that you can
 connect to this database using SQL Server Management Studio? :smile:
 
 ![connection to LocalDb](/uploads/2016/03/localdb.png)
 
 ## Populating database with data
 
-[Gherkin]:
-[SpecFlow]:
-[NDbUnit]:
-[LocalDb]:
+With that ready I can now fill the database with some data. Here's how I bind the `Given` step above to a SpecFlow method
+
+``` csharp
+private readonly SqlConnection _sqlConnection;
+private readonly INDbUnitTest _database;
+
+public MappingSourcesSteps()
+{
+    _sqlConnection = new SqlConnection(Database.TestConnectionString);
+    _database = Database.Initialize(_sqlConnection);
+}
+
+[Given(@"table (.*) with data:")]
+public void GivenTableWithData(string tableName, Table table)
+{
+    var datasetFile = Path.GetTempFileName();
+    DataSet ds = table.ToDataSet(tableName);
+    ds.WriteXml(datasetFile);
+    _database.AppendXml(datasetFile);
+}
+```
+
+That's actually quite simple. The only hard and boring part is to convert the weak `Table` into a `DataSet1 object for
+loading. It's simple copying the table values for each row. As long as the header names match column names all is dandy.
+The source code can be viewed [on GitHub][TableExtensions] of course.
+
+## Summary
+
+And that's it. Now I can proceed with the `When` and `Then`s to run the code I want tested and with every test case I am
+starting with a blank database so that each test is guaranteed to be independent from any other.
+
+[Gherkin]: https://github.com/cucumber/cucumber/wiki/Gherkin
+[SpecFlow]: http://www.specflow.org/
+[NDbUnit]: https://github.com/NDbUnit/NDbUnit
+[LocalDb]: https://msdn.microsoft.com/pl-pl/library/hh510202%28v=sql.110%29.aspx
 [r2rml]: https://www.w3.org/TR/r2rml/
-[gherkin-table]:
-[rdf]:
-[rdf-intro]:
+[gherkin-table]: https://cucumber.io/docs/reference#data-tables
+[rdf]: https://en.wikipedia.org/wiki/Resource_Description_Framework
+[rdf-intro]: http://www.dataversity.net/introduction-to-rdf/
 [r2rml4net]: http://r2rml.net
-[sparql]:
-[AppVeyor]:
+[sparql]: https://www.w3.org/TR/sparql11-overview/
+[AppVeyor]: https://www.appveyor.com
+[TableExtensions]: https://github.com/wikibus/data.wikibus.org/blob/master/src/wikibus.tests/Mappings/TableExtensions.cs#L14
+[old-database-init]: https://github.com/wikibus/data.wikibus.org/blob/2bf2d98226a023c0784d0ab69c4e9890607d2924/src/wikibus.tests/Mappings/Database.cs#L14
