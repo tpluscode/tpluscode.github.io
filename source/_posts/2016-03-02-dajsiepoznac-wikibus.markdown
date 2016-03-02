@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: wikibus.org and #dajsiepoznac competition
+title: wikibus.org and the &#35;dajsiepoznac competition
 date: 2016-03-02 20:30
 categories:
 - dajsiepoznac
@@ -17,9 +17,9 @@ My colleague [Jarek Stadnicki][jareczek] convinced me to join the competition ca
 
 ## The competition user story
 
-    As a developer
-    I want to create stuff and write about it
-    So that people get to know me
+> As a developer
+> I want to create stuff and write about it
+> So that people get to know me
 
 It's the second edition of the competition for Polish bloggers (first took place in 2010 AFAIK) ran by [Maciej Aniserowicz][maniserowicz],
 a popular dev, speaker and blogger. The main goal is to encourage developers to actively work on something they find 
@@ -33,7 +33,7 @@ The rules are simple:
 1. **Twice a week** document the coding process on a blog
 1. Repeat for three months (or **10 weeks**)
 
-Simple and hard at the same time and I hear that most people are expected to quite before May. After all it's 200 blog
+Simple and hard at the same time and I hear that most people are expected to quit before May. After all it's **200 blog**
 posts that each contender must write.
 
 ## My project - wikibus.org
