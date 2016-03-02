@@ -19,7 +19,7 @@ My colleague [Jarek Stadnicki][jareczek] convinced me to join the competition ca
 
     As a developer
     I want to create stuff and write about it
-    So that people know about me
+    So that people get to know me
 
 It's the second edition of the competition for Polish bloggers (first took place in 2010 AFAIK) ran by [Maciej Aniserowicz][maniserowicz],
 a popular dev, speaker and blogger. The main goal is to encourage developers to actively work on something they find 
