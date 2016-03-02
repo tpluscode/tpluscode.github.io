@@ -205,6 +205,7 @@ the link doesn't have domain-specific meaning for a resource, etc. Common exampl
 included to other pages within a larger set. 
 
 ```
+HTTP/1.1 200 OK
 Link: <http://book.store/books?author=Homer>; rel="first",
       <http://book.store/books?author=Homer&page=9>; rel="next",
       <http://book.store/books?author=Homer&page=46>; rel="last"
@@ -218,6 +219,7 @@ user interface. These can include a representation of common element such as bre
 authentication status.
 
 ```
+HTTP/1.1 200 OK
 Link: <http://book.store/ui/breadcrubms?for=/books>; 
         rel="http://book.store/api/breadcrumbs",
       <http://book.store/ui/unauthorized-user-menu>; 
