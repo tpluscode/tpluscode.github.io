@@ -135,14 +135,14 @@ to assign such identifiers when they are created. But this structure should not 
 There is a rumor, which states that an URL must not contain verbs. Of course identifier such as 
 `http://book.store/books/Hamlet/reserve` may be an indication of bad design, which tries to imitate na RPC style API.
 But that is only true if HTTP verbs are not used correctly. For example
-
-``` http
-PUT /books/Hamlet/reserve HTTP/1.1
+ 
+{% highlight http %}
+PUT /books/Hamlet/reserve
 
 {
    "for": "/user/tpluskiewicz"
 }
-```
+{% endhighlight %}
  
 This is a bad idea, because `PUT` must be idempotent. The client should be safe to try again without risk. But replace it
 with `POST` and you're fine. Also in most cases it's possible to change the verb to noun and be done with it. There's a
