@@ -182,7 +182,7 @@ of Denmark*. One could argue of course that they identify documents about the `/
 But these documents are two completely different resources. And trying to update the book by requesting
 
 ```
-PUT /xml/books/Hamlet
+PUT /xml/books/Hamlet HTTP/1.1
 
 <?xml version="1.0"?>
 <book>
@@ -209,7 +209,7 @@ Another point is whether a filtered collection resource is another resource? Foe
 for other books by Shakespeare:
 
 ```
-GET /books?author=Shakespeare
+GET /books?author=Shakespeare HTTP/1.1
 ```
 
 Does it mean that `/books?author=Shakespeare` is not a resource? It's probably a matter of semantics and personal taste,
