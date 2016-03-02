@@ -5,6 +5,7 @@ title: wikibus.org and #dajsiepoznac competition
 date: 2016-03-02 20:30
 categories:
 - dajsiepoznac
+- wikibus
 description: A few words about my pet project wikibus.org and the #dajsiepoznac competition
 comments: true
 ---
