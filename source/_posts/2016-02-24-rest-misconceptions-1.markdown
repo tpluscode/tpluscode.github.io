@@ -95,14 +95,14 @@ Some of my colleagues were surprised, but this [really is a thing][plural]. Ther
 whether collections URI should be plural, but what about collection members. If there is a collections of book under
 `/books` resource. I could add a book by executing the POST method on the collection resource.
 
-```
+``` http
 POST /books
 Host: http://book.store
 ```
 
 In response I would return status code `201 Created` and a `Location` header. But what should be the header's value?
 
-```
+``` http
 HTTP/1.1 201 Created
 Location: ?
 ```
