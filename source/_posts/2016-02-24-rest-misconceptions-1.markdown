@@ -137,7 +137,7 @@ There is a rumor, which states that an URL must not contain verbs. Of course ide
 But that is only true if HTTP verbs are not used correctly. For example
  
 {% highlight http %}
-PUT /books/Hamlet/reserve
+PUT /books/Hamlet/reserve HTTP/1.1
 
 {
    "for": "/user/tpluskiewicz"
@@ -150,7 +150,7 @@ with `POST` and you're fine. Also in most cases it's possible to change the verb
 `http://book.store/books/Hamlet/reservation` and used just the same way: 
 
 {% highlight http %}
-POST /books/Hamlet/reservation
+POST /books/Hamlet/reservation HTTP/1.1
 
 {
    "for": "/user/tpluskiewicz"

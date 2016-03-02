@@ -101,7 +101,7 @@ On way that comes to my mind as an alternative to the above process is to provid
 with attached media. Here's my pseudo-Hydra sample.
  
 {% highlight http %}
-GET /
+GET / HTTP/1.1
 
 {  
   "tweets": {
@@ -123,7 +123,7 @@ GET /
 Tweeting is simple as 01 10 11.
 
 {% highlight http %}
-POST /tweets
+POST /tweets HTTP/1.1
 Content-type: application/json
 
 {
@@ -138,14 +138,17 @@ Location: /tweets/7bed7868-ee90-43d0-a94c-2062746c4668
 
 To tweet with attachment we post to the other resource
 
-{% highlight http %}
-POST /tweetAttachments
+``` http
+POST /tweetAttachments HTTP/1.1
 
 // file content here
 
+```
+
 =>
 
-HTTP 200 OK
+{% highlight http %}
+HTTP/1.1 200 OK
 
 {
   "@id": "/tweetdrafts/222c5081-b9ca-4b42-b146-42eb3112c49a",
@@ -179,7 +182,7 @@ update the status.
 Alternatively I would have the server prepare identifiers for the next tweet and attachment upload resources.
 
 {% highlight http %}
-GET /
+GET / HTTP/1.1
 
 {
   "nextTweet": {
