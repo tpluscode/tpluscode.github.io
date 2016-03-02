@@ -136,26 +136,26 @@ There is a rumor, which states that an URL must not contain verbs. Of course ide
 `http://book.store/books/Hamlet/reserve` may be an indication of bad design, which tries to imitate na RPC style API.
 But that is only true if HTTP verbs are not used correctly. For example
  
-{% highlight http %}
+``` http
 PUT /books/Hamlet/reserve
 
 {
    "for": "/user/tpluskiewicz"
 }
-{% endhighlight %}
+```
  
 This is a bad idea, because `PUT` must be idempotent. The client should be safe to try again without risk. But replace it
 with `POST` and you're fine. Also in most cases it's possible to change the verb to noun and be done with it. There's a
 [nice post][verbs] on that subject. To make the identifier more *RESTful* the URI can be changed to 
 `http://book.store/books/Hamlet/reservation` and used just the same way: 
 
-{% highlight http %}
+``` http
 POST /books/Hamlet/reservation
 
 {
    "for": "/user/tpluskiewicz"
 }
-{% endhighlight %}
+```
 
 But is the identifier more `RESTful`? No, again, because there is no such thing. **It's how the resource is used that 
 determines good API design, not the URI**. 
@@ -181,7 +181,7 @@ Do these pair identify two separate resources? Of course not, they both identify
 of Denmark*. One could argue of course that they identify documents about the `/books/Hamlet` resource and that's true.
 But these documents are two completely different resources. And trying to update the book by requesting
 
-```
+``` http
 PUT /xml/books/Hamlet
 
 <?xml version="1.0"?>
@@ -208,7 +208,7 @@ URI has query parameter instead of a segment. If the server assigned it that way
 Another point is whether a filtered collection resource is another resource? Foe example let's search the `/books` resource 
 for other books by Shakespeare:
 
-```
+``` http
 GET /books?author=Shakespeare
 ```
 
