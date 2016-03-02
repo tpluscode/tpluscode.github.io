@@ -204,7 +204,7 @@ are actually indistinguishable from simple text. Link header is also useful in m
 the link doesn't have domain-specific meaning for a resource, etc. Common example is collection paging, where links are
 included to other pages within a larger set. 
 
-```
+``` http
 HTTP/1.1 200 OK
 Link: <http://book.store/books?author=Homer>; rel="first",
       <http://book.store/books?author=Homer&page=9>; rel="next",
@@ -218,7 +218,7 @@ programming?** A common example I give is links to weakly related resources, whi
 user interface. These can include a representation of common element such as breadcrumbs, navigation menu or user's 
 authentication status.
 
-```
+``` http
 HTTP/1.1 200 OK
 Link: <http://book.store/ui/breadcrubms?for=/books>; 
         rel="http://book.store/api/breadcrumbs",
