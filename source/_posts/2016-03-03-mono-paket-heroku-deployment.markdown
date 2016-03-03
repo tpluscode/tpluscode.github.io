@@ -57,15 +57,15 @@ And I also had issues with referencing assemblies. Enough of that.
 
 Who said I had to build the entire solution on Heroku? I already use AppVeyor to build an run test, so maybe I could just 
 package all projects as nupkgs and deploy just a simple OWIN self-hosted application?
-
+s
 Stay tuned, I'll come back when that's ready :wink:
 
 [wrocnet]: http://wrocnet.github.io
-[heroku]: 
+[heroku]: http://heroku.com
 [net5-buildpack]: https://elements.heroku.com/buildpacks/heroku/dotnet-buildpack
-[default-buildpacks]:
-[dyno]:
-[buildpack]:
+[default-buildpacks]: https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks
+[dyno]: https://devcenter.heroku.com/articles/dyno-types
+[buildpack]: https://devcenter.heroku.com/articles/buildpacks
 [bp1]: https://github.com/AdamBurgess/heroku-buildpack-mono
 [bp2]: https://github.com/brandur/heroku-buildpack-mono
 [bp3]: https://github.com/friism/heroku-buildpack-mono
