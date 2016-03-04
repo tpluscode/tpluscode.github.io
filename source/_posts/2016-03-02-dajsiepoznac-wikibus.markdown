@@ -33,8 +33,8 @@ The rules are simple:
 1. **Twice a week** document the coding process on a blog
 1. Repeat for three months (or **10 weeks**)
 
-Simple and hard at the same time and I hear that most people are expected to quit before May. After all it's **200 blog**
-posts that each contender must write.
+Simple and hard at the same time and I hear that most people are expected to quit before May. After all it's ~~**200**~~ 
+**20 blog posts** that each contender must write.
 
 ## My project - wikibus.org
 
