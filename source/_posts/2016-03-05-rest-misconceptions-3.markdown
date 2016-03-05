@@ -13,7 +13,7 @@ comments: true
 In the fourth part of my REST series I will expand the idea of links. Links are just a stepping stone no matter how important.
 Simple links aren't enough for the client to interact with the server. After all how is it going to know when to `POST`
 and when to `PUT` or what are the required parameters and request bodies. This is where affordances come into play. It
-means that the server should include all information the client needs. Just as defined by the self-descriptive constraint.
+means that the server should include all information the client needs. Just as defined by the **self-descriptive** constraint.
 
 <!--more-->
 
