@@ -175,7 +175,7 @@ Or worse yet
 {% codeblock lang:plain %}
 http://book.store/json/books/Hamlet
 http://book.store/xml/books/Hamlet
-```
+{% endcodeblock %}
 
 Do these pair identify two separate resources? Of course not, they both identify the book *The Tragedy of Hamlet, Prince
 of Denmark*. One could argue of course that they identify documents about the `/books/Hamlet` resource and that's true.
