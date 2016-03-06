@@ -84,13 +84,13 @@ function deleteMovie(blogPost) {
 Or what about creating and updating resources? Updating is simple, usually it would be a `PUT`
 
 ``` http
-HTTP/1.1 PUT /blog/2016/03/rest-misconceptions-3
+PUT /blog/2016/03/rest-misconceptions-3 HTTP/1.1
 ```
 
 Creating on the other hand can be modelled in a number of ways. It can be a `POST` to a collection
 
 {% codeblock lang:http %}
-HTTP/1.1 POST /blog
+POST /blog HTTP/1.1
 
 {
   "title": "REST misconceptions part 3 - More than link",

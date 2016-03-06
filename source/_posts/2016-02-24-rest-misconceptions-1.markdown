@@ -116,7 +116,7 @@ There are proponents of URI schemes, where related resources are assigned a hier
 Actually the above example is a good start and such design is quite intuitive. This after all how directory tree of a 
 filesystem works for example. One could expand the bookstore address space to include book chapters etc:
 
-```
+{% codeblock lang:plain %}
 http://book.store/books
 http://book.store/books/Hamlet
 http://book.store/books/Hamlet/chapters
@@ -124,7 +124,7 @@ http://book.store/books/Hamlet/acts/
 http://book.store/books/Hamlet/acts/1
 http://book.store/books/Hamlet/acts/1/scenes
 http://book.store/books/Hamlet/acts/1/scenes/1
-```
+{% endcodeblock %}
 
 It encourages hacking URIs, which I brought up as my first example of URI abuse. Is that good design? Maybe it's easier 
 to assign such identifiers when they are created. But this structure should not matter further on. That is because 
@@ -136,26 +136,26 @@ There is a rumor, which states that an URL must not contain verbs. Of course ide
 `http://book.store/books/Hamlet/reserve` may be an indication of bad design, which tries to imitate na RPC style API.
 But that is only true if HTTP verbs are not used correctly. For example
  
-{% highlight http %}
+{% codeblock lang:http %}
 PUT /books/Hamlet/reserve HTTP/1.1
 
 {
    "for": "/user/tpluskiewicz"
 }
-{% endhighlight %}
+{% endcodeblock %}
  
 This is a bad idea, because `PUT` must be idempotent. The client should be safe to try again without risk. But replace it
 with `POST` and you're fine. Also in most cases it's possible to change the verb to noun and be done with it. There's a
 [nice post][verbs] on that subject. To make the identifier more *RESTful* the URI can be changed to 
 `http://book.store/books/Hamlet/reservation` and used just the same way: 
 
-{% highlight http %}
+{% codeblock lang:http %}
 POST /books/Hamlet/reservation HTTP/1.1
 
 {
    "for": "/user/tpluskiewicz"
 }
-{% endhighlight %}
+{% endcodeblock %}
 
 But is the identifier more *RESTful*? No, again, because there is no such thing. **It's how the resource is used that 
 determines good API design, not the URI**. 
@@ -165,14 +165,14 @@ determines good API design, not the URI**.
 I don't even know how to name this. How many times have you seen na API, which requires the client to include the format
 in the URI:
 
-```
+{% codeblock lang:plain %} 
 http://book.store/books/Hamlet.json
 http://book.store/books/Hamlet.xml
-```
+{% endcodeblock %}
 
 Or worse yet
 
-```
+{% codeblock lang:plain %}
 http://book.store/json/books/Hamlet
 http://book.store/xml/books/Hamlet
 ```

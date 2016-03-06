@@ -100,7 +100,7 @@ another representation, which has more hypermedia attached.
 On way that comes to my mind as an alternative to the above process is to provide link for both simple tweet and tweet
 with attached media. Here's my pseudo-Hydra sample.
  
-{% highlight http %}
+{% codeblock lang:http %}
 GET / HTTP/1.1
 
 {  
@@ -118,11 +118,11 @@ GET / HTTP/1.1
     }]
   }
 }
-{% endhighlight %}
+{% endcodeblock %}
 
 Tweeting is simple as 01 10 11.
 
-{% highlight http %}
+{% codeblock lang:http %}
 POST /tweets HTTP/1.1
 Content-type: application/json
 
@@ -134,7 +134,7 @@ Content-type: application/json
 
 HTTP 201 Created
 Location: /tweets/7bed7868-ee90-43d0-a94c-2062746c4668
-{% endhighlight %}
+{% endcodeblock %}
 
 To tweet with attachment we post to the other resource
 
@@ -147,7 +147,7 @@ POST /tweetAttachments HTTP/1.1
 
 =>
 
-{% highlight http %}
+{% codeblock lang:http %}
 HTTP/1.1 200 OK
 
 {
@@ -170,7 +170,7 @@ HTTP/1.1 200 OK
     "parameters": [ /* tweet text like above */]
   }]
 }
-{% endhighlight %}
+{% endcodeblock %}
 
 Deeply nested representation like this may not be easy on the eye. The general idea is tha the client posts to `/tweetAttachments`
 and server responds with a freshly created yet unfinished tweet, which has the uploaded media attached. This example 
@@ -181,7 +181,7 @@ update the status.
 
 Alternatively I would have the server prepare identifiers for the next tweet and attachment upload resources.
 
-{% highlight http %}
+{% codeblock lang:http %}
 GET / HTTP/1.1
 
 {
@@ -190,7 +190,7 @@ GET / HTTP/1.1
     "attachments": "/tweet/d56336e0-48ea-453c-848f-1e38525c5859/attachments"
   }
 }
-{% endhighlight %}
+{% endcodeblock %}
 
 I'm leaving affordances out for brevity. With the above, to change status the client `PUT`s the `nextTweet` resource.
 To tweet with an attachment the client must first `POST` to the `attachments` link and `PUT` afterwards. Of course before
