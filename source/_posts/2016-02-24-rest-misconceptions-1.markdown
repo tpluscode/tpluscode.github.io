@@ -116,7 +116,7 @@ There are proponents of URI schemes, where related resources are assigned a hier
 Actually the above example is a good start and such design is quite intuitive. This after all how directory tree of a 
 filesystem works for example. One could expand the bookstore address space to include book chapters etc:
 
-{% codeblock plain %}
+{% codeblock %}
 http://book.store/books
 http://book.store/books/Hamlet
 http://book.store/books/Hamlet/chapters
@@ -165,14 +165,14 @@ determines good API design, not the URI**.
 I don't even know how to name this. How many times have you seen na API, which requires the client to include the format
 in the URI:
 
-{% codeblock plain %} 
+{% codeblock %} 
 http://book.store/books/Hamlet.json
 http://book.store/books/Hamlet.xml
 {% endcodeblock %}
 
 Or worse yet
 
-{% codeblock plain %}
+{% codeblock %}
 http://book.store/json/books/Hamlet
 http://book.store/xml/books/Hamlet
 {% endcodeblock %}
