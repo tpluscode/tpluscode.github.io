@@ -89,14 +89,14 @@ HTTP/1.1 PUT /blog/2016/03/rest-misconceptions-3
 
 Creating on the other hand can be modelled in a number of ways. It can be a `POST` to a collection
 
-``` plain
+{% codeblock lang:http %}
 HTTP/1.1 POST /blog
 
 {
   "title": "REST misconceptions part 3 - More than link",
   "permalink": "/2016/03/rest-misconceptions-3"
 }
-```
+{% endcodeblock %}
 
 But it could just as well be a `PUT` to a identifier prepared by the server. Or maybe the client should be allowed to mint 
 a URI somehow and `PUT` the representation there?
@@ -120,7 +120,7 @@ extend resource representations as to remove the out-of-band *knowledge* the cli
 GET http://movies.sample/movie/10 HTTP/1.1
 ```
 
-``` plain
+{% codeblock lang:http %}
 HTTP/1.1 200 OK
 Content-Type: application/vnd.warpdrive+json
 
@@ -134,7 +134,7 @@ Content-Type: application/vnd.warpdrive+json
     }
   }]
 }
-```
+{% endcodeblock %}
 
 I've just invented an `application/vnd.warpdrive+json` media type, which includes an array of possible actions and details
 about them. In this example I'm instructing the client how to *add a movie to favourites*. Depending on my needs I would
