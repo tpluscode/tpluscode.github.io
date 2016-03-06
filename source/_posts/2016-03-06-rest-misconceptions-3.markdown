@@ -89,7 +89,7 @@ HTTP/1.1 PUT /blog/2016/03/rest-misconceptions-3
 
 Creating on the other hand can be modelled in a number of ways. It can be a `POST` to a collection
 
-``` http
+``` plain
 HTTP/1.1 POST /blog
 
 {
@@ -120,7 +120,7 @@ extend resource representations as to remove the out-of-band *knowledge* the cli
 GET http://movies.sample/movie/10 HTTP/1.1
 ```
 
-``` http
+``` plain
 HTTP/1.1 200 OK
 Content-Type: application/vnd.warpdrive+json
 
