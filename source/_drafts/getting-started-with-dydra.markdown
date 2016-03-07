@@ -80,6 +80,15 @@ I must say I like Dydra pretty much. There may be minor issues, like [not using 
 I mentioned above. However all in all it's a very simple yet powerful solution. Did I mention it's free? :smile: I remains
 to see how performant the repositories are and how quick the team responds to [support issues][support].
 
+## Usage with .NET
+
+I'm using [dotNetRDF][dnr] and with the SPARQL endpoints it works like charm.
+
+``` csharp
+var endpointUri = "http://dydra.com/repository/path/sparql";
+return new RemoteQueryProcessor(new SparqlRemoteEndpoint(endpointUri));
+```
+
 [dydra]: http://dydra.com
 [ld]: http://linkeddata.org/
 [RDF]: https://en.wikipedia.org/wiki/Resource_Description_Framework
@@ -89,3 +98,4 @@ to see how performant the repositories are and how quick the team responds to [s
 [issue3]: https://github.com/dydra/support/issues/42
 [auth]: http://docs.dydra.com/api/authentication
 [support]: https://github.com/dydra/support
+[dnr]: http://dotnetrdf.org
