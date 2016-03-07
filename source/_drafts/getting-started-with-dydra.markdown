@@ -77,13 +77,15 @@ then be accessed over the web in a number of formats. [If only they allowed inpu
 ## Go Dydra!
 
 I must say I like Dydra pretty much. There may be minor issues, like [not using `https` by default][issue3] and problems
-I mentioned above. However all in all it's a very simple yet powerful solution. Did I mention it's free? :smile:
+I mentioned above. However all in all it's a very simple yet powerful solution. Did I mention it's free? :smile: I remains
+to see how performant the repositories are and how quick the team responds to [support issues][support].
 
 [dydra]: http://dydra.com
 [ld]: http://linkeddata.org/
 [RDF]: https://en.wikipedia.org/wiki/Resource_Description_Framework
-[r2rml]: 
+[r2rml]: https://www.w3.org/TR/r2rml/
 [issue]: https://github.com/dydra/support/issues/41
 [issue2]: https://github.com/dydra/support/issues/24
 [issue3]: https://github.com/dydra/support/issues/42
 [auth]: http://docs.dydra.com/api/authentication
+[support]: https://github.com/dydra/support
