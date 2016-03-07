@@ -1,7 +1,7 @@
 ---
 layout: post
 published: false
-title: Now I'm storing my triples in the cloud (or is it tree?) &#35;dajsiepoznac
+title: Introduction ot Dydra, the cloud-based RDF store
 date: 2016-03-06 20:50
 categories:
 - dajsiepoznac
@@ -11,9 +11,10 @@ description: First steps with Dydra, the free, cloud-based graph store
 comments: true
 ---
 
-I've been building my wikibus.org code on AppVeyor, which is quite neat and used it to publish over WebDeploy to my VPS.
-Having recently watched a convincing presentation about Heroku on [Wrocław .NET User Group][wrocnet] I decided that maybe
-it will be an interesting experience.
+For anyone interested in the [Semantic Web][semweb], data storage continues to be an issue. Although there is a fair number
+of [triple- and quadstore][triplestore], your mileage may vary. Some triple stores offer mediocre performance, there are
+stability issues, missing features or unsupported platforms. There however one simple, but hassle-free alternative in the
+cloud.
 
 <!--more-->
 
@@ -99,3 +100,5 @@ return new RemoteQueryProcessor(new SparqlRemoteEndpoint(endpointUri));
 [auth]: http://docs.dydra.com/api/authentication
 [support]: https://github.com/dydra/support
 [dnr]: http://dotnetrdf.org
+[semweb]: https://www.w3.org/standards/semanticweb/
+[triplestore]: https://en.wikipedia.org/wiki/Triplestore
