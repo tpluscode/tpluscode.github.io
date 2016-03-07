@@ -53,7 +53,7 @@ Dydra hosts their files somewhere over at Amazon :cloud:, and user's data is spl
 logging in for the first time in I can create on straight away and then import some existing data. I imported my converted 
 triples.
 
-{% video /uploads/2016/03/dydra-repo.mp4 720 480 /uploads/2016/03/dydra-repo.png %}
+{% video /uploads/2016/03/dydra-repo.webm 900 658 /uploads/2016/03/dydra-repo.png %}
 
 As you see above, a repository can be assigned various levels of privacy between *completely private* to *visible to anyone*.
 Unfortunately, [what looks like a bug to me][issue], a public repository can not only be viewed by anyone but also modified.
@@ -63,7 +63,7 @@ Unfortunately, [what looks like a bug to me][issue], a public repository can not
 
 Dydra repositories are accessible over standard SPARQL endpoints and can also be downloaded in various RDF syntaxes. Simple.
 
-{% video /uploads/2016/03/dydra-endpoints.mp4 720 480 /uploads/2016/03/dydra-endpoints.png %}
+{% video /uploads/2016/03/dydra-endpoints.webm 900 658 /uploads/2016/03/dydra-endpoints.png %}
 
 Private repositories can be access by using a [number of authentication options][auth] :+1:.
 
@@ -72,7 +72,7 @@ Private repositories can be access by using a [number of authentication options]
 Lastly, Dydra has this cool little feature they call views, which can be used to create canned queries. Those queries can
 then be accessed over the web in a number of formats. [If only they allowed input parameters][issue2] :pray:.
 
-{% video /uploads/2016/03/dydra-views.mp4 720 480 /uploads/2016/03/dydra-views.png %}
+{% video /uploads/2016/03/dydra-views.mp4 900 658 /uploads/2016/03/dydra-views.png %}
 
 ## Go Dydra!
 
