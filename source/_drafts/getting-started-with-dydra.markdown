@@ -1,7 +1,7 @@
 ---
 layout: post
 published: false
-title: Now I'm storing my RDF triples in the cloud (or is it tree?)
+title: Now I'm storing my RDF triples in the cloud (or is it tree?) &#35;dajsiepoznac
 date: 2016-03-06 20:50
 categories:
 - dajsiepoznac
