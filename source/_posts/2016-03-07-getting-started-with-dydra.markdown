@@ -1,8 +1,8 @@
 ---
 layout: post
-published: false
+published: true
 title: Introduction ot Dydra, the cloud-based RDF store
-date: 2016-03-06 20:50
+date: 2016-03-07 22:20
 categories:
 - dajsiepoznac
 - semantic web
