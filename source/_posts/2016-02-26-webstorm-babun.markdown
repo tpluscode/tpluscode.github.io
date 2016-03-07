@@ -15,7 +15,7 @@ current working copy and not the default home path.
 
 <!--more-->
 
-I found these instructions somewhere on the web but forgot where it was. It's not that simple and required some minor 
+I found these instructions [somewhere on the web][source] ~~but forgot where it was~~. It's quite simple and required some minor 
 tweaks so here's how I have it set up.
 
 **1** Go to Babun installation folder (for me it's `%USERPROFILE%\.babun`)
@@ -35,8 +35,18 @@ call %USERPROFILE%\.babun\cygwin\bin\bash --login -i -ls
 
 ![Webstorm settings](/uploads/2016/02/babun.png)
 
-**5** Enjoy!
+**5** Add the following to `%USERPROFILE%\.babun\cygwin\home\%USERNAME%\.bashrc`
+
+``` bash
+if [ -f "${HOME}/.bashrc_cd" ]; then
+   source "${HOME}/.bashrc_cd"
+   rm "${HOME}/.bashrc_cd"
+fi
+```
+
+**6** Enjoy!
 
 ![Webstorm terminal](/uploads/2016/02/webstorm.png)
 
 [Babun]: http://babun.github.io/
+[source]: http://mjusix.blogspot.com/2015/12/babun-in-webstorm-intellij-als-konsole.html
