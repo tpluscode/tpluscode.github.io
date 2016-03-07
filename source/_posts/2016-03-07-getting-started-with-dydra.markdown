@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: Introduction ot Dydra, the cloud-based RDF store
+title: Introduction to Dydra, the cloud-based RDF store
 date: 2016-03-07 22:20
 categories:
 - dajsiepoznac
