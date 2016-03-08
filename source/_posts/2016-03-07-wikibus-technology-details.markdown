@@ -6,7 +6,7 @@ date: 2016-03-07 22:40
 categories:
 - dajsiepoznac
 - wikibus
-description: I'm sharing more details about wikibus.org technology stack and my plans
+description: In this post I explain why I am interested in buses and public transport in general
 comments: true
 ---
 
