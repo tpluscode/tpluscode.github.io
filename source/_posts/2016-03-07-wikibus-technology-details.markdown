@@ -57,7 +57,7 @@ And there are also trolleybuses, which often share similarities in terms of comm
 There is also another problem, especially with old designs. Historically buses were built as separate chassis and body.
 In the early days chassis were mostly modified lorry version and only later specialized bus-only designs emerged. And so
 a single type of chassis could receive a wide variety of bodies, often with very distinct design. And the same body would
-be used on a number o chassis by various manufacturers.
+be used on a number of chassis by various manufacturers.
 
 ![Plaxton panorama](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/East_Kent_WJG_470J.JPG/640px-East_Kent_WJG_470J.JPG)
 
