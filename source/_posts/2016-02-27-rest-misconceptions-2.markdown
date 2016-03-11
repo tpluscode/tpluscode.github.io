@@ -22,7 +22,7 @@ In this series:
 1. [Misuse of URIs](/blog/2016/02/rest-misconceptions-1)
 1. **Not linked enough**
 1. [More than links](/blog/2016/03/rest-misconceptions-3)
-1. Resources are application state
+1. [Resources are application state](/blog/2016/03/rest-misconceptions-4)
 1. REST "documentation"
 
 ## REST is about links

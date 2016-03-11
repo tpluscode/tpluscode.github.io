@@ -23,7 +23,7 @@ In this series:
 1. **Misuse of URIs**
 1. [Not linked enough](/blog/2016/02/rest-misconceptions-2)
 1. [More than links](/blog/2016/03/rest-misconceptions-3)
-1. Resources are application state
+1. [Resources are application state](/blog/2016/03/rest-misconceptions-4)
 1. REST "documentation"
 
 ## What are RESTful identifiers?
