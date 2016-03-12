@@ -56,7 +56,7 @@ Haven't we seen that before?
 ![wsdl in vs](/uploads/03/wsdl.png)
 
 You guessed it: **WSDL**. The infamous [Web Services Description Language][wsdl], which in it's latest incarnation is 
-about as old as the first mention of REST. And it's bu no means the [first attempt][ws-history] at web services. Haven't
+about as old as the first mention of REST. And it's by no means the [first attempt][ws-history] at web services. Haven't
 we just come full circle? :recycle:
 
 ![api evolution](/uploads/03/api-evolution.jpg)
