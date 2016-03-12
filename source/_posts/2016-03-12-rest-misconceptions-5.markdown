@@ -53,13 +53,13 @@ the API. But it has little ot nothing to do with REST.
 
 Haven't we seen that before?
 
-![wsdl in vs](/uploads/03/wsdl.png)
+![wsdl in vs](/uploads/2016/03/wsdl.png)
 
 You guessed it: **WSDL**. The infamous [Web Services Description Language][wsdl], which in it's latest incarnation is 
 about as old as the first mention of REST. And it's by no means the [first attempt][ws-history] at web services. Haven't
 we just come full circle? :recycle:
 
-![api evolution](/uploads/03/api-evolution.jpg)
+![api evolution](/uploads/2016/03/api-evolution.jpg)
 
 [blueprint]: https://apiblueprint.org/ 
 [RAML]: http://raml.org
