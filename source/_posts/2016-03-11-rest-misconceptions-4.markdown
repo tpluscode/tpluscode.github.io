@@ -42,6 +42,9 @@ link relation:
 
 ![no routing routing with permalink](/uploads/2016/03/permalink.png)
 
+Of course this is just a demonstration of a general idea. In a real system the user interface would likely be presenting
+multiple resource representations and so a complete solution should take that into account.
+
 ## Selecting views
 
 Now, the view could also be selected based on the resource currently being displayed. A big problem with the routing
@@ -52,13 +55,13 @@ action and that means more (repeatable) code to maintain.
 Instead why not include enough information in the representation so that the client can decide what to render? You serve
 representations of books - make it clear in the representation.
 
-``` http
+{% codeblock lang:http %}
 GET http://movies.sample/movie/10 HTTP/1.1
 
 {
   "type": "Movie"
 }
-```
+{% endcodeblock %}
 
 I added a ***type relation***, which the client will use to render the UI accordingly. How it is done is irrelevant and
 there likely are a number of possibilities like view template file conventions or a [declarative web component](/blog/2015/02/declarative-ui/).
