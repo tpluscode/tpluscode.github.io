@@ -66,7 +66,7 @@ GET http://movies.sample/movie/10 HTTP/1.1
 I added a ***type relation***, which the client will use to render the UI accordingly. How it is done is irrelevant and
 there likely are a number of possibilities like view template file conventions or a [declarative web component](/blog/2015/02/declarative-ui/).
 
-## (No) Warning: There be ~~no~~ dragons
+## (No) Warning: There be <del>no</del> dragons
 
 Some reader familiar with the work of Roy Fielding may be familiar with what he [wrote][typed] about ***typed resources***:
 
