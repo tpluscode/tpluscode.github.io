@@ -35,8 +35,8 @@ In an RPC style architecture, the client must know up-front what the interface a
 the form of SOAP's WSDL documents, CORBA's IDLs or exposed via a RMI Registry. It is then used by the client to generate 
 programming objects used to access the remote API as if it was local.
 
-Problems arise when the API evolves, because old clients are at risk of breaking until they are updated with an updated
-version of API description. This is not how the Web works. Human-browsable HTML document encapsulate all possible interactions
+Problems arise when the API evolves, because old clients are at risk of breaking until they are updated to work with a new
+version of the API. This is not how the Web works. Human-browsable HTML document encapsulate all possible interactions
 in the form of links (`<a>`) and forms (`<form>`). When the *API* of any given web page changes, it's not necessary to 
 perform any action. For example when a new parameter is required to perform an action, the `<form>` contained within the
 page simply displays an additional `<input>` or similar field.
