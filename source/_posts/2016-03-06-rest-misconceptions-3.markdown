@@ -48,13 +48,13 @@ Markup Language* or HTML. More precisely, it works because disparate parties agr
 that any client understanding HTML document could operate in a similar manner. There may have been weird, non-standard
 quirks like the infamous `<marquee>` element, vast differences in Javascript and [ongoing trouble with the behaviour and
 appearance of `<input>` and friends][input-broken]. The forms and links however have been consistent *(I think?)*, which
-means that a web page from 1998 will likely look old and too colorful and maybe very ugly :poo:, but it will still work just
+means that a web page from 1998 will likely look old and too colorful and maybe very ugly :poop:, but it will still work just
 fine in terms of what you can click to go to other places.
 
 REST aspires to bring such timeless goodness to the way developers and users (with the help of clients) use their APIs.
 The human-facing Web works because there is the `text/html` **media type**. To work in similar fashion a REST API needs
-a media type, which when rich enough and shared between the servers and clients can make it happen. Here's what Roy T.
-Fielding wrote on [his blog][must-hypertext].
+a media type rich enough so that servers can provide the client with all the information they need to make requests. Here's
+what Roy T. Fielding wrote on [his blog][must-hypertext].
 
 > **A REST API should spend almost all of its descriptive effort in defining the media type(s) used for representing 
 > resources and driving application state**, or in defining extended relation names and/or hypertext-enabled mark-up for 
