@@ -224,7 +224,7 @@ HTTP/1.1 200 OK
 Link: <http://book.store/ui/breadcrubms?for=/books>; 
         rel="http://book.store/api/breadcrumbs",
       <http://book.store/ui/unauthorized-user-menu>; 
-        rel="http://book.store/api/navigation/main-menu",
+        rel="http://book.store/api/navigation/main-menu"
 ```
 
 ## Is that it?
