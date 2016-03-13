@@ -59,7 +59,7 @@ URI itself but I will be raising this subject in subsequent posts because it app
 most of the confusion surrounding REST.
 
 There are a multitude of [discussions][plural], [articles][tutorial] and [blog posts][uri-design], which promote the idea
-that some it is possible to state the **one URI is better that another**. Outside of REST this may be true. This may also
+that it is possible to state that **one URI is better that another**. Outside of REST this may be true. This may also
 be true if combined with some aspects of the HTTP protocol but otherwise it is false. 
 
 > All URIs are made equal
