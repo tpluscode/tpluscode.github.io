@@ -112,8 +112,6 @@ make sense. This could be used for a parallel-universe dbpedia, where individual
 served as they changed over time. The main resource could be like
 
 ``` javascript
-HTTP/1.1 200 OK
-
 {
   "@context": "dbpedia.alternati.ve/context.jsonld",
   "@id": "/resource/Berlin",
@@ -135,8 +133,6 @@ to let the clients interact with the new and old representations. For example in
 be some sort of person resource:
 
 ``` javascript
-HTTP/1.1 200 OK
-
 {
   "@context": "example.company/context.jsonld",
   "@id": "/employee/tom",
@@ -148,8 +144,6 @@ What if someone decided to change on `name` field into `firstName` and `lastName
 but there is nothing wrong with including both the old and new property instead of replacing:
 
 ``` javascript
-HTTP/1.1 200 OK
-
 {
   "@context": "example.company/context.jsonld",
   "@id": "/employee/tom",
