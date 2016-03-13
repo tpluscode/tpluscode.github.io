@@ -12,8 +12,8 @@ comments: true
 
 In this installment of my REST series I will take on the train wreck, which some people call REST API documentation. Of
 course some form of documentation is necessary but I am growing more and more disappointed with most current solutions.
-Tools like swagger or apiary can be used to create some sort of documentation, but they sure as hell don't describe REST
-APIs.
+Tools like [Swagger][swag]  or [Apiary](http://apiary.io) can be used to create some sort of documentation, but they sure 
+as hell don't describe REST APIs.
 
 <!--more-->
 
@@ -31,7 +31,7 @@ In this series:
 
 I tend to think that most mistakes made when discussing REST boil down to the [misunderstanding of the identifier](/blog/2016/02/rest-misconceptions-1)
 but also neglecting the other constraints. There are great tools out there like [API Blueprint][blueprint], [Swagger][swag] 
-or [RAML][RAML], but they have a significant flaw in common - the are ***URI centric***. 
+or [RAML][RAML], but they have a significant flaw in common - they are ***URI centric***. 
 
 I admire how most tools take an approach complete with steps for design, testing and API security but in the end the client 
 and server usually rely on URI hierarchies. 
