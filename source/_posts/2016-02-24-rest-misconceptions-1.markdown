@@ -25,7 +25,7 @@ In this series:
 1. [More than links](/blog/2016/03/rest-misconceptions-3)
 1. [Resources are application state](/blog/2016/03/rest-misconceptions-4)
 1. [REST "documentation"](/blog/2016/03/rest-misconceptions-5)
-1. Versioning
+1. [Versioning](/blog/2016/03/rest-misconceptions-6)
 
 ## What are RESTful identifiers?
 

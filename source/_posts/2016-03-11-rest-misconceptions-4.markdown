@@ -25,7 +25,7 @@ In this series:
 1. [Leaky business](/blog/2016/03/rest-misconceptions-3)
 1. **Resources are application state**
 1. [REST "documentation"](/blog/2016/03/rest-misconceptions-5)
-1. Versioning
+1. [Versioning](/blog/2016/03/rest-misconceptions-6)
 
 ## Resource-based UI
 

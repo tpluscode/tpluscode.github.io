@@ -24,7 +24,7 @@ In this series:
 1. [More than links](/blog/2016/03/rest-misconceptions-3)
 1. [Resources are application state](/blog/2016/03/rest-misconceptions-4)
 1. [REST "documentation"](/blog/2016/03/rest-misconceptions-5)
-1. Versioning
+1. [Versioning](/blog/2016/03/rest-misconceptions-6)
 
 Boy, have we been chasing our own tails since the year 2000? Why 2000, you ask? That's when Roy T. Fielding published his
 famous dissertation titled *Architectural Styles and the Design of Network-based Software Architectures*. This groundbreaking
