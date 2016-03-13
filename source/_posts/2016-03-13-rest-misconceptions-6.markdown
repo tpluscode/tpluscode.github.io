@@ -27,7 +27,7 @@ In this series:
 
 ## How can I version my URI?
 
-Troy Hunt wrote in his [blog posting][thunt], there are number of ways to version a REST API and all of them wrong. There
+Troy Hunt wrote in his [blog posting][thunt], that there are number of ways to version a REST API and all of them wrong. There
 are the 3 common ways, but together with a bunch of comments under Troy's post, one could count up to 6 or maybe 8 various
 wrong options. First let's look again at the most common and then I'll try to convince you that there is in fact a way 
 less wrong.
@@ -47,13 +47,12 @@ should come to mind
 
 > Do these URLs identify two separate resources?
 
-I think not. It's the representation or the behaviour that changes and not the actual resource. The two identifiers are 
-used to access the same resource. This is the most common argument why this is wrong. On the up side, this is temptingly 
-simple and will never break the cache constraint.
+I think not. It's the representation or the behaviour that changes and not the actual resource. In other words it is the
+**contract** that changes. The two identifiers are used to access the same resource. This is the most common argument why
+this is wrong. However this way is temptingly simple and will never break the cache constraint.
 
 And of course there is one case when the version in URL makes sense. That is when the resource changes and it each 
 individual revision must be accessible at the same time (see below). This however is not why entire APIs need versions. 
-Most often it's the representations or behaviour that changes. In other words it is the **contract** that changes.
 
 ### Version in Accept header
 
@@ -62,9 +61,9 @@ number to the request. In addition to (or instead of) plain `application/json`, 
 like `application/vnd.bookstore.v2+json` to serve version 2 of a representation.
 
 It [has been noted](http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802) that 
-for this solution to be symmetrical, the server should not only serve resources with various mime types, but should also
-accept requests with versioned. And there is even more edge cases when `DELETE` method is concerned, which doesn't take
-neither `Accept` nor `Content-Type` headers. 
+for this solution to be symmetrical, the server should not only serve resources with various media types, but should also
+accept requests with versioned payload. And there is even more edge cases when `DELETE` method is concerned, which doesn't
+take neither `Accept` nor `Content-Type` headers. 
 
 Also only part of the server contract could change. For example the server could return updated representation for version
 2 but still expect the same request body as in version 1. Does it mean that both need a new version, even if only part of
@@ -111,9 +110,9 @@ As stated above, the first possibility is the only circumstance where adding a v
 make sense. This could be used for a parallel-universe dbpedia, where individual revisions of a wikipedia resource are
 served as they changed over time. The main resource could be like
 
-``` javascript
+``` json
 {
-  "@context": "dbpedia.alternati.ve/context.jsonld",
+  "@context": "http://dbpedia.alternati.ve/context.jsonld",
   "@id": "/resource/Berlin",
   "revisions": [
     "/resource/Berlin/rev1",
@@ -132,7 +131,7 @@ This is where resource custom media types sound like a viable options. A new ver
 to let the clients interact with the new and old representations. For example in the initial version of an API there can
 be some sort of person resource:
 
-``` javascript
+``` json
 {
   "@context": "example.company/context.jsonld",
   "@id": "/employee/tom",
@@ -143,7 +142,7 @@ be some sort of person resource:
 What if someone decided to change on `name` field into `firstName` and `lastName`. A breaking change at first glance,
 but there is nothing wrong with including both the old and new property instead of replacing:
 
-``` javascript
+``` json
 {
   "@context": "example.company/context.jsonld",
   "@id": "/employee/tom",
@@ -157,7 +156,7 @@ but there is nothing wrong with including both the old and new property instead 
 What about doing a `PUT` operation on that resource you ask? The media type used should actually inform clients what are
 the required inputs. So before the change there would be something similar to:
  
-``` javascript
+``` json
 {
   "@id": "Person",
   "type": "Class",
@@ -174,7 +173,7 @@ the required inputs. So before the change there would be something similar to:
 This tells clients that in order to modify a `Person` resource, the `name` property must be set. Now after the change
 we would have a different situation:
 
-``` javascript
+``` json
 {
   "@id": "Person",
   "type": "Class",
@@ -194,7 +193,7 @@ actually required**.
 
 ### Evolving the resource behaviour
 
-Last case is modifying how the client interacts with the resources. [A comment linked above](http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802)
+Last case is modifying how the client interacts with the resources. [The comment linked above](http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802)
 talks about change in a blogging platform. In the first version the blog is simply posted and published immediately. 
 Such interaction could easily be modelled as a `POST` to some blog resource.
 
@@ -220,7 +219,7 @@ request could stay the same, so there is nothing to break the client just yet. H
 
 {% codeblock lang:http %}
 HTTP/1.1 201 Created
-Location: http://t-code.pl/blog/draft/REST-misconceptions-part-6
+Location: http://t-code.pl/drafts/REST-misconceptions-part-6
 {% endcodeblock %}
 
 A different `Location` is returned. The client now gets the draft resource and learns that there is a link, which is used
@@ -230,28 +229,31 @@ to publish.
 HTTP/1.1 200 OK
 
 {
-  "@id": "http://t-code.pl/blog/draft/REST-misconceptions-part-6",
+  "@id": "http://t-code.pl/drafts/REST-misconceptions-part-6",
   "@type": "Draft",
-  "published": {
+  "publishedPosts": {
     "@id": "/blog/published",
     "body": {
-      "@id": "http://t-code.pl/blog/draft/REST-misconceptions-part-6"
+      "@id": "http://t-code.pl/drafts/REST-misconceptions-part-6"
     }
   }
 }
 {% endcodeblock %}
 
-The exact details of how the client should request are debatable but irrelevant really. All that matters is that the 
-media type must be expressive enough to describe the interaction. And the client must follow.
+The exact details of how the client should request are debatable and irrelevant really. All that matters is that the 
+media type must be expressive enough to describe that interaction. And the client must follow.
 
 ## Summary
 
-I hope that my example can convince someone out there that there are ways to avoid using version numbers within an API
-completely. Rich hypermedia used from day one should insulate the client from any breaking changes that the server may
+I hope that my examples can convince some people out there that there are ways to avoid using version numbers within an
+API completely. Rich hypermedia used from day one should insulate the client from any breaking changes that the server may
 introduce. 
 
-> You don't version the API. You don't version the resource. You don't version your media type. **You version you hypermedia controls**.
-> *As a consequence if you don't have hypermedia controls, you're in trouble.*
+> You don't version the API.<br>
+> You don't version the resource.<br>
+> You don't version your media type. <br>
+> **You version you hypermedia controls**. <br>
+> *And of course, if you don't have hypermedia controls you're in trouble.*
 
 It seem as though *almost* any other argument for adding version numbers anywhere in a REST API is the consequence of 
 **not following the Hypermedia As The Engine Of Application State** and thus introducing **out-of-bound information** on
