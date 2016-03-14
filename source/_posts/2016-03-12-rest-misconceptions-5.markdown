@@ -40,7 +40,7 @@ and server usually rely on URI hierarchies.
 
 Here's a screenshot from sample Swagger [petstore API](http://petstore.swagger.io). It's nice that URI templates are used,
 but that's where the good ends. This kind of API documentation encourages developers to code against rigid URL structures.
-Also most of these tools don't promote th use of links, which means that at every step in the interaction with the server
+Also most of these tools don't promote the use of links, which means that at every step in the interaction with the server
 clients must be aware of the entirety of the API and the documentation also gives little information on the next possible
 state transfers.
 
@@ -49,7 +49,7 @@ state transfers.
 A coffin to the most "REST documentation" tools that I have seen is the idea of generating client and server code. I've
 recently looked at [AutoRest][autorest] to generate client code from Swagger. It's quite neat and works just fine. You
 run the executable, pass in the Swagger URL and the program produces a whole lot of code, which indeed works perfect with
-the API. But it has little ot nothing to do with REST.
+the API. But it has little to nothing to do with REST.
 
 Haven't we seen that before?
 
