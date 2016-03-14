@@ -267,6 +267,7 @@ Here are some more interesting reads:
 * [Versioning and Types in REST/HTTP API Resources](http://thereisnorightway.blogspot.com/2011/02/versioning-and-types-in-resthttp-api.html)
 * [REST Is Not About APIs, Part 1](http://nirmata.com/2013/10/rest-apis-part-1/)
 * [REST is OVER!](http://blog.steveklabnik.com/posts/2012-02-23-rest-is-over)
+* [Bad HTTP API Smells: Version Headers](https://www.mnot.net/blog/2012/07/11/header_versioning)
 
 [thunt]: http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html
 [proliferation]: https://www.mnot.net/blog/2012/04/17/profiles
