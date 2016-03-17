@@ -65,7 +65,7 @@ the first wikibus library already available on [nuget](https://www.nuget.org/pac
 
 ### [Nancy.Rdf][nancy-rdf]
 
-![nancy.rdf icon](https://raw.githubusercontent.com/wikibus/Nancy.RDF/blob/master/assets/icon_21532.png)
+![nancy.rdf icon](https://raw.githubusercontent.com/wikibus/Nancy.Rdf/master/assets/icon_21532.png)
 
 Second part that I find missing for a .NET REST API, which would serve RDF data are serializers of RDF media types. I love
 Nancy and so I wrap it is my weapon of choice for building a RESTful web service. On top of Nancy I am building a set of
@@ -79,7 +79,7 @@ that is raw graphs, datasets and SPARQL results.
 
 ### [Argolis][argolis]
 
-![hydra logo](https://raw.githubusercontent.com/HydraCG/hydra-cg.com/master/img/logo.png)
+{% img https://raw.githubusercontent.com/HydraCG/hydra-cg.com/master/img/logo.png 100 hydra logo %}
 
 The newest member of the wikibus.org crowd is called Argolis, which further extends Nancy.Rdf above to add support for
 [Hydra][hydra], which is a vocabulary for hypermedia-driven applications. It means that hydra is the means to describe
@@ -88,7 +88,7 @@ the API in a way where the client is actually driven by hypermedia
 I named it after the [mythical][argolis-old] (and [modern][argolis-modern]) part of Greece. I chose that name, because it
 is where the mythical beast Hydra originates from.
 
-![Hydra drawing by Andrew Jian](/uploads/03/2016/hydra.gif)
+![Hydra drawing by Andrew Jian](/uploads/2016/03/hydra.gif)
 
 Hydra drawing by [Andrew Jian](https://www.flickr.com/photos/andrew_jian/).
 
