@@ -12,8 +12,8 @@ description: I'm sharing more details about wikibus.org technology stack and my 
 comments: true
 ---
 
-I just noticed that I forgot to change the permalink of my last post. I intended to write about tech, but ended up writing
-about buses only. Too bad, but I'm not going to change that now. I thins post I will write a little bit more about what
+I just noticed that I forgot to change the permalink of my [last post](/blog/2016/03/wikibus-technology-details/). I intended to write about tech, but ended up writing
+about buses only. Too bad, but I'm not going to change that now. I this post I will write a little bit more about what
 I'm actually implementing for wikibus.org
 
 <!--more-->
