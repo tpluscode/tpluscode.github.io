@@ -19,7 +19,7 @@ In my code I have an `IriRef` class. It's basically a string or Uri wrapped in a
 by my library [JsonLd.Entities][ld-entities] to properly serialize objects to [JSON-LD][JSON-LD]. Here's a excerpt, with 
 other stuff removed.
 
-``` c#
+{% codeblock lang:c# %} 
 public struct IriRef
 {
     public IriRef(string value) { Value = value; }
@@ -28,12 +28,12 @@ public struct IriRef
     [JsonProperty(JsonLdKeywords.Id)]
     public string Value { get; }
 }
-```
+{% endcodeblock %}
 
 As you see it can be constructed from `string` and `Uri` instances. However I don't want to call these constructors every
 time so I added two cast operators.
 
-``` c#
+{% codeblock lang:c# %}
 public struct IriRef
 {
     public static implicit operator IriRef(Uri uri)
@@ -45,18 +45,18 @@ public struct IriRef
     {
         return new IriRef(uriString);
     }
-}        
-```
+}   
+{% endcodeblock %}
 
 See the difference? `Uri` can be casted implicitly so 
 
-``` c#
+{% codeblock lang:c# %}
 // this works
 IriRef iriRef = new Uri("http://example.com");
 
 // this doesn't
 IriRef iriRef = "http://example.com";
-```
+{% endcodeblock %}
 
 I didn't want two `implicit` operator, because while ear Uri will be a valid `IriRef` the same cannot be said about
 simple string. Casting a string to `IriRef` must be a conscious decision and the compiler will help a little.
@@ -66,12 +66,12 @@ simple string. Casting a string to `IriRef` must be a conscious decision and the
 The problem arose when I first used a `Nullable<IriRef>`. The problem is that the implicit cast automatically converts
 null values into into an `IriRef`, which means that `IriRef?` will never be null.
 
-``` c#
+{% codeblock lang:c# %}
 IriRef? willThisBeNull = null;
 
 // this will fail
 Assert.IsNull(willThisBeNull);
-```
+{% endcodeblock %}
 
 Very interesting lesson indeed :)
 
