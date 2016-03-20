@@ -19,7 +19,7 @@ In my code I have an `IriRef` class. It's basically a string or Uri wrapped in a
 by my library [JsonLd.Entities][ld-entities] to properly serialize objects to [JSON-LD][JSON-LD]. Here's a excerpt, with 
 other stuff removed.
 
-{% codeblock lang:c# %} 
+{% codeblock lang:c# %}
 public struct IriRef
 {
     public IriRef(string value) { Value = value; }
