@@ -8,7 +8,7 @@ categories:
 - nancy
 - solid
 - hypermedia
-- wikibus
+- argolis
 description: Open-closed principle is an important part o SOLID. I this post I present how it can be used to achieve extensibility of a Nancy web application
 comments: true
 ---
