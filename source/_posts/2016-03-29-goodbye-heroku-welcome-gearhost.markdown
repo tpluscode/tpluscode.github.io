@@ -1,8 +1,8 @@
 ---
 layout: post
-published: false
+published: true
 title: Goodbye Heroku, welcome Gearhost (for now)
-date: 2016-03-29 13:15
+date: 2016-03-29 13:25
 categories:
 - dajsiepoznac
 - heroku
