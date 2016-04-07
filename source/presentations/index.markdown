@@ -9,6 +9,36 @@ footer: true
 
 Below is a reverse chronological list of presentations I have given.
 
+## AppVeyor Lightning Talk
+
+Presented at [Wrocław .NET user Group](http://wrocnet.github.io/2016/03/09/86-spotkanie-wroclawskiej-grupy-net.html)
+
+Video (PL): [https://youtu.be/vdkksifUNs8](https://youtu.be/vdkksifUNs8)
+
+## HATEOAS as if you meant it
+
+Presented at [Boiling Frogs Conference 2016](http://boilingfrogs.pl/schedule/hateoas-as-if-you-meant-it/)
+
+Slides: [http://presentations.t-code.pl/hateoas/](http://presentations.t-code.pl/hateoas/)
+
+Video (PL): [https://www.youtube.com/watch?v=xjLTknQZerY](https://www.youtube.com/watch?v=xjLTknQZerY)
+
+## Web Components
+
+Presented at [meet.js Wrocław](https://www.facebook.com/events/547697182038648/)
+and [meet.js Łódź](http://www.meetup.com/meet-js-lodz/events/222022793/)
+
+Slides: [http://presentations.t-code.pl/web-components/](http://presentations.t-code.pl/web-components/)
+
+## Paket Package Manager
+
+Presented at [Wrocław .NET user Group](http://wrocnet.github.io/2015/09/22/79-spotkanie-wroclawskiej-grupy-net.html)
+and [Łódzka Grupa Profesjonalistów IT & .NET](http://www.meetup.com/Lodz-NET-IT-Pro-User-Group/events/222245736/)
+
+Slides: [http://presentations.t-code.pl/paket/](http://presentations.t-code.pl/paket/)
+
+Video (PL): [https://youtu.be/_fZ4RrgFRVY](https://youtu.be/_fZ4RrgFRVY)
+
 ## Versioning .NET projects with git repositories
 
 Presented at [Wrocław .NET user Group](http://www.meetup.com/wrocnet/events/218648469/)
