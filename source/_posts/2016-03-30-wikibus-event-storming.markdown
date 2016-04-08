@@ -25,6 +25,7 @@ helped me discover possible aggregate roots and entities and relationships betwe
 [![events on small post-its](/uploads/2016/03/wikibus-events-small.jpg)](/uploads/2016/03/wikibus-events-large.jpg)
 
 * Datasheet added for classification
+
    It is easy to think about vehicles as a whole and keep them in the database as such. However due to the variety of 
    makes and models I decided that it will be better to keep technical details as a separate entity.
 
