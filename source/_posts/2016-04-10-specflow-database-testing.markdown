@@ -1,8 +1,8 @@
 ---
 layout: post
-published: false
+published: true
 title: Testing database access with SpecFlow and NDbUnit and LocalDb &#35;dajsiepoznac
-date: 2016-03-01 21:40
+date: 2016-04-10 20:30
 categories:
 - dajsiepoznac
 - gherkin
@@ -22,8 +22,8 @@ thanks to [LocalDb][LocalDb] the tests are beautifully portable.
 
 ![why test db](/uploads/2016/03/testing-db-wtf.jpg)
 
-Wait, I never said that these are going to be unit tests right? More of integration tests. And how would you test
-repositories etc. without actual database? The name NdbUnit is kind of out of place though.
+Wait, I never said that these are going to be unit tests right? More of integration tests. Otherwise how would you test
+repositories etc. without actual database? 
 
 ## My use case
 
@@ -117,7 +117,7 @@ is when I found [NDbUnit][NDbUnit], which exposes an `INDbUnitTest` interface fo
 old skool `DataSet`s. Here's the code I execute at the beginning of each test scenario, which recreates and initializes
 an LocalDb instance.
 
-``` csharp
+{% codeblock lang:c# %}
 private const InstanceName = "WikibusTest";
 public static readonly string TestConnectionString = ConfigurationManager.ConnectionStrings["sql"].ConnectionString;
 
@@ -144,7 +144,7 @@ public static INDbUnitTest Initialize(SqlConnection connection)
 
     return database;
 }
-```
+{% endcodeblock %}
 
 As you see I had to create a `DataSet` to be able to load data in each test case. More on that later. And of course I had
 to create the dataset `Wikibus.xsd` to match the database structure:
@@ -172,7 +172,7 @@ connect to this database using SQL Server Management Studio? :smile:
 
 With that ready I can now fill the database with some data. Here's how I bind the `Given` step above to a SpecFlow method
 
-``` csharp
+{% codeblock lang:c# %}
 private readonly SqlConnection _sqlConnection;
 private readonly INDbUnitTest _database;
 
@@ -190,7 +190,7 @@ public void GivenTableWithData(string tableName, Table table)
     ds.WriteXml(datasetFile);
     _database.AppendXml(datasetFile);
 }
-```
+{% endcodeblock %}
 
 That's actually quite simple. The only hard and boring part is to convert the weak `Table` into a `DataSet1 object for
 loading. It's simple copying the table values for each row. As long as the header names match column names all is dandy.
