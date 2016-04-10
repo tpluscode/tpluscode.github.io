@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: Testing database access with SpecFlow and NDbUnit and LocalDb &#35;dajsiepoznac
+title: Testing database access with SpecFlow and NDbUnit and LocalDb
 date: 2016-04-10 20:30
 categories:
 - dajsiepoznac
