@@ -54,7 +54,7 @@ What r2rml4net does is convert a single row like
 
 Into some RDF data. Here it's turtle, which will be important in a moment.
 
-``` turtle
+{% codeblock lang:turtle %}
 @base <http://wikibus.org/> .
 @prefix wbo: <http://wikibus.org/ontology#> .
 @prefix bibo: <http://purl.org/ontology/bibo/> .
@@ -67,14 +67,14 @@ Into some RDF data. Here it's turtle, which will be important in a moment.
     dcterms:title "Türkkar City Angel E.D." ;
     dcterms:language <http://lexvo.org/id/iso639-1/tr>,
                      <http://lexvo.org/id/iso639-1/en> .
-```
+{% endcodeblock %}
 
 ## Defining the test case
 
 Each test is structured int test same way. First I define the table(s) contents similarly to the ASCII art above and in
 the `Then` clauses I write a [SPARQL query][sparql], which matches the expected result with the output data.
 
-``` gherkin
+{% codeblock lang:gherkin %}
 Scenario: Mapping brochure row
    Given table Sources.Source with data:
       | Id | SourceType | Language | Language2 | Pages | FolderName              |
@@ -100,7 +100,7 @@ Scenario: Mapping brochure row
                              <http://lexvo.org/id/iso639-1/en> .
       }
       """
-```
+{% endcodeblock %}
 
 **Notice how similar the SPARQL syntax is to that of turtle**. In simple English the above means:
 
