@@ -110,7 +110,7 @@ Scenario: Mapping brochure row
 
 Right, enough RDF and SPARQL. Let's focus on testing the database.
 
-## Preparing the dataabse for tests
+## Preparing the database for tests
 
 It was important to me that each test case runs a fresh database with only the data defined in that test case alone. This
 is when I found [NDbUnit][NDbUnit], which exposes an `INDbUnitTest` interface for manipulating database contents with
@@ -192,7 +192,7 @@ public void GivenTableWithData(string tableName, Table table)
 }
 {% endcodeblock %}
 
-That's actually quite simple. The only hard and boring part is to convert the weak `Table` into a `DataSet1 object for
+That's actually quite simple. The only hard and boring part is to convert the weak `Table` into a `DataSet` object for
 loading. It's simple copying the table values for each row. As long as the header names match column names all is dandy.
 The source code can be viewed [on GitHub][TableExtensions] of course.
 
