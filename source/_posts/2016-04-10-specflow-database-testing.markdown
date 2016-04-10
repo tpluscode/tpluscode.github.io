@@ -54,7 +54,7 @@ What r2rml4net does is convert a single row like
 
 Into some RDF data. Here it's turtle, which will be important in a moment.
 
-{% codeblock lang:turtle %}
+{% codeblock lang:text %}
 @base <http://wikibus.org/> .
 @prefix wbo: <http://wikibus.org/ontology#> .
 @prefix bibo: <http://purl.org/ontology/bibo/> .
