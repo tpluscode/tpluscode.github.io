@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: Fight TypeScript with TypeScript
-date: 2016-04-11 90:35
+date: 2016-04-11 09:35
 categories:
 - dajsiepoznac
 - typescript
