@@ -85,7 +85,7 @@ karma init
 Second, set up systemjs so that karma can load TypeScript tests directly. This is possible thanks to the [karma-systemjs][ksjs].
 To set it up add it as the ***first*** framework in karma and add systemjs configuration:
  
-``` js
+{% codeblock lang:js %}
 module.exports = function(config) {
   config.set({
     frameworks: ['systemjs', 'jasmine'],
@@ -120,7 +120,7 @@ module.exports = function(config) {
     }
   })
 }
-```
+{% endcodeblock %}
 
 The `systemjs` section:
 
@@ -132,7 +132,7 @@ The `systemjs` section:
 
 The `packages` and `transpiler` settings must also be set up the same way in `config.js` of JSPM. Here's an excerpt:
 
-``` js
+{% codeblock lang:js %}
 System.config({
   baseURL: "/",
   defaultJSExtensions: true,
@@ -154,7 +154,7 @@ System.config({
   map: {
   }
 });
-```
+{% endcodeblock %}
 
 #### Let's run it for real now
 
@@ -176,13 +176,13 @@ Chrome 49.0.2623 (Windows 8.1 0.0.0) ERROR
 
 Let's fix the test by actually adding the first piece of code
 
-``` js
+{% codeblock lang:js %}
 export class Hydra {
   static load(uri: string) {
     return window.fetch(uri);
   }
 }
-```
+{% endcodeblock %}
 
 If you haven't stopped the karma server it will notice the new file being added and rerun the test. The result should be 
 similar to
