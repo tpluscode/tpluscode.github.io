@@ -31,7 +31,7 @@ import in line 2.
 
 As you see I'm using ES6/TypeScript syntax here with module imports and arrow functions.
 
-{% codeblock lang:javascript %}
+{% codeblock lang:js %}
 import * as sinon from 'sinon';
 import * as heracles from '../src/heracles';
 
@@ -176,7 +176,7 @@ Chrome 49.0.2623 (Windows 8.1 0.0.0) ERROR
 
 Let's fix the test by actually adding the first piece of code
 
-``` typescript
+``` js
 export class Hydra {
   static load(uri: string) {
     return window.fetch(uri);
@@ -221,7 +221,7 @@ Otherwise typings would wrap them in a named module. After all modules can be in
 
 Finally add a typings reference to you source and test files like
 
-``` typescript
+``` js
 /// <reference path="../typings/main.d.ts" />
 ```
 
