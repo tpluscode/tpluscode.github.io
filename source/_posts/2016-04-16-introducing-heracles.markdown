@@ -205,7 +205,8 @@ operation.compact(myContext).then(compacted => {
 
 A rich interaction with the loaded resource isn't possible just yet. As you see above currently only the basic metadata
 about operations is available. I've also started work on accessing supported properties. In the future I plan a number
-of facilities to ease invoking operations, handling common Hydra objects in specific ways, easier extensions, etc
+of facilities to ease invoking operations, handling common Hydra objects in specific ways, easier extensions, improved
+error handling, etc.
 
 [hydra]: http://hydra-cg.com/spec/latest/core/
 [Argolis]: https://github.com/wikibus/argolis
