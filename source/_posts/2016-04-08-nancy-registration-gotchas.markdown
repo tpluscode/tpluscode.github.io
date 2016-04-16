@@ -98,10 +98,12 @@ found during assembly scanning. TBH it's a good reason to disable autoregistrati
 
 ### DryIoc fails to inject per-request component into `IRequestStartup`
 
-Nancy comes with a handy pair of interfaces `IApplicationStartup` and `IRequestStartup` which when the application boots
-up and at each request respectively. Think an alternative to `Global.asax` or WebActivator on steroids.
+**UPDATE**: DryIoc works fine in version 2.4. See [this issue](https://github.com/lcssk8board/Nancy.Bootstrappers.DryIoc/issues/2)
 
-DryIoc currently fails to inject a per-request component into a request startup.
+~~Nancy comes with a handy pair of interfaces `IApplicationStartup` and `IRequestStartup` which when the application boots
+up and at each request respectively. Think an alternative to `Global.asax` or WebActivator on steroids.~~
+
+~~DryIoc currently fails to inject a per-request component into a request startup.~~
 
 {% codeblock lang:c# %}
 public class RequestStartupRegistrations : Registrations
@@ -123,7 +125,7 @@ public class RequestStartupWithPerRequestInjection : IRequestStartup
 }
 {% endcodeblock %}
 
-Big up to the author of DryIoc who already works on a solution!
+~~Big up to the author of DryIoc who already works on a solution!~~
 
 ### MEF2 seems to be lacking functionality
 
