@@ -15,14 +15,15 @@ Lately I've been working on a library to consume [Hydra Core][hydra] hypermedia-
 planning for a long time now and given that the [Argolis][Argolis] server-side component pretty much works it was about
 time I started working on consuming the API Documentation.
 
-In this post I showcase the simplest usage of heracles and describe some design decisions.
+In this post I showcase the simplest usage of heracles and describe some design decisions. I guess I should write about
+Argolis too in the near future.
 
 <!--more-->
 
 The source code of heracles is *naturally* on [GitHub][heracles-gh]. It is written in TypeScript and bundled as an AMD
 format package.
 
-[![Heracles defeating the Hydra](/uploads/2016/04/427px-Antonio_Pollaiuolo_002.jpg)](https://commons.wikimedia.org/wiki/File:Antonio_Pollaiuolo_002.jpg)
+[{% img /uploads/2016/04/427px-Antonio_Pollaiuolo_002.jpg Heracles defeating the Hydra %}](https://commons.wikimedia.org/wiki/File:Antonio_Pollaiuolo_002.jpg)
 
 ## Getting started
 
