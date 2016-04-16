@@ -190,7 +190,7 @@ Each common case from Hydra Core vocabulary like the `PartialCollectionView` (po
 property) will be enriched with a link to the parent collection. Otherwise it wouldn't be possible to access it from the
 returned object.
 
-### Hydra documentation objects as compacted
+### Hydra documentation objects are compacted
 
 For convenience elements of the Hydra Core vocabulary are compacted with the default hydra `@context` so that on can write
 `op.method` instead of `op['https://www.w3.org/ns/hydra/core#method']`. If the object contained any non-standard content,
