@@ -41,9 +41,9 @@ Now you are ready to start using the library. It is as simple as importing and e
 returns a promise of a resource.
 
 {% codeblock lang:javascript %}
-import * as Hydra from 'wikibus/heracles';
+import {Hydra} from 'wikibus/heracles';
 
-Hydra.Resource.load('http://my.api/my/resource')
+Hydra.loadResource('http://my.api/my/resource')
     .then(res => {
         // do something with the resource
     });
