@@ -207,7 +207,20 @@ export class PartialCollectionView extends Resource {
 
 Of course this will still fail if there are actual cycles in the object graph. I'm hoping though that it won't be the
 case all too often. And for the rare occasion a library like [circular-json][circ] can be used as suggested in [this github
-issue][jsonld-issue]. It will make sure that the
+issue][jsonld-issue]. It will make sure that there are no reference cycles. Unfortunately it is a only replacement for
+`JSON.stringify` and so to use it with jsonld.js it's necessary to deserialize and serialize every time:
+
+{% codeblock lang:js %}
+import * as CircularJSON from 'circular-json';
+
+var serialized = CircularJSON.stringify(object);
+var jsonLd = JSON.parse(serialized);
+jsonld.promises.compact(jsonLd, context).then(/* ... */)
+{% endcodeblock %}
+
+This is because jsonld.js wants to treat a string parameter as URI. 
+
+Please let me know if there is a better way for handling cyclical objects...
 
 [pgs]: http://pgs-soft.com
 [Polymer]: https://www.polymer-project.org/
