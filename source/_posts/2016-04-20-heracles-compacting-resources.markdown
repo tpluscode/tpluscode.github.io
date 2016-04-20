@@ -72,7 +72,7 @@ In my code I used compaction to get rid of long URI keys so that I can take adva
 verbose methods like [computed properties][computed] or wrapping the object in a view model class.
 
 {% codeblock lang:js %}
-getAuthors(model:IHydraResource)
+getAuthors(model)
 {
     var context = {
         "@vocab": "http://wykop.pgs-soft.com/vocab#WeeksLink/",
