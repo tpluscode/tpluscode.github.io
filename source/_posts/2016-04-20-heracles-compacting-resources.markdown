@@ -151,7 +151,7 @@ export class PartialCollectionView extends Resource {
 {% endcodeblock %}
 
 Unfortunately the compaction algorithm still entered the vicious cycle and failed. Why is that? Because [enumerable 
-properties][enumerable]. jsonld.js [iterates over the object][item] using simple `for (var i in obj)` loop, which also
+properties][enumerable]. jsonld.js [iterates over the object][iter] using simple `for (var i in obj)` loop, which also
 returns all getters by default. One way is to use the native `Object.defineProperty` method instead of ES6 `get x()` 
 syntax but it breaks TypeScript code analysis and generally smells. There is a better way though.
 
