@@ -39,10 +39,10 @@ that any time I needed to access the properties full property identifiers must b
 
 ``` html
 <!-- Such markup is not valid data binding syntax in Polymer -->
-<span>{{myObject['http://xmlns.com/foaf/0.1/name']}}</span>
+<span>{% raw %}{{myObject['http://xmlns.com/foaf/0.1/name']}}{% endraw %}</span>
 
 <!-- Databound object's properties must be accessed with the dot notation -->
-<span>{{myObject.name}}</span>
+<span>{% raw %}{{myObject.name}}{% endraw %}</span>
 ```
 
 This is precisely what JSON-LD compaction algorithm is for. It translates URI keys in a compacted JSON object. This 
