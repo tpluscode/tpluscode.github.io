@@ -8,13 +8,14 @@ categories:
 - typescript
 - unit tests
 description: My recipe for testing code written in TypeScript with more TypeScript, karma, jasmine and sinon
+keywords: typescript, tdd, jasmine, karma, testing, dajsiepoznac
 comments: true
 ---
 
 Given that I'm fairly satisfied with the state of my server-side [Hydra][Hydra] library for [NancyFx][NancyFx] called
 **Argolis** it is now time to write some client-side library to consume it. I did some spiking in another small project
 and it was now time to do it properly. I've already had some experience with TypeScript and JSPM so I decided to give
-these two a go
+these two a go.
 
 Unfortunately getting the project setup right was harder than I'd hoped. Here's how I managed to get my first test to pass.
 
@@ -61,7 +62,7 @@ stub to set up a call (line 8) and verify correct parameters (line 12). To make 
 Browser other that Chrome and Opera would also need the whatwg-fetch package or similar
 
 ``` bash
-npm install npm:sinon npm:whatwg-fetch
+jspm install npm:sinon npm:whatwg-fetch
 ```
  
 ### Let's run it
@@ -77,8 +78,9 @@ I've tried other solutions and eventually Karma worked.
 First, install karma, local npm packages and initialize karma
 
 ``` bash
-npm install -g karma
-npm install karma-systemjs karma-jasmine karma-chrome-launcher systemjs typescript --save-dev
+npm install -g karma karma-jasmine jasmine-core
+npm install -g karma-chrome-launcher 
+npm install -g karma-systemjs systemjs
 karma init
 ```
 
@@ -96,23 +98,6 @@ module.exports = function(config) {
     
     systemjs: {
       configFile: 'config.js',
-      config: {
-        paths: {
-          'typescript': 'node_modules/typescript/lib/typescript.js',
-          'systemjs': 'node_modules/systemjs/dist/system.js',
-          'system-polyfills': 'node_modules/systemjs/dist/system-polyfills.js',
-          'es6-module-loader': 'node_modules/es6-module-loader/dist/es6-module-loader.js'
-        },
-        packages: {
-          'tests': {
-            defaultExtension: 'ts'
-          },
-          'src': {
-            defaultExtension: 'ts'
-          }
-        },
-        transpiler: 'typescript'
-      },
       serveFiles: [
         'src/**/*.ts',
         'jspm_packages/**/*'
@@ -122,15 +107,11 @@ module.exports = function(config) {
 }
 {% endcodeblock %}
 
-The `systemjs` section:
+The `systemjs` section reuses jspm configuration and sets up paths served by karma server.
 
-1. reuses jspm configuration,
-1. adds path to typescript and systemjs
-1. sets default module extension for libs and tests
-1. make sures these modules will be loaded directly without a transpilation step
-1. have libs and jspm_packages served by karma server
-
-The `packages` and `transpiler` settings must also be set up the same way in `config.js` of JSPM. Here's an excerpt:
+The `config.js` file should look similar to the one below. 
+Mind the `packages` and `transpiler` settings which make systemjs load selected typescript modules directly without upfront
+transpilation.
 
 {% codeblock lang:js %}
 System.config({
@@ -158,10 +139,10 @@ System.config({
 
 #### Let's run it for real now
 
-If followed the above instructions dot by dot you should be able to run local karma server and have it start Chrome
+If followed the above instructions you should be able to run karma server and have it start Chrome
 
 ``` bash
-./node_modules/karma/bin/karma start
+karma start
 ```
 
 This should execute the first test and fail on missing implementation
