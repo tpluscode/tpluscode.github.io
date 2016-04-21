@@ -7,6 +7,7 @@ categories:
 - dajsiepoznac
 - nancy
 description: Nancy has a great extensibility model but unfortunately it is not yet bulletproof. Here are some problem you might encounter
+keywords: dajsiepoznac, nancy, dependency injection, inversion of control
 comments: true
 ---
 

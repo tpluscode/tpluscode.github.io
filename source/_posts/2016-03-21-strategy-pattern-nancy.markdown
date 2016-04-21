@@ -10,6 +10,7 @@ categories:
 - hypermedia
 - argolis
 description: Open-closed principle is an important part o SOLID. I this post I present how it can be used to achieve extensibility of a Nancy web application
+keywords: dajsiepoznac, nancy, strategy pattern, nancy registrations, hypermedia
 comments: true
 ---
 

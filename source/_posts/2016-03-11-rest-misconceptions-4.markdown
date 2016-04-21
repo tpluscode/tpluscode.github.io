@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: Given that resources are part of the application state, why not take advantage of that fact
+keywords: hypermedia, rest, rest mistakes
 comments: true
 ---
 

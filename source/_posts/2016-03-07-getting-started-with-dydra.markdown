@@ -8,6 +8,7 @@ categories:
 - semantic web
 - rdf
 description: First steps with Dydra, the free, cloud-based graph store
+keywords: dajsiepoznac, dydra, rdf, cloud storage
 comments: true
 ---
 

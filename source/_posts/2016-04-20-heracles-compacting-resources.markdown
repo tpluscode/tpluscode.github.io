@@ -9,6 +9,7 @@ categories:
 - heracles
 - typescript
 description: Heracles resources should work without problems with jsonld.js processing algorithms
+keywords: dajsiepoznac, heracles, hypermedia, jsond ld, typescript
 comments: true
 ---
 

@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: There is a heated debate about how to maintain serve multiple versions of a REST API and most opinions are wrong
+keywords: hypermedia, rest, rest mistakes
 comments: true
 ---
 

@@ -8,6 +8,7 @@ categories:
 - heroku
 - gearhost
 description: I've eventually given up on using Heroku for .NET and now deploy my nancy apps to Gearhost
+keywords: dajsiepoznac, cloud hosting
 comments: true
 ---
 

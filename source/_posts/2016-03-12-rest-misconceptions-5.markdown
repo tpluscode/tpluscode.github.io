@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: I'm sick and tired of seeing all the approaches of so-called REST API documentation. This has to stop 
+keywords: hypermedia, rest, rest mistakes
 comments: true
 ---
 

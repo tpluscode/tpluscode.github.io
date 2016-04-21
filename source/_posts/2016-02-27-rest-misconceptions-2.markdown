@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: Linking is a crucial part of a REST API and yet, despite being so simple, linking is often neglected
+keywords: hypermedia, rest, rest mistakes
 comments: true
 ---
 

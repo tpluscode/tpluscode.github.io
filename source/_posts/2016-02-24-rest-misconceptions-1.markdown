@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: In this post I discuss the misunderstanding and common abuse of identifiers in REST APIs
+keywords: hypermedia, rest, rest mistakes
 comments: true
 ---
 

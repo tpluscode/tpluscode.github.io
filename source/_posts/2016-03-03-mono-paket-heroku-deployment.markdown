@@ -9,6 +9,7 @@ categories:
 - heroku
 - paket
 description: I wanted to give Heroku a try and it's a PITA. Here's a workaround I'm going to try
+keywords: mono, heroku, deployment, dajsiepoznac
 comments: true
 ---
 

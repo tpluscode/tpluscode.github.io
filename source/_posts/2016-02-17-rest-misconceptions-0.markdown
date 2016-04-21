@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: Introduction to a series of posts discussing common mistakes being made
+keywords: hypermedia, rest, rest mistakes
 comments: true
 ---
 

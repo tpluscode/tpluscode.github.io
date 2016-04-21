@@ -8,6 +8,7 @@ categories:
 - c#
 - argolis
 description: When I use attributes and when I don't and why I don't exactly like my current solution
+keywords: dajsiepoznac, argolis, c# attributes
 comments: true
 ---
 

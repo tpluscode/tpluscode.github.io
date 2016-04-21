@@ -1,3 +1,4 @@
+
 ---
 layout: post
 published: true
@@ -8,6 +9,7 @@ categories:
 - wikibus
 - event storming
 description: Event storming has its benefits even for one-man-army projects. Here are results of a short session I had
+keywords: dajsiepoznac, event storming, ddd, domain-driven design
 comments: true
 ---
 

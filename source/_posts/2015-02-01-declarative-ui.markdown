@@ -7,6 +7,7 @@ categories:
 - html
 - js
 description: Managing application state in a RESTful client in a declarative way
+keywords: dajsiepoznac, declarative, web components, html, javascript, js
 comments: true
 ---
 

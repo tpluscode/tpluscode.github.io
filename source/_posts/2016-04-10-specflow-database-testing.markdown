@@ -8,6 +8,7 @@ categories:
 - gherkin
 - specflow
 description: A moderately pleasant way to write specification-by-example tests against a physical database
+keywords: dajsiepoznac, gherkin, specflow, unit tests, database
 comments: true
 ---
 

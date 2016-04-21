@@ -7,7 +7,9 @@ categories:
 - dajsiepoznac
 - hydra
 - heracles
+- hypermedia
 description: The first post showing the heracles hypermedia library for working with Hydra Core API
+keywords: dajsiepoznac, argolis, hydra core vocabulary, hypermedia
 comments: true
 ---
 

@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: Do Hypermedia APIs need to describe entire processes?
+keywords: hypermedia, rest
 comments: true
 ---
 

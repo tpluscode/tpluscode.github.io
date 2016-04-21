@@ -7,6 +7,7 @@ categories:
 - c#
 - dajsiepoznac
 description: Here's why overloading a cast operator can bite you in the butt
+keywords: dajsiepoznac, c#, overloading operators
 comments: true
 ---
 

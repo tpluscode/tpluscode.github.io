@@ -7,6 +7,7 @@ categories:
 - rest
 - hypermedia
 description: Plain links between resources are not enough to implement a rich REST client. The server must supply the clients with a comprehensive metadata about resources and their affordances
+keywords: hypermedia, rest
 comments: true
 ---
 
