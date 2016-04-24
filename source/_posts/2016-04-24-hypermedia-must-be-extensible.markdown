@@ -175,6 +175,7 @@ I will be showing usage examples and discussing ideas in future blog posts.
 [nt]: https://www.w3.org/2001/sw/RDFCore/ntriples/
 [n3]: https://www.w3.org/TeamSubmission/n3/
 [ld]: http://json-ld.org
+[ttl]: https://www.w3.org/TR/2014/REC-turtle-20140225/
 [rdfxml]: https://www.w3.org/TR/2014/REC-rdf-syntax-grammar-20140225/
 [heracles]: http://github/com/wikibus/heracles
 [Argolis]: http://github/com/wikibus/Argolis
