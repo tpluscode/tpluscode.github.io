@@ -45,11 +45,11 @@ truth! I think that there are still a number of puzzles missing which hinders ad
 Hypermedia has still a long way to go. To make it happen for real there has to be an active community which understands
 its benefits and will produce all the necessary moving parts.
 
-1. We must raise awareness of the benefits of hypermedia
-1. We must define best practices around the shady parts of REST such as versioning
-1. We need powerful and extensible media types
-1. We must create the tooling around these media types for both server and client side
-1. We need a new paradigm for creating adaptive user interfaces both of autonomous  and bespoke clients
+1. We must raise **awareness** of the benefits of hypermedia
+1. We must define **best practices** around the shady parts of REST such as versioning
+1. We need powerful and **extensible media types**
+1. We must create the **tooling** around these media types for both server and client side
+1. We need a new paradigm for creating **adaptive user interfaces** both of autonomous and bespoke clients
  
 In future posts I will try to address these labours and show some of my recipes for actual hypermedia-ness.
  
