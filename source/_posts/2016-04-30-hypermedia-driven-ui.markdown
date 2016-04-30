@@ -85,7 +85,7 @@ By setting the `objectView.resource` property the element would then look for te
 ```
 
 See the `<object-view>` used again for `person.avatar`? This way it would be possible to create composable user interface
-with specialized building blocks. Here's how a template for `schema:ImageObject` can be defined using [jsOnlyLightbox][lightbox]
+with specialized building blocks. Here's how a template for `schema:ImageObject` can be rendered as a kind of a lightbox
 (example :two:):
 
 ``` html
@@ -150,7 +150,8 @@ Finally one wouldn't want to declare these templates every time in an applicatio
 reusable Hydra Core elements would be simply wired up by a single element:
 
 ``` html
-<!-- drop this on a page, and the above templates would be available for <object-view> elements -->
+<!-- drop this on a page, and the above templates would be --> 
+<!-- available for <object-view> elements -->
 <hydra-core-templates></hydra-core-templates>
 ```
 
