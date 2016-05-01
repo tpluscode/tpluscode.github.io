@@ -137,7 +137,7 @@ returned by [heracles][heracles]. The most obvious idea is to build a reusable t
 </template>
 ```
 
-See how again the `<object-view>` is used to delegate the decision about 
+See how again the `<object-view>` is used to delegate the decision on what template to render.
 
 Obviously real life Hydra templates will need to be much more sophisticated. Template for `hydra:PartialCollectionView`
 would definitely want to hide unnecessary link. Template for `hydra:Collection` would likely display a different view for
