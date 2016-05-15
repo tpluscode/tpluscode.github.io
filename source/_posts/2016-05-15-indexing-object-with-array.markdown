@@ -17,7 +17,9 @@ element array has the exact same effect as indexing with that array's element.
 
 JavaScript just doesn't stop amazing developers. There are [many quirks][q] I've seen, known and exploited. I was so surprised to hav
 found one that I've never seen before. It turns out that [accessing object as an associative array][arr] works not only with the actual
-index but also when a **single element array** is used for index. Run the code below. What do you think the result will be?
+index but also when a **single element array** is used for index. 
+
+See for yourself below:
 
 <a class="jsbin-embed" href="http://jsbin.com/malopafuju/embed?js,console">JS Bin on jsbin.com</a>
 
