@@ -21,14 +21,24 @@ index but also when a **single element array** is used for index.
 
 See for yourself below:
 
-<a class="jsbin-embed" href="http://jsbin.com/malopafuju/embed?js,console">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/lizeho/embed?js,console">JS Bin on jsbin.com</a>
 
 Of course, the array with two elements returns `undefined` as expected.
 
 What is even more insane, is that the array can be of any depth as long as it is a single element array within a single element array 
 within a single element array etc. How weird is that?
 
-<a class="jsbin-embed" href="http://jsbin.com/joyegufagu/embed?js,console">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.35.12"></script>
+<a class="jsbin-embed" href="http://jsbin.com/fawihu/embed?js,console">JS Bin on jsbin.com</a>
+
+Digging deeper, I discovered that it is possible to index an object with arrays on any dimension and that would be equivalent
+as indexing with the elements joined with a comma. Here's a demonstration
+
+<a class="jsbin-embed" href="http://jsbin.com/xokoze/embed?js,console">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.35.12"></script>
+
+Again, it does not matter whether the array is deeply nested inside other arrays
+
+I imaging this can actually be quite useful though I'd be afraid that programmers not familiar with this trick would not understand
+what is happening.
 
 A superfluous google search didn't answer why this works like that. A comment with an explanation will be greatly appreciated :smile:.
 
