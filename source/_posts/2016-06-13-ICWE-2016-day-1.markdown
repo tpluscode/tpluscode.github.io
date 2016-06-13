@@ -1,0 +1,121 @@
+---
+layout: post
+published: true
+title: Lest I forget: International Conference on Web Engineering - Day 1 Research Tracks
+date: 2016-06-13 20:20
+categories:
+- icwe
+description: A short summary of research presentations that I found interesting (or not) during the first day of ICWE 2016 conference
+keywords: icwe, conference, web engineering
+comments: true
+---
+
+This past week I took part in the [International Conference on Web Engineering](http://icwe2016.inf.usi.ch) or ICWE for
+short. I'd like to round up the lectures I attended, demos I watched and posters I saw. While I still remember, I want to
+write about my impressions about each individual one, at least at the very shortest. Of course I won't be able to cover
+it all, because I wasn't able to attend every session for obvious reasons and at the same time I didn't find everything
+equally interesting. I'll do my best nonetheless.
+
+<!--more-->
+
+## Day 1
+
+Throughout the three conference days I mostly attended the Research Tracks. They contain a whole lot of knowledge, new ideas
+and ingenious tools. Here's what caught my attention on the first day.
+
+![icwe program cover](/uploads/2016/06/icwe-program.jpg)
+
+### The keynote - Quo vadis Google Knowledge Graph
+
+The conference started with a [talk](http://icwe2016.inf.usi.ch/program/keynotes/xin.luna.dong) by [Xin Luna Dong](http://lunadong.com/)
+about the Google Knowledge Graph. It was very interesting to see how Google employs a data model similar in concept to
+RDF to build it's massive knowledge base, how Freebase is currently being replaced by [Google Knowledge Vault][vault] and
+learn about (Lightweight) Verticals, which are one how Google collects its data. However, as one listener points out:
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a>! Nice presentation by Luna Dong but... where is Wikidata?</p>&mdash; Alberto Tonon (@otreblanonot) <a href="https://twitter.com/otreblanonot/status/739729514750742529">June 6, 2016</a></blockquote>
+
+### CTAT: Tilt-and-Tap Across Devices
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Thank you really much <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a> for this award.Special thanks to <a href="https://twitter.com/mariahusman">@MariaHusman</a> <a href="https://twitter.com/hashtag/Abhi?src=hash">#Abhi</a> <a href="https://twitter.com/hashtag/can?src=hash">#can</a>  and my mentor <a href="https://twitter.com/emseen">@emseen</a>. <a href="https://t.co/q4PI4otfHM">pic.twitter.com/q4PI4otfHM</a></p>&mdash; Lindig (@lindadigeronimo) <a href="https://twitter.com/lindadigeronimo/status/740461345632620544">June 8, 2016</a></blockquote>
+
+This interesting work by [Linda Di Geronimo][linda], [Maria Husmann][mhusmann], Abhimanyu Patel, Can Tuerk and [Moira C. Norrie][mnorrie]
+was awarded the Best Paper Award for good reason. During the talk we could watch what great interactions can be achieve
+by communicating multiple mobile device equipped with accelerometers. That has some proper SCI-FI potential. And just thing
+about all the games. Well, unfortunately we've heard that lagging would be too great for dynamic real-time interaction, 
+but some less intensive activities? After all we all have a universal Wii-like controller in our pockets. It just so happens
+that it can take calls.
+
+{% video /uploads/2016/06/ctat.mp4 500 %}
+
+### Revisting Web Data Extraction using In-Browser Structural Analysis and Visual Cues in Modern Web Designs
+
+In his presentation, [Alfonso Murolo][murolo] showcased his Chrome extension called **DeepDesign**, which uses some 
+state-of-the-art techniques to aid extracting (scraping) data from websites. The extension takes advantage of structural
+and visual cues to automate the creation of wrappers for extracting data from web pages. I only wish that the extension
+was made public and included a crawler so that entire websites can be scraped. Currently it requires manual action.
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">DeepDesign: Chrome Web extractor extension. I was looking for this! Will have to try it out. <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a> <a href="https://t.co/8e74pJct1D">pic.twitter.com/8e74pJct1D</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/739754809729929216">June 6, 2016</a></blockquote>
+
+Unfortunately, currently trying DeepDesign won't be possible.
+
+### Clustering-Aided Page Object Generation for Web Testing
+
+First day, and yet another award - for best student paper. In this presentation the audience was introduced to [APOGEN][apogen] 
+or **Automatic Page Objects Generator**. It is a Java tool, which crawls a website to create Page Objects for its pages.
+However it does by combining multiple instances of the same page into clusters. It allows correcting these clusters with
+a simple UI. That UI even shows small renderings of crawled pages. There is so much usefulness in this tool and it is
+already [available as open source](https://app.assembla.com/spaces/sepl-apo/subversion/source/HEAD/trunk) (just why SVN?).
+
+{% video /uploads/2016/06/apogen.avi 500 %}
+
+How cool is that? If I ever hear that scientific conferences don't have anything practical offer to I will slap that
+person across their face :wink:.
+
+### QwwwQ: Querying Wikipedia without writing queries
+
+This is another cool Chrome extension I'm very excited about, which unfortunately is not available publicly just yet.
+QwwwQ (pron. quick) is an ingenious tool for querying [DBpedia](http://dbpedia.org) in a way I would describe as a mix of
+query-by-example and maybe faceted search. It would allow non-technical users to explore the wealth of data stored on
+wikipedia and also help developers build SPARQL queries for DBpedia with a nice GUI instead of a text editor. In their
+paper the authors ([Massimiliano Battan][battan] and [Marco Ronchetti][Ronchetti]) mention future plans for allowing `JOIN`
+operations to traverse relations. I would add to that list the possibility to retrieve the underlying query for further
+customization.
+
+What I found most interesting is that QwwwQ cites a 1975 paper *A psychological study of query by example* by John C. Thomas
+and John D. Gould. Isn't that cool?
+
+### Aspect-Based Sentiment Analysis on the Web using Rhetorical Structure Theory
+
+Another award that day - Distinguished Paper Award. Although the topic is quite advanced, the presenters succinctly explained
+their application of [Rhetorical Structure Theory or RST](https://en.wikipedia.org/wiki/Rhetorical_Structure_Theory) in
+deriving sentiment from product reviews written in English. What does it mean? It means that by deconstructing and
+classifying parts of a review multiple algorithms devised by the authors can determine what positive and negative sentiments
+the reviewer expressed. Interestingly, the results are slightly worse for negative reviews (allegedly, because positive 
+words are often used to express negative sentiments) and results are better for reviews consisting of multiple sentences.
+
+### Diversity in Social Media Urban Analytics
+
+An fairly interesting paper, which shows how social media activity data (from Twitter and Instagram in this case) can be
+used to determine patterns of their respective users in cities. The authors analyzed the usage of said social networks in
+four European cities: Amsterdam, London, Paris and Rome. Among the findings the authors discovered that
+
+* Instagram users concentrate more in the vicinity of tourist locations
+* The same can be said for tourists as opposed to residents
+* Instagram shows more uniform activity over time in various cities that Twitter (for example Amsterdam Twitter activity dies out much quicker in evenings)
+* Both social networks' activity is proportional to city size
+* The activity of people aged 45+ is very low
+
+As unsurprising as they may seem, these results are not really meant to reflect the reality in 100%. The authors are aware
+of the challenges and acknowledge shortcomings of their techniques. This paper is however a good exploration of various
+possibilities which await a data scientist who is interested in analyzing social behaviour on the web.
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+[vault]: https://en.wikipedia.org/wiki/Knowledge_Vault
+[linda]: https://twitter.com/lindadigeronimo
+[mhusmann]: https://twitter.com/MariaHusmann
+[mnorrie]: https://twitter.com/emseen
+[murolo]: https://twitter.com/alfonsomurolo
+[apogen]: http://sepl.dibris.unige.it/APOGEN.php
+[Ronchetti]: http://latemar.science.unitn.it/segue/index.php?&login=logout&action=site&site=ronchet 
+[battan]: https://www.linkedin.com/in/massimiliano-battan-2b49b359
