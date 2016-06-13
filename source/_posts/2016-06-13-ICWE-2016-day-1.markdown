@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: Lest I forget: International Conference on Web Engineering - Day 1 Research Tracks
-date: 2016-06-13 20:20
+date: 2016-06-13 22:45
 categories:
 - icwe
 description: A short summary of research presentations that I found interesting (or not) during the first day of ICWE 2016 conference
