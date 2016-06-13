@@ -45,7 +45,7 @@ about all the games. Well, unfortunately we've heard that lagging would be too g
 but some less intensive activities? After all we all have a universal Wii-like controller in our pockets. It just so happens
 that it can take calls.
 
-{% video /uploads/2016/06/ctat.mp4 500 %}
+{% video /uploads/2016/06/ctat.mp4 870 %}
 
 ### Revisting Web Data Extraction using In-Browser Structural Analysis and Visual Cues in Modern Web Designs
 
@@ -66,7 +66,7 @@ However it does by combining multiple instances of the same page into clusters. 
 a simple UI. That UI even shows small renderings of crawled pages. There is so much usefulness in this tool and it is
 already [available as open source](https://app.assembla.com/spaces/sepl-apo/subversion/source/HEAD/trunk) (just why SVN?).
 
-{% video /uploads/2016/06/apogen.avi 500 500 /uploads/2016/06/apogen.png %}
+{% video /uploads/2016/06/apogen.avi 870 %}
 
 How cool is that? If I ever hear that scientific conferences don't have anything practical offer to I will slap that
 person across their face :wink:.
