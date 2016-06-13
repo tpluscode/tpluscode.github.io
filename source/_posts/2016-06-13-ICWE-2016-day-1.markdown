@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: Lest I forget: International Conference on Web Engineering - Day 1 Research Tracks
+title: Lest I forget&#58; International Conference on Web Engineering - Day 1 Research Tracks
 date: 2016-06-13 22:45
 categories:
 - icwe
