@@ -66,7 +66,7 @@ However it does by combining multiple instances of the same page into clusters. 
 a simple UI. That UI even shows small renderings of crawled pages. There is so much usefulness in this tool and it is
 already [available as open source](https://app.assembla.com/spaces/sepl-apo/subversion/source/HEAD/trunk) (just why SVN?).
 
-{% video /uploads/2016/06/apogen.avi 870 %}
+<video src="/uploads/2016/06/apogen.avi" width="870" controls></video>
 
 How cool is that? If I ever hear that scientific conferences don't have anything practical offer to I will slap that
 person across their face :wink:.
