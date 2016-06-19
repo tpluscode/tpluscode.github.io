@@ -11,7 +11,7 @@ comments: true
 ---
 
 Earlier this week I shortly wrote about the first day Research Track at [International Conference on Web Engineering](http://icwe2016.inf.usi.ch) 
-which took place. Today it's time for day 2 (keynote included).
+which took place between June 6-7. Today it's time for day 2 (keynote included).
 
 <!--more-->
 
