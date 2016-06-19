@@ -110,7 +110,7 @@ the vision by [Istvan Koren][ik] and [Ralf Klamma][klamma] ongoing effort to bui
 the Web of Things. Build with Polymer and their own peer-to-peer communication library! Again, because a picture will
 explain uch better than words, here the slide showing an overview of the authors' vision.
 
-![DireWolf overview slide](/uploads/2016/06/direwolf.png)
+[![DireWolf overview slide](/uploads/2016/06/direwolf.png)](/uploads/2016/06/direwolf_big.png)
 
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
