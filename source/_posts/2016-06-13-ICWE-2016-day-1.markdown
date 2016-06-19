@@ -109,7 +109,7 @@ As unsurprising as they may seem, these results are not really meant to reflect 
 of the challenges and acknowledge shortcomings of their techniques. This paper is however a good exploration of various
 possibilities which await a data scientist who is interested in analyzing social behaviour on the web.
 
-### Design of CQA Systems for Flexible and Scalable Deployment and Evaluation
+### [Design of CQA Systems for Flexible and Scalable Deployment and Evaluation](http://icwe2016.inf.usi.ch/sites/icwe2016/files/slides/Ivan-Srba.pdf)
 
 Another work with so much potential for practical application. Long ago I have been looking for a good, open source
 alternative to Stack Exchange. It turns out that there is one such open-source project being developed at Slovak University

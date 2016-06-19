@@ -1,0 +1,123 @@
+---
+layout: post
+published: true
+title: Lest I forget&#58; International Conference on Web Engineering - Day 2 Research Tracks
+date: 2016-06-19 22:45
+categories:
+- icwe
+description: A short summary of research presentations that I found interesting (or not) during the second day of ICWE 2016 conference
+keywords: icwe, conference, web engineering
+comments: true
+---
+
+Earlier this week I shortly wrote about the first day Research Track at [International Conference on Web Engineering](http://icwe2016.inf.usi.ch) 
+which took place. Today it's time for day 2 (keynote included).
+
+<!--more-->
+
+## Day 2
+
+The second day ended with a lovely dinner in the restaurant and lookout point atop [Monte Brè][bre]. Although the weather
+was a little flaky, everyone got a chance for some pictures of Lugano from above. Here's my panorama shot of Lugano:
+
+[![Lugano panorama](/uploads/2016/06/lugano_pano.jpg)](/uploads/2016/06/lugano_pano_big.jpg)
+
+Other than that, unsurprisingly, the conference research track featured a whole lot of interesting lectures, ideas and
+showcases.
+
+### The keynote - Microservices - The Hunting of the Snark
+
+[James Lewis of ThoughtWorks](https://www.thoughtworks.com/profiles/james-lewis) (yes, the one famous for Martin Fowler)
+gave and extensive and wildly interesting talk about the state of Microservices, organizational challenges for companies
+which want to try and also consultancy work at banks. As we all know, a picture is worth a thousand words, so here are
+some tweet highlights from the keynote
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">&quot;how big are they&quot; doesn&#39;t matter for <a href="https://twitter.com/hashtag/Microservices?src=hash">#Microservices</a>; what matters is how many you can handle. do you have a plan? <a href="https://twitter.com/boicy">@boicy</a> at <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a></p>&mdash; Erik Wilde (@dret) <a href="https://twitter.com/dret/status/740090382013374465">June 7, 2016</a></blockquote>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">And areas necessary for an organization to excel at before going for <a href="https://twitter.com/hashtag/microservices?src=hash">#microservices</a> <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a>  <a href="https://t.co/g8hr42yctQ">https://t.co/g8hr42yctQ</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740093263890223104">June 7, 2016</a></blockquote>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">&#39;The death of the integration env&#39; predicted by <a href="https://twitter.com/boicy">@boicy</a>. It&#39;s not possible for 100s of <a href="https://twitter.com/hashtag/Microservices?src=hash">#Microservices</a> <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a> <a href="https://t.co/kgzPEpqa60">pic.twitter.com/kgzPEpqa60</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740092582609494016">June 7, 2016</a></blockquote>
+
+### REST APIs: A Large-Scale Analysis of Compliance with Principles and Best Practices
+
+Unfortunately, this one I didn't enjoy as much. [Florian Daniel](https://twitter.com/floriandanielit) showed their results
+of a large scale analysis of mobile data usage around Milan. The team gathered 78 GB worth of data and calculated a number
+of metrics like HTTP method usage, media types, user agents and more. An intriguing idea, but without interaction context
+it is really hard to come to any conclusions about the "quality" of any single endpoint from REST perspective. Not to mention
+that the dataset likely misses any encrypted traffic, which I would expect to be a significant portion. If anything, the
+work is an analysis of HTTP protocol usage on the mobile web, but not really REST at all. This is quite evident when you
+look closely at some of the metrics, most of which revolve around the URI (eg. presence of underscores, `api` in path, 
+presence of a trailing slash, version in URI). [I find it very harmful to consider anything specific about URIs a REST
+principle and best practice](../../02/rest-misconceptions-1/). 
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">URI practices are so unnecessary. Come to my <a href="https://twitter.com/wsREST">@wsREST</a> talk on Thursday at 12 to hear more <a href="https://twitter.com/floriandanielit">@floriandanielit</a> <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a> <a href="https://t.co/bW1tNi14gy">pic.twitter.com/bW1tNi14gy</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740111148465422336">June 7, 2016</a></blockquote>
+
+### Benchmarking Web API Quality
+
+A similar presentation followed, in which [Erik Wittern][ewittern] presented the results of a daunting benchmarking of a
+some popular public APIs including Twitter and Flickr, but also less popular services like police.co.uk. It was very 
+entertaining to see how wildly some APIs differ when requested from different regions and at various time of day. 
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">.<a href="https://twitter.com/erikwittern">@erikwittern</a> is painting a dire picture of Web API availability <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a> <a href="https://t.co/1UNoTonVWO">pic.twitter.com/1UNoTonVWO</a></p>&mdash; Philipp Leitner (@xLeitix) <a href="https://twitter.com/xLeitix/status/740120861550739456">June 7, 2016</a></blockquote>
+
+Of course one could argue that such comparison is a bit unfair. For example the aforementioned police.co.uk is likely not
+intended to work smoothly from Australia but on the other hand it may of interest to someone anywhere on the globe occasionally.
+The authors are aware of limitation to their method but rightly point out that it is very important to plan for availability
+when designing a public API. Especially that every single tested service showed occasional peaks in latencies and even 
+outages.
+
+### MIRA: A Model-Driven Framework for Semantic Interfaces for Web Applications
+
+Next presentation that really got my attention was [Daniel Schwabe's][ds] presentation of [MIRA][MIRA], a JavaScript tool
+and RDF notation for modelling user interfaces with abstract elements, so that they can be replaced by concrete elements
+on a given platform. This method addresses the volatility of the web and the shortcoming of responsive design, which will
+soon be unable to cater for futuristic User Interfaces.
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">These are four reasons why responsive web design isn&#39;t enough. Talk by <a href="https://twitter.com/SchwabeD">@schwabed</a> <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a> <a href="https://t.co/XuJIGz3lXt">pic.twitter.com/XuJIGz3lXt</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740152809941827584">June 7, 2016</a></blockquote>
+
+MIRA authors also boast their results which show that for seasoned programmers and non-developers alike it took the least
+time to build a simple application using their tool. However we've seen that already, which makes me skeptical (I'm looking
+at you Lightswitch!).
+
+There is a demo available at [http://mira.tecweb.inf.puc-rio.br/](http://mira.tecweb.inf.puc-rio.br/).
+
+### [Volatile Functionality in Action: Methods, Techniques and Assessment](http://icwe2016.inf.usi.ch/sites/icwe2016/files/slides/Darian-Frajberg.pptx)
+
+This was another slight disappointment of that day. Darian Frajberg presented their evaluation of using various techniques
+to manage volatile functionalities of an application. An example is a time-limited prices reduction on certain item on an
+e-commerce platform. The problem there is that programming tools such as code weaving and regular expressions, which were
+the basis for their platform are very demanding on the programmers. Even when packaged as a reusable library, such a library
+would take a great effort to support and evolve. Also, the authors didn't really compare their results to real methods
+used in practice. The baseline for their evaluation included naïve and unrealistice methods, which would not be used in
+serious software.
+
+### [Abstracting and Structuring Web contents for supporting Personal Web Experience](http://icwe2016.inf.usi.ch/sites/icwe2016/files/slides/Gabriela-Bosetti_WOA.pdf)
+
+This very unassuming and slightly misleading title hides an exciting piece of software called [Web Objects Ambient][woa].
+It is a Firefox extension (with a Chrome version a possibility) which allows end users to enhance web content by interacting
+with elements and combining it with more data like tweets, reviews, etc. And it uses DBpedia as the source of concepts :+1:.
+In case I somehow failed to convey the general idea, here's a video showing WOA in action.
+
+<iframe width="640" height="360" src="https://www.youtube.com/embed/kZyHZpU8ue8" frameborder="0" allowfullscreen></iframe>
+
+Finally, there is also an [extensibility model](https://sites.google.com/site/webobjectambient/documentation), which allows
+developers to extend the sidebar seen above with more powers!
+
+### [The DireWolf Inside You: End User Development for Heterogeneous Web of Things Appliances](http://www.slideshare.net/IstvanKoren/the-direwolf-inside-you-end-user-development-for-heterogeneous-web-of-things-appliances)
+
+Because RDF Streams are above me I'm skipping right to the last presentation of the day. Awarded the Best Vision Paper Award,
+the vision by [Istvan Koren][ik] and [Ralf Klamma][klamma] ongoing effort to build a distributed End User Interface for
+the Web of Things. Build with Polymer and their own peer-to-peer communication library! Again, because a picture will
+explain uch better than words, here the slide showing an overview of the authors' vision.
+
+![DireWolf overview slide](\uploads\2016\06\direwolf.png)
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+[bre]: https://en.wikipedia.org/wiki/Monte_Br%C3%A8
+[ewittern]: https://twitter.com/erikwittern 
+[ds]: https://twitter.com/SchwabeD
+[MIRA]: https://github.com/TecWebLab/mira
+[woa]: https://sites.google.com/site/webobjectambient
+[ik]: https://twitter.com/istinhere
+[klamma]: https://twitter.com/klamma
