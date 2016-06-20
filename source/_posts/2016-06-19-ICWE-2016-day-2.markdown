@@ -5,6 +5,7 @@ title: Lest I forget&#58; International Conference on Web Engineering - Day 2 Re
 date: 2016-06-19 22:45
 categories:
 - icwe
+- conference
 description: A short summary of research presentations that I found interesting (or not) during the second day of ICWE 2016 conference
 keywords: icwe, conference, web engineering
 comments: true
