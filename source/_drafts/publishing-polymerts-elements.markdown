@@ -320,7 +320,7 @@ Typically there would be single application module, like app.js, which reference
 component the import would be a simple
 
 ``` js
-import 'tpluscode/md-ed`
+import `tpluscode/md-ed`
 ```
 
 At runtime, it will pull all necessary files from bower and jspm components. The main index.html file will then reference
