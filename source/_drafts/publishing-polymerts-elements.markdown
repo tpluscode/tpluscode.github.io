@@ -94,7 +94,7 @@ which I install with JSPM as usual
 jspm i npm:marked
 ```
 
-Now it's possible to import the library and use its functionality in the custom element.
+Now, it's possible to import the library and use its functionality in the custom element.
 
 {% codeblock lang:js %}
 import 'marked';
@@ -121,56 +121,42 @@ work for elements which explicitly import polymer.html. There is currently no wa
 which causes multiple Polymers. Needless to say, it is bad.
 
 So, if you need to reference a third party component like some Iron or Paper Elements simply install them from bower but
-don't import them in any of your source files. Read on to see why.
+don't import them in any of your source files. Instead they will be imported in th.
 
+## Publishing for Bower
 
-## Bundling for Bower
+Follow the instructions below if you want to publish you element to be consumed from Bower.
 
-Instead of importing in your element directly, create a main html file in the root of your project. This will be the main
-entrypoint for consumers to import. The common practice is to name the file same as the repository so you will see
-`paper-input/paper-input.html` etc. I named my repository `md-ed` so I added an `md-ed.html` file with all the bower
-dependencies.
+### Bundling
 
-``` html
-<link rel="import" href="../paper-input/paper-textarea.html" />
-<link rel="import" href="../paper-tabs/paper-tabs.html" />
-<link rel="import" href="../iron-pages/iron-pages.html" />
-<script src="../marked/lib/marked.js"></script>
-```
+Bundling is done by running the JSPM CLI which has a number of options. For universal consumer I've found the `bundle-sfx`
+command works best, because it allows creating UMD or universal packages which require neither any specific module loader
+nor JSPM/SystemJS. Elements bundled this way will be possible to consume using bower just like any other element. 
 
-It's important that the paths don't include `bower_components`. On the consumer side, the elements will already
-live alongside other bower dependencies.
-
-You will also want to add the file to you bower.json as `"main": "md-ed.html"`.
-
-Finally, the code is almost ready to bundle. Bundling is done by running the JSPM CLI. It has a number of options. For
-universal consumer I've found the `bundle-sfx` command works best, because it allows creating UMD or universal packages
-which require neither any specific module loader nor JSPM/SystemJS. Elements bundled this way will be possible to consume
-using bower just like any other element. 
-
-I usually add the bundling command to NPM scripts
+I usually add the bundling command to NPM scripts:
 
 {% codeblock lang:js %}
 {
   "scripts": {
-    "build-bower": "jspm bundle-sfx src/md-ed - marked bower/build.js --format global --globals \"{'marked': 'marked'}\""
+    "build-bower": "jspm bundle-sfx src/md-ed - marked dist/bower/build.js --format global --globals \"{'marked': 'marked'}\""
   }
 }
 {% endcodeblock %}
 
-`src/md-ed - marked dist/build.js` means that the root `src/md-ed.ts` file will be bundled into `dist/build.js` but will
-not include the marked library.
+`src/md-ed - marked dist/build/build.js` means that the root `src/md-ed.ts` file and it's dependent modules will be bundled 
+into `dist/bower/build.js` but will not include the marked library. The marked library will be added later as a bower
+dependency.
 
-`--format global` creates a bundle without any module loaders.
+`--format global` creates a bundle without any module loaders. This is enough for bower and web components.
 
 Finally, the `--globals "{'marked': 'marked'}"` switch is required for some excluded modules when bundling. It tells
-JSPM what global variable to assume for the given dependencies.
+JSPM what global variable to to use when injecting dependencies into your bundled modules.
 
 I'm intentionally not minifying the contents. The consumer will do so when bundling his or her actual application.
 
-Now, bindling will create a `bower/build.js` with transpiled and bundled scripts and `bower/build.html` with
-[vulcanized][vulcanize] files. Interestingly, the html must exist beforehand, which looks like a bug in the SystemJS html
-plugin. Simply create one before running the bundle command
+Now, running `npm run build-bower` will create a `bower/dist/build.js` with transpiled and bundled scripts and `bower/dist/build.html`
+with [vulcanized][vulcanize] files. Interestingly, the html must exist beforehand, which looks like a bug in the SystemJS html
+plugin. Simply create one before running the npm script:
 
 ``` bash
 mkdir dist
@@ -178,26 +164,51 @@ touch build.html
 npm run build-bower
 ```
 
-The last step is add the bundled files to the main html. Here's how it looks for me:
+Oh, and don't exclude the `dist` folder from git. You'll want to push the bundled files with everything else.
+
+### Packaging
+
+Most components published with Bower include a html file named same as the repository (and element). My element is called
+`md-ed` and so I created a `md-ed.html` file in the root of my repository. This will be the main entrypoint for consumers
+to import. Here's the complete file:
 
 ``` html
+<!-- imports of bower dependencies -->
 <link rel="import" href="../paper-input/paper-textarea.html" />
 <link rel="import" href="../paper-tabs/paper-tabs.html" />
 <link rel="import" href="../iron-pages/iron-pages.html" />
-<link rel="import" href="bower/build.html" />
+<script src="../marked/lib/marked.js"></script>
+
+<!-- import of bundled HTML files -->
+<link rel="import" href="dist/bower/build.html" />
+
+<!-- this is required due to a bug in HTML loader for SystemJS -->
 <script>
     var System = System || {};
     System.register = System.register || function(){};
 </script>
-<script src="../marked/lib/marked.js"></script>
-<script src="bower/build.js"></script>
+
+<!-- referencing the bundled, transpiled code of the element -->
+<script src="dist/bower/build.js"></script>
 ```
 
-There is some additional boilerplate here. The first script is a remedy for another shortcoming of the systemjs-plugin-html.
-It doesn't play nice with the `bundle-sfx` command and leaves some references to System which won't work when simply
-referencing the bundled js file.
+At the top I added bower dependencies. It's important that the paths don't include `bower_components`. On the consumer 
+side, the elements will already live alongside other bower dependencies. I include all component dependencies and marked,
+which I excluded from the bundle. Shall you choose not to exclude some dependency, you would then keep it out of your
+bower entrypoint.
 
-Oh, and don't exclude the dist folder from git. You'll want to push the bundled files with everything else.
+Below the bundled files are referenced. There is some additional boilerplate here. The extra script is a remedy for another 
+shortcoming of the systemjs-plugin-html. It doesn't play nice with the `bundle-sfx` command and leaves some references to
+SystemJS. This is simply to avoid `System is undefined` errors.
+ 
+Finally, you may also want to add the file to you bower.json as `"main": "md-ed.html"`.
+
+{% codeblock lang:json %}
+{
+  "name": "md-ed",
+  "main": "md-ed.html"
+}
+{% endcodeblock %}
 
 ### For JSPM
 
