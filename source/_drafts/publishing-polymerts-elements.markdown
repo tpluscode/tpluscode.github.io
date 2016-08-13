@@ -26,8 +26,7 @@ both on JSPM packages and another elements from Bower?
 I've created two example repositories:
  
 1. [`md-ed` - a component written in PolymerTS](https://github.com/tpluscode/md-ed)
-1. [sample usage with Bower](https://github.com/tpluscode/md-ed-sample/tree/bower)
-1. [sample usage with JSPM](https://github.com/tpluscode/md-ed-sample/tree/jspm)
+1. its sample usage with [Bower](https://github.com/tpluscode/md-ed-sample/tree/bower) and [JSPM](https://github.com/tpluscode/md-ed-sample/tree/jspm)
 
 ## Repo setup
 
