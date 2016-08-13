@@ -21,6 +21,14 @@ both on JSPM packages and another elements from Bower?
 
 <!--more-->
 
+## TL;DR; Just show me the code
+
+I've created two example repositories:
+ 
+1. [`md-ed` - a component written in PolymerTS](https://github.com/tpluscode/md-ed)
+1. [sample usage with Bower](https://github.com/tpluscode/md-ed-sample/tree/bower)
+1. [sample usage with JSPM](https://github.com/tpluscode/md-ed-sample/tree/jspm)
+
 ## Repo setup
 
 Inspired by the [Taming Polymer post][taming] by Juha Järvi, the initial setup involves preparing JSPM, SystemJS and 
@@ -51,7 +59,7 @@ are installed by running:
 ```
 bower init
 bower i nippur72/PolymerTS --save
-jspm i html=github:Hypercubed/systemjs-plugin-html --dev
+jspm i html=github:Hypercubed/systemjs-plugin-html
 ```
 
 Note that unlike Juha Järvi, I install systemjs-plugin-html from jspm and not bower. It is also crucial that you explicitly
@@ -174,6 +182,7 @@ to import. Here's the complete file:
 
 ``` html
 <!-- imports of bower dependencies -->
+<link rel="import" href="../polymer-ts/polymer-ts.min.html"/>
 <link rel="import" href="../paper-input/paper-textarea.html" />
 <link rel="import" href="../paper-tabs/paper-tabs.html" />
 <link rel="import" href="../iron-pages/iron-pages.html" />
@@ -210,7 +219,131 @@ Finally, you may also want to add the file to you bower.json as `"main": "md-ed.
 }
 {% endcodeblock %}
 
-### For JSPM
+### Consuming
+
+Consuming with Bower is as easy as it gets. Simply install the element:
+
+``` bash
+bower install --save tpluscode/md-ed
+```
+
+add an import `<link>` and use the element on you page:
+
+``` html
+<!doctype html>
+<html>
+<head>
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="bower_components/md-ed/md-ed.html"/>
+</head>
+<body>
+    <md-ed></md-ed>
+</body>
+</html>
+```
+
+## Publishing for JSPM
+
+Follow the instructions below if you want to publish you element to be consumed from JSPM.
+
+### Bundling
+
+Unfortunately, the same bundling command doesn't work for both Bower and JSPM. I've found that for JSPM it is best to
+use the `jspm bundle` command which produces a similar output but for use exclusively with SystemJS and no other module
+loaders. The npm script is similar but simpler than the command used for Bower:
+
+{% codeblock lang:js %}
+{
+  "scripts": {
+    "build-jspm": "jspm bundle src/md-ed - marked dist/jspm/bundle.js"
+  }
+}
+{% endcodeblock %}
+
+It produces a similar output - combined scripts in `dist/jspm/bundle.js` file and vulcanized `dist/jspm/bundle.html`. Here
+the marked library is also excluded from the bundle.
+
+### Packaging
+
+For consumers to be able to use your JSPM package it is also necessary to create a main entrypoint. For that purpose I 
+created an `md-ed.js` file in the root of the repository.
+
+``` js
+import "bower_components/polymer-ts/polymer-ts.min.html!";
+import "bower_components/paper-input/paper-textarea.html!";
+import "bower_components/paper-tabs/paper-tabs.html!";
+import "bower_components/iron-pages/iron-pages.html!";
+
+import './dist/jspm/bundle.html!'
+import './dist/jspm/bundle'
+
+System.import('src/md-ed.ts');
+```
+
+The outline is very similar to Bower's entrypoint: 
+
+1. Import bower dependencies with HTML plugin
+1. Import the bundled HTML and scripts
+1. Load the element from the bundle
+
+The last step is necessary because JSPM bundles don't immediately load any modules. They are just used to combine multiple
+modules in one script.
+
+For the element's package to be installed correctly, the configuration file must include the main file, similarly to that
+of bower.
+
+A perceptive reader will notice that I'm using ES6 module syntax here. SystemJS can handle this just fine provided the
+format option is set in `package.json`. Here's mine, with both entrypoint script and the format set.
+
+{% codeblock lang:json %}
+{
+  "jspm": {
+    "main": "md-ed.js",
+    "format": "es6"
+  }
+}
+{% endcodeblock %}
+
+### Consuming
+
+Consumers, in order to us the element, must install it using JSPM but also install the necessary bower packages. The
+easiest seems to be installing the same element from both JSPM **and** bower. This way, albeit cumbersome when updating,
+will ensure that all necessary dependencies are pulled as well. To install the sample element one would eun the two 
+commands
+
+``` bash
+bower i tpluscode/md-ed --save
+jspm i github:tpluscode/md-ed
+```
+
+Typically there would be single application module, like app.js, which references all it's dependencies. For our jspm
+component the import would be a simple
+
+``` js
+import 'tpluscode/md-ed`
+```
+
+At runtime, it will pull all necessary files from bower and jspm components. The main index.html file will then reference
+the app.js script and uses SystemJS to load the add.
+
+``` html
+<!doctype html>
+        <html>
+<head>
+    <script src="jspm_packages/system.js"></script>
+    <script src="config.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+</head>
+<body>
+
+<md-ed></md-ed>
+
+<script>
+    System.import('app');
+</script>
+</body>
+</html>
+```
 
 ## Conclusion
 
