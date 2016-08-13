@@ -12,12 +12,12 @@ comments: true
 ---
 
 I love consuming [custom elements][elements] but writing them in [Polymer][polymer] with ES5 is far from ideal. ES6 ([or
-more correctly ES2015][es-naming]) offers some improvement but it is still not officially supported by the Polymer team
-and their toolset. 
+more correctly ES2015][es-naming]) ccould offer some improvement but it is still not officially supported by the Polymer
+team and their toolset. 
 
 Thankfully there is [PolymerTS][PolymerTS] which offers a vastly improved Polymer API, mainly thanks to decorators. It 
 also let's developers take advantage of ES6 modules but there is one problem: how do you publish element with dependencies
-both on JSPM packages and another elements from Bower?
+both on JSPM packages and other elements from Bower?
 
 <!--more-->
 
