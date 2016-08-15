@@ -1,8 +1,8 @@
 ---
 layout: post
-published: false
+published: true
 title: Publishing Polymer elements written in TypeScript (with dependencies)
-date: 2016-06-19 22:45
+date: 2016-08-15 10:00
 categories:
 - polymer
 - typescript
@@ -21,7 +21,14 @@ both on JSPM packages and other elements from Bower?
 
 <!--more-->
 
-## TL;DR; Just show me the code
+## TL;DR; 
+
+1. Don't reference bower dependencies directly to avoid vulcanizing `polymer.html`
+  * reference them in package manager-specific entrypoint instead
+1. Use `jspm build-sfx` to publish for Bower
+1. Use `jspm bundle` to publish for JSPM
+
+### Show me the code already
 
 I've created two example repositories:
  
@@ -303,6 +310,9 @@ format option is set in `package.json`. Here's mine, with both entrypoint script
 }
 {% endcodeblock %}
 
+Publishing a package in ES6 syntax will also enable rescursive bundling of the element's dependencies. Otherwise JSPM
+would not be able to bundle direct usages of `System.import`. In other words some dependencies would remain unbundled.
+
 ### Consuming
 
 Consumers, in order to us the element, must install it using JSPM but also install the necessary bower packages. The
@@ -315,15 +325,15 @@ bower i tpluscode/md-ed --save
 jspm i github:tpluscode/md-ed
 ```
 
-Typically there would be single application module, like app.js, which references all it's dependencies. For our jspm
+Typically there would be single application module, like `app.js`, which references all it's dependencies. For our jspm
 component the import would be a simple
 
 ``` js
 import `tpluscode/md-ed`
 ```
 
-At runtime, it will pull all necessary files from bower and jspm components. The main index.html file will then reference
-the app.js script and uses SystemJS to load the add.
+At runtime, it will pull all necessary files from bower and jspm components. The main `index.html` file will then reference
+the `app.js` script and uses SystemJS to load the add.
 
 ``` html
 <!doctype html>
@@ -345,6 +355,12 @@ the app.js script and uses SystemJS to load the add.
 ```
 
 ## Conclusion
+
+I realize that the presented ideas are far from ideal. The web stack is not yet consistent enough, with its multiple
+package managers etc, to support the modern ideas around web components. Until it matures I hope that someone out there
+will find my ideas helpful. 
+
+And please, if you think my bundling routine can be simplified, do leave me a note in the comments.
 
 [elements]: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements
 [polymer]: http://polymer-project.org
