@@ -12,16 +12,18 @@ comments: true
 ---
 
 I love consuming [custom elements][elements] but writing them in [Polymer][polymer] with ES5 is far from ideal. ES6 ([or
-more correctly ES2015][es-naming]) ccould offer some improvement but it is still not officially supported by the Polymer
+more correctly ES2015][es-naming]) could offer some improvement but it is still not officially supported by the Polymer
 team and their toolset. 
 
-Thankfully there is [PolymerTS][PolymerTS] which offers a vastly improved Polymer API, mainly thanks to decorators. It 
-also let's developers take advantage of ES6 modules but there is one problem: how do you publish element with dependencies
+Thankfully, there is [PolymerTS][PolymerTS] which offers a vastly improved Polymer API, mainly thanks to decorators. It 
+also let's developers take advantage of ES6 modules but there is one problem: how do you publish elements with dependencies
 both on JSPM packages and other elements from Bower?
 
 <!--more-->
 
-## TL;DR; 
+## TL;DR;
+
+Here are some highlights from this post:
 
 1. Don't reference bower dependencies directly to avoid vulcanizing `polymer.html`
   * reference them in package manager-specific entrypoint instead
@@ -44,10 +46,10 @@ reusable element.
 **First**, bootstrap JSPM by running `jspm init`. All question can be left with default answers except choosing TypeScript 
 as the transpiler.
 
-**Second**, instruct SystemJS to assume `ts` as the default extension when loading out code. I usually place it in the 
+**Second**, instruct SystemJS to assume `ts` as the default extension when loading your code. I usually place it in the 
 `src` folder and so update `config.js` file accordingly by adding the `packages` property for the sources folder.
 
-{% codeblock lang:js %}
+{% codeblock lang:js config.js %}
 System.config({
   
   packages: {
@@ -69,7 +71,7 @@ jspm i html=github:Hypercubed/systemjs-plugin-html
 ```
 
 Note that unlike Juha Järvi, I install systemjs-plugin-html from jspm and not bower. It is also crucial that you explicitly
-set the name for the plugin by installing with `html=` prefix. Otherwise bundling which I explain later in this post will
+set the name for the plugin by installing with `html=` prefix. Otherwise bundling, which I explain later in this post, will
 not work.
 
 ## Creating elements
@@ -78,9 +80,9 @@ not work.
 
 Because I'm using SystemJS with a transpiler, each element will be split into separate html and ts files. The HTML will 
 contain the `<dom-module>` element but no script. Instead, each of the elements' code will import the template using the
-import syntax via the systemjs-plugin-html plugin. Note the `.html!` suffix. 
+import syntax via the systemjs-plugin-html plugin. Note the `.html!` suffix. This is the outline of my `<md-ed>` element.
 
-{% codeblock lang:js %}
+{% codeblock lang:ts md-ed.ts %}
 import './md-ed.html!'
 import {DefaultMdBehavior} from 'DefaultMdBehavior';
 
@@ -102,15 +104,15 @@ external library. They can be packaged as AMD or CommonJS modules or as globals.
 that most libraries simply work in the browser.
 
 The example component uses the [marked](https://github.com/chjj/marked) library to parse markdown. It is an npm module
-which I install with JSPM as usual
+which I install with JSPM as usual.
 
 ``` bash
 jspm i npm:marked
 ```
 
-Now, it's possible to import the library and use its functionality in the custom element.
+Now, it's possible to import the library and use its functionality in the custom element:
 
-{% codeblock lang:js %}
+{% codeblock lang:js md-ed.ts %}
 import 'marked';
 
 class MdEd extends polymer.Base {
@@ -135,7 +137,8 @@ work for elements which explicitly import polymer.html. There is currently no wa
 which causes multiple Polymers. Needless to say, it is bad.
 
 So, if you need to reference a third party component like some Iron or Paper Elements simply install them from bower but
-don't import them in any of your source files. Instead they will be imported in th.
+don't import them in any of your source files. Instead they will all be imported in an entrypoint - separate for Bower and
+JSPM.
 
 ## Publishing for Bower
 
@@ -143,13 +146,13 @@ Follow the instructions below if you want to publish you element to be consumed 
 
 ### Bundling
 
-Bundling is done by running the JSPM CLI which has a number of options. For universal consumer I've found the `bundle-sfx`
-command works best, because it allows creating UMD or universal packages which require neither any specific module loader
+Bundling is done by running the JSPM CLI which has a number of options. For Bower, I've found the `bundle-sfx`
+command works best, because it allows creating packages which require neither any specific module loader
 nor JSPM/SystemJS. Elements bundled this way will be possible to consume using bower just like any other element. 
 
 I usually add the bundling command to NPM scripts:
 
-{% codeblock lang:js %}
+{% codeblock lang:js package.json %}
 {
   "scripts": {
     "build-bower": "jspm bundle-sfx src/md-ed - marked dist/bower/build.js --format global --globals \"{'marked': 'marked'}\""
@@ -164,7 +167,7 @@ dependency.
 `--format global` creates a bundle without any module loaders. This is enough for bower and web components.
 
 Finally, the `--globals "{'marked': 'marked'}"` switch is required for some excluded modules when bundling. It tells
-JSPM what global variable to to use when injecting dependencies into your bundled modules.
+JSPM what global variable to use when injecting dependencies into your bundled modules.
 
 I'm intentionally not minifying the contents. The consumer will do so when bundling his or her actual application.
 
@@ -186,7 +189,7 @@ Most components published with Bower include a html file named same as the repos
 `md-ed` and so I created a `md-ed.html` file in the root of my repository. This will be the main entrypoint for consumers
 to import. Here's the complete file:
 
-``` html
+{% codeblock lang:html md-ed.html %}
 <!-- imports of bower dependencies -->
 <link rel="import" href="../polymer-ts/polymer-ts.min.html"/>
 <link rel="import" href="../paper-input/paper-textarea.html" />
@@ -205,7 +208,7 @@ to import. Here's the complete file:
 
 <!-- referencing the bundled, transpiled code of the element -->
 <script src="dist/bower/build.js"></script>
-```
+{% endcodeblock %}
 
 At the top I added bower dependencies. It's important that the paths don't include `bower_components`. On the consumer 
 side, the elements will already live alongside other bower dependencies. I include all component dependencies and marked,
@@ -214,11 +217,11 @@ bower entrypoint.
 
 Below the bundled files are referenced. There is some additional boilerplate here. The extra script is a remedy for another 
 shortcoming of the systemjs-plugin-html. It doesn't play nice with the `bundle-sfx` command and leaves some references to
-SystemJS. This is simply to avoid `System is undefined` errors.
+SystemJS. This is simply to avoid `System is undefined` or similar errors.
  
 Finally, you may also want to add the file to you bower.json as `"main": "md-ed.html"`.
 
-{% codeblock lang:json %}
+{% codeblock lang:json bower.json %}
 {
   "name": "md-ed",
   "main": "md-ed.html"
@@ -258,7 +261,7 @@ Unfortunately, the same bundling command doesn't work for both Bower and JSPM. I
 use the `jspm bundle` command which produces a similar output but for use exclusively with SystemJS and no other module
 loaders. The npm script is similar but simpler than the command used for Bower:
 
-{% codeblock lang:js %}
+{% codeblock lang:js package.json %}
 {
   "scripts": {
     "build-jspm": "jspm bundle src/md-ed - marked dist/jspm/bundle.js"
@@ -274,7 +277,7 @@ the marked library is also excluded from the bundle.
 For consumers to be able to use your JSPM package it is also necessary to create a main entrypoint. For that purpose I 
 created an `md-ed.js` file in the root of the repository.
 
-``` js
+{% codeblock lang:ts md-ed.js %}
 import "bower_components/polymer-ts/polymer-ts.min.html!";
 import "bower_components/paper-input/paper-textarea.html!";
 import "bower_components/paper-tabs/paper-tabs.html!";
@@ -284,7 +287,7 @@ import './dist/jspm/bundle.html!'
 import './dist/jspm/bundle'
 
 System.import('src/md-ed.ts');
-```
+{% endcodeblock %}
 
 The outline is very similar to Bower's entrypoint: 
 
@@ -298,10 +301,10 @@ modules in one script.
 For the element's package to be installed correctly, the configuration file must include the main file, similarly to that
 of bower.
 
-A perceptive reader will notice that I'm using ES6 module syntax here. SystemJS can handle this just fine provided the
+A perceptive reader will also notice that I'm using ES6 module syntax above. SystemJS can handle this just fine provided the
 format option is set in `package.json`. Here's mine, with both entrypoint script and the format set.
 
-{% codeblock lang:json %}
+{% codeblock lang:json package.json %}
 {
   "jspm": {
     "main": "md-ed.js",
@@ -326,11 +329,7 @@ jspm i github:tpluscode/md-ed
 ```
 
 Typically there would be single application module, like `app.js`, which references all it's dependencies. For our jspm
-component the import would be a simple
-
-``` js
-import `tpluscode/md-ed`
-```
+component the import would be a simple `import 'tpluscode/md-ed'`
 
 At runtime, it will pull all necessary files from bower and jspm components. The main `index.html` file will then reference
 the `app.js` script and uses SystemJS to load the add.
