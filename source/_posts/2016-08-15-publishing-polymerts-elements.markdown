@@ -49,7 +49,7 @@ as the transpiler.
 **Second**, instruct SystemJS to assume `ts` as the default extension when loading your code. I usually place it in the 
 `src` folder and so update `config.js` file accordingly by adding the `packages` property for the sources folder.
 
-{% codeblock lang:js config.js %}
+{% codeblock lang:js config.js https://github.com/tpluscode/md-ed/blob/master/config.js#L10 %}
 System.config({
   
   packages: {
@@ -64,11 +64,11 @@ System.config({
 **Lastly**, you will need PolymerTS itself and SystemJS plugin for loading HTML files using the ES6 `import` syntax. They
 are installed by running:
 
-```
+{% codeblock lang:sh %}
 bower init
 bower i nippur72/PolymerTS --save
 jspm i html=github:Hypercubed/systemjs-plugin-html
-```
+{% endcodeblock %}
 
 Note that unlike Juha Järvi, I install systemjs-plugin-html from jspm and not bower. It is also crucial that you explicitly
 set the name for the plugin by installing with `html=` prefix. Otherwise bundling, which I explain later in this post, will
@@ -82,7 +82,7 @@ Because I'm using SystemJS with a transpiler, each element will be split into se
 contain the `<dom-module>` element but no script. Instead, each of the elements' code will import the template using the
 import syntax via the systemjs-plugin-html plugin. Note the `.html!` suffix. This is the outline of my `<md-ed>` element.
 
-{% codeblock lang:ts md-ed.ts %}
+{% codeblock lang:ts md-ed.ts https://github.com/tpluscode/md-ed/blob/master/src/md-ed.ts %}
 import './md-ed.html!'
 import {DefaultMdBehavior} from 'DefaultMdBehavior';
 
@@ -106,13 +106,13 @@ that most libraries simply work in the browser.
 The example component uses the [marked](https://github.com/chjj/marked) library to parse markdown. It is an npm module
 which I install with JSPM as usual.
 
-``` bash
+{% codeblock lang:sh %}
 jspm i npm:marked
-```
+{% endcodeblock %}
 
 Now, it's possible to import the library and use its functionality in the custom element:
 
-{% codeblock lang:js md-ed.ts %}
+{% codeblock lang:js md-ed.ts https://github.com/tpluscode/md-ed/blob/master/src/md-ed.ts %}
 import 'marked';
 
 class MdEd extends polymer.Base {
@@ -152,7 +152,7 @@ nor JSPM/SystemJS. Elements bundled this way will be possible to consume using b
 
 I usually add the bundling command to NPM scripts:
 
-{% codeblock lang:js package.json %}
+{% codeblock lang:js package.json https://github.com/tpluscode/md-ed/blob/master/package.json#L4 %}
 {
   "scripts": {
     "build-bower": "jspm bundle-sfx src/md-ed - marked dist/bower/build.js --format global --globals \"{'marked': 'marked'}\""
@@ -175,11 +175,11 @@ Now, running `npm run build-bower` will create a `bower/dist/build.js` with tran
 with [vulcanized][vulcanize] files. Interestingly, the html must exist beforehand, which looks like a bug in the SystemJS html
 plugin. Simply create one before running the npm script:
 
-``` bash
+{% codeblock lang:sh %}
 mkdir dist
 touch build.html
 npm run build-bower
-```
+{% endcodeblock %}
 
 Oh, and don't exclude the `dist` folder from git. You'll want to push the bundled files with everything else.
 
@@ -189,7 +189,7 @@ Most components published with Bower include a html file named same as the repos
 `md-ed` and so I created a `md-ed.html` file in the root of my repository. This will be the main entrypoint for consumers
 to import. Here's the complete file:
 
-{% codeblock lang:html md-ed.html %}
+{% codeblock lang:html md-ed.html https://github.com/tpluscode/md-ed/blob/master/md-ed.html %}
 <!-- imports of bower dependencies -->
 <link rel="import" href="../polymer-ts/polymer-ts.min.html"/>
 <link rel="import" href="../paper-input/paper-textarea.html" />
@@ -221,7 +221,7 @@ SystemJS. This is simply to avoid `System is undefined` or similar errors.
  
 Finally, you may also want to add the file to you bower.json as `"main": "md-ed.html"`.
 
-{% codeblock lang:json bower.json %}
+{% codeblock lang:json bower.json https://github.com/tpluscode/md-ed/blob/master/bower.json#L4 %}
 {
   "name": "md-ed",
   "main": "md-ed.html"
@@ -232,13 +232,13 @@ Finally, you may also want to add the file to you bower.json as `"main": "md-ed.
 
 Consuming with Bower is as easy as it gets. Simply install the element:
 
-``` bash
+{% codeblock lang:sh %}
 bower install --save tpluscode/md-ed
-```
+{% endcodeblock %}
 
 add an import `<link>` and use the element on you page:
 
-``` html
+{% codeblock lang:html https://github.com/tpluscode/md-ed-sample/blob/bower/index.html %}
 <!doctype html>
 <html>
 <head>
@@ -249,7 +249,7 @@ add an import `<link>` and use the element on you page:
     <md-ed></md-ed>
 </body>
 </html>
-```
+{% endcodeblock %}
 
 ## Publishing for JSPM
 
@@ -261,7 +261,7 @@ Unfortunately, the same bundling command doesn't work for both Bower and JSPM. I
 use the `jspm bundle` command which produces a similar output but for use exclusively with SystemJS and no other module
 loaders. The npm script is similar but simpler than the command used for Bower:
 
-{% codeblock lang:js package.json %}
+{% codeblock lang:js package.json https://github.com/tpluscode/md-ed/blob/master/package.json#L5 %}
 {
   "scripts": {
     "build-jspm": "jspm bundle src/md-ed - marked dist/jspm/bundle.js"
@@ -277,7 +277,7 @@ the marked library is also excluded from the bundle.
 For consumers to be able to use your JSPM package it is also necessary to create a main entrypoint. For that purpose I 
 created an `md-ed.js` file in the root of the repository.
 
-{% codeblock lang:ts md-ed.js %}
+{% codeblock lang:ts md-ed.js https://github.com/tpluscode/md-ed/blob/master/md-ed.js %}
 import "bower_components/polymer-ts/polymer-ts.min.html!";
 import "bower_components/paper-input/paper-textarea.html!";
 import "bower_components/paper-tabs/paper-tabs.html!";
@@ -304,7 +304,7 @@ of bower.
 A perceptive reader will also notice that I'm using ES6 module syntax above. SystemJS can handle this just fine provided the
 format option is set in `package.json`. Here's mine, with both entrypoint script and the format set.
 
-{% codeblock lang:json package.json %}
+{% codeblock lang:json package.json https://github.com/tpluscode/md-ed/blob/master/package.json#L8 %}
 {
   "jspm": {
     "main": "md-ed.js",
@@ -323,18 +323,18 @@ easiest seems to be installing the same element from both JSPM **and** bower. Th
 will ensure that all necessary dependencies are pulled as well. To install the sample element one would eun the two 
 commands
 
-``` bash
+{% codeblock lang:sh %}
 bower i tpluscode/md-ed --save
 jspm i github:tpluscode/md-ed
-```
+{% endcodeblock %}
 
-Typically there would be single application module, like `app.js`, which references all it's dependencies. For our jspm
+Typically there would be single application module, like [`app.js`](https://github.com/tpluscode/md-ed-sample/blob/jspm/app.js), which references all it's dependencies. For our jspm
 component the import would be a simple `import 'tpluscode/md-ed'`
 
 At runtime, it will pull all necessary files from bower and jspm components. The main `index.html` file will then reference
 the `app.js` script and uses SystemJS to load the add.
 
-``` html
+{% codeblock lang:html https://github.com/tpluscode/md-ed-sample/blob/jspm/index.html %}
 <!doctype html>
         <html>
 <head>
@@ -351,7 +351,7 @@ the `app.js` script and uses SystemJS to load the add.
 </script>
 </body>
 </html>
-```
+{% endcodeblock %}
 
 ## Conclusion
 
