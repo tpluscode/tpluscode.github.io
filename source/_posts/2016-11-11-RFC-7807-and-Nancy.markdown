@@ -1,0 +1,35 @@
+---
+layout: post
+published: true
+title: Problem Details for HTTP APIs and Nancy
+date: 2016-11-11 10:00
+categories:
+- nancy
+- rest
+description: Introducing a small NuGet package integrating Nancy and RFC7807
+keywords: nancy, problem details, rfc7807, rfc 7807, rest, restful api
+comments: true
+---
+
+There are a number of guidelines for returning errors from a REST API in a consistent way. Of course, API authors should
+[use status codes correctly](http://www.micheltriana.com/blog/2013/09/27/http-status-codes-in-rest-web-api) to signify
+the result of an action. It is also a good idea to return some error details in resource representation. Some API vendors,
+like Facebook or Twitter [have come up with their own solutions](https://apigee.com/about/blog/technology/restful-api-design-what-about-errors).
+
+However, there is a Internet Engineering Task Force (IETF) proposed standard called **Problem Details for HTTP APIs**. It
+was created be Mark Nottingham and is described in document [RFC 7807](https://tools.ietf.org/html/rfc7807). Interestingly
+though there is fairly little support in for .NET Web API libraries and none for Nancy 1.x.
+
+<!--more-->
+
+Actually, I found precisely three NuGet packages: one for [Nancy 2.0](https://www.nuget.org/packages/HttpProblemDetails.Nancy),
+one for [ASP.NET Core](https://www.nuget.org/packages/HttpProblemDetails.Nancy) and one for [ASP.NET Web API](https://www.nuget.org/packages/WebApiProblem/).
+
+Unfortunately there wasn't one for the stable branch of Nancy, currently at 1.4.3.
+
+## Introducing Nancy.ProblemDetails
+
+And so, I have created my own package I called [**Nancy.ProblemDetails**](https://www.nuget.org/packages/Nancy.ProblemDetails).
+It adds support for serializing JSON Problem Details and uses the library Tavis.Problem by Darrel Miller.
+
+Do have a look at the repository for usage examples: https://github.com/tpluscode/Nancy.ProblemDetails
