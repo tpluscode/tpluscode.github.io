@@ -32,4 +32,4 @@ Unfortunately there wasn't one for the stable branch of Nancy, currently at 1.4.
 And so, I have created my own package I called [**Nancy.ProblemDetails**](https://www.nuget.org/packages/Nancy.ProblemDetails).
 It adds support for serializing JSON Problem Details and uses the library Tavis.Problem by Darrel Miller.
 
-Do have a look at the repository for usage examples: https://github.com/tpluscode/Nancy.ProblemDetails
+Do have a look at the repository for usage examples: [https://github.com/tpluscode/Nancy.ProblemDetails](https://github.com/tpluscode/Nancy.ProblemDetails)
