@@ -159,7 +159,7 @@ public class TestModule : UriTemplateModule
         Get("{;author}/gallery{;format}", GetCoverGallery);
     }
 }
-{$ endcodeblock %}
+{% endcodeblock %}
 
 Such route will match `/books/gallery`, `/books;author=Shakespeare/gallery` and `/books/gallery;format=square`.
 
