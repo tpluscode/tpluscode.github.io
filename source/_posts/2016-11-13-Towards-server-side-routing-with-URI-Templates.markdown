@@ -172,7 +172,7 @@ Have you made that far? Great. Now it's time to learn about the thorns that this
 In the beginning of this post I show how routing in existing libraries allow constraining captured variables using
 custom syntax or regular expressions. The URI Templates specification has no such notion neither any extensibility mechanism.
 
-This is not a great deal as ar as I'm concerned. It should be possible to replicate the constraining functionality of
+This is not a great deal as far as I'm concerned. It should be possible to replicate the constraining functionality of
 Nancy or Spring by extending variable template expressions. The standard does reserve some characters for future use and
 they could serve as a separator between the variable name and the constraining expression. For example, to only allow
 the page variable of a collection to be an integer the template could be
