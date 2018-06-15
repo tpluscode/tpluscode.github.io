@@ -120,6 +120,22 @@ module.exports = {
 It will cause all of `node_modules` to be loaded by babel which can take significantly more to build, but
 hey, at least now my storybook works! :sparkles:
 
+## Update for Storybook 4
+
+I recently updated to Storybook `4.0.alpha.9`. It seems to be working fine despite some benign errors showing 
+in the console. It didn't "just work" though. Right after upgrade I was running into similar issues with bundling.
+To fix that the `babel-loader` needs a minor tweak:
+
+```diff
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
++       exclude: /node_modules\/@webcomponents/
+      }
+    ]
+```
+
 [sb]: https://www.npmjs.com/package/@storybook/polymer
 [lit-any]: https://github.com/wikibus/lit-any
 [riscent]: https://twitter.com/riscent
