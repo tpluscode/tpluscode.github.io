@@ -11,7 +11,7 @@ keywords: sqllocaldb, testing, c#
 comments: true
 ---
 
-SQL Serve LocalDB is not something new to me. The ability quickly to run, and destroy a database without much
+SQL Server LocalDB is not something new to me. The ability quickly to run, and destroy a database without much
 hassle has been great aid in running test code which was meant to target a live SQL database. That said, it
 wasn't always without any hassle at all. I tried various tools which make it a bit easier than the command line
 tool but nothing was perfect. Until recently, when I've discovered the humbly named [NuGet package][p] which
