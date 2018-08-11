@@ -145,11 +145,16 @@ be a faux pas but hey, it works.
 
 ## Room for improvement
 
-At the point of writing the latest release of `lit-html` does not work with
+At the point of writing the latest release of `lit-html` cannot render inside `<template>` tag. This should
+change soon but for now I build the `<zero-md>` elements by hand.
 
 Now that I think about it, the markdown rendering element could be replaced with simple JS-based
 transformation. The element however comes with styling capabilities and by default imports GitHub rendering
 styles.
+
+Another current limitation of lit-html is that `import { html } from 'lit-html` cannot be mixed with
+`import { html } from 'lit-html/lib/lit-extended`. It's also about to change soon but something to keep in
+mind.
 
 A lit-html-based implementation probably would not work with React but it should be simple enough to compose
 the content with jsx instead in a similar fashion. 
