@@ -34,7 +34,9 @@ afterthought. Instead, I'd rather it was a prominent part of each story. Sharing
 Only then the stories create a complete documentation pages and not just a set of naked elements you can
 prod.
 
-Here's the end effect presenting my web components: https://wikibus.github.io/lit-any/
+Here's the end effect presenting my web components: [https://wikibus.github.io/lit-any/][litany]
+
+[litany]: https://wikibus.github.io/lit-any/
 
 ![lit-any storybook](/images/lit-any.png)
 
