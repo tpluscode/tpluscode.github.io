@@ -7,7 +7,7 @@ categories:
 - testing
 - api
 - hypermedia
-description: Most common approaches to testing HTTP web apps revolve around URIs and hardcoding HTTP bits. Instead, I propose an adaptable method of crawling an API to discover things to test and define tests like a Hypermedia client would be implemented 
+description: Most common approaches to testing HTTP web apps revolve around URIs and hardcoding HTTP bits. Instead, I propose an adaptable method of crawling an API to discover things to test and define tests in a way which resembles a Hypermedia client. 
 keywords: hypermedia, rest api, testing
 comments: true
 ---
@@ -22,14 +22,14 @@ In this post I'd like to propose a different approach to defining and executing 
 
 ## Recap. What is a Hypermedia-driven API?
 
-The Hypermedia REST constraint, originally called `Hypermedia As The Engine of Application State` by Roy Fielding is probably 
+The Hypermedia REST constraint, originally called `Hypermedia As The Engine of Application State` by Roy Fielding, is probably 
 easiest to grasp through the maxim **follow your nose**. It means that a client should base the subsequent state changes
 (server requests) solely on information gathered from previously received resource representations. The information
 available depends on the media type being used. Different media types may provide a different degree of hypermedia support.
 The facets have been gathered by Mike Amundsen in his [H Factor][h] measurement model.
 
 For example, the simple but popular media type [HAL][hal] supports links, which lets clients follow them without a priori
-knowledge about specific URLs. All they need to know is a [link relation][link] name and look for that in the resource
+knowledge about specific URLs. All they need to know is a [link relation][link] name, and look for that link in the resource
 representation. What's more, the links can appear and disappear in said representations based on resource's state or the
 user's permissions. An adaptive client should only follow links which are present at the given moment.
 
@@ -45,7 +45,7 @@ with methods different than `GET` to change the state of resources.
 There are multiple popular tools used for testing APIs. Some of the names include [Postman][postman], [REST Assured][assured],
 [Karate][karate] or [SoapUI][soapui]. Each one of these tool has their respective strengths and characteristics, but they
 all share a similar flaw: they revolve around URI of individual resources and test them in isolation. While it may sound
-good from a unit test perspective, it's pretty obvious that API tests will always be integration tests. Focusing on a resource
+good from a unit testing perspective, it's pretty obvious that API tests will always be integration tests. Focusing on a resource
 identifier prevents the tests from taking advantage of rich hypermedia controls. Those cannot be easily tested, even if 
 the API under test uses a hypermedia media type. Such tests will mostly only reach level 3 of [Richardson Maturity Model][rmm].
 
@@ -60,7 +60,7 @@ the API under test uses a hypermedia media type. Such tests will mostly only rea
 ## Test by following your nose
 
 To overcome this problem I propose a different approach to building an API test suite. Most importantly, the test executor
-must act just like a hypermedia-aware client. It should only ever follow links and submit forms present in received resource
+must act just like a hypermedia-aware client. It should only ever follow links and submit forms found in received resource
 representations. It also should never begin testing from any random URL because a REST API should only ever advertise just
 a single stable home URL.
 
@@ -73,8 +73,8 @@ taking after the ancient web development acronym.
 To make this approach I propose a completely new DSL, or domain-specific language, which can capture the nature of
 transitioning between resource representations.
 
-The most basic building block would be to define expected hypermedia controls at the root of a test definition. Such top-level,
-or ambient, declaration would be eagerly executed whenever it is encountered in any resource.
+The most basic building block would be to define expected hypermedia controls at the root of a test definition. Such top-level
+(or ambient) declaration would be eagerly executed whenever it is encountered in any resource.
 
 For example, the below snippet could instruct the runner to follow every [`author`](http://www.w3.org/TR/html5/links.html#link-type-author)
 link and assert that it responds with a `200` HTTP status code:
@@ -128,9 +128,9 @@ This example should be interpreted as:
 
 It is clear that media types are not made equal. They also use various names for similar concepts (eg. `form` vs `operation`
 vs `action`). While the initial version will focus on [Hydra](http://www.hydra-cg.com), the DSL should become customizable to
-allow plug-in support for specific other media types.
+allow plug-in support for other specific media types.
  
-Individual runner would also need to implement media type-specific ways for discovering the hypermedia.
+Individual runners would also need to implement media type-specific ways for discovering the hypermedia.
 
 The DSL will then be compiled to a JSON structure, which shall simplify the implementation of runners.
 
@@ -149,14 +149,14 @@ Work has also commenced on prototyping a runner targetting Hydra under
 
 There seems to be just a handful of research papers and even less development going on around testing hypermedia APIs.
 The problem with research papers is also that most of them don't really produce concrete, runnable tools. The only one that
-does from those mentioned below, is not available for download apparently.
+does from those mentioned below, is apparently not available for download.
 
-A fairly recent library exists called [Hyperactive](https://github.com/Tabcorp/hyperactive). It crawls an API to check
+A fairly recent library exists, called [Hyperactive](https://github.com/Tabcorp/hyperactive). It crawls an API to check
 that the links are not broken between resources. Unfortunately it is essentially just that, a simple crawler.
 
 A similar paper has been published in 2010 titled [Connectedness testing of RESTful web-services][ctorws]
 by Sujit Chakrabarti of Bangalore. The approach the authors take is quite similar to the proposed DSL. The downside,
-shown also in the papers I mention below, is that it seems to be tightly couple to URL structures and specific implementation
+shown also in the papers I mention below, is that it seems to be tightly coupled to URL structures and specific implementation
 details, such as HTTP methods. Our approach differs in that it should rely more on the hypermedia control rather than
 out-of-band information.
 
@@ -165,7 +165,7 @@ out-of-band information.
 Another, quite promising paper is [Model-Based Testing of RESTful Web Services Using UML Protocol State Machines][modelbased]
 by Pedro Victor Pontes Pinheiro, André Takeshi Endo, Adenilso da Silva Simão, published in 2013. Instead of DSL, UML diagrams
 are used to build the interaction paths. Other than that it seems that the proposed tool (I could not find the code) has
-some good features, including coverage. Also the approach does not seem suffer from the problem of hardcoding URLs, etc. 
+some good features, including coverage. The presented approach does not seem suffer from the problem of hardcoding URLs, etc. 
 
 [modelbased]: https://www.semanticscholar.org/paper/Model-Based-Testing-of-RESTful-Web-Services-Using-Pinheiro-Endo/4824acc46b9454da7c81e57a9c8eea3a1795bb90
 
