@@ -2,7 +2,7 @@
 layout: post
 published: true
 title: Writing storybook inlined with markdown
-date: 2018-06-11 12:15
+date: 2018-08-11 12:15
 categories:
 - javascript
 - storybook
