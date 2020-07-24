@@ -87,9 +87,9 @@ Finally, there are a bunch of commercial products which incorporate R2RML and ot
 
 ### RDF-RDB2RDF
 
-| Version | 0.008 | :confused: |
-| Last release | 2013-09-20 | :thumbsdown: |
-| Installation | Perl package manager | :thumbsdown: |
+| Version | 0.008 | 😕 |
+| Last release | 2013-09-20 | 👎 |
+| Installation | Perl package manager | 👎 |
 | Developed by | individual ||
 
 The project page is rather developer-centric. An **INSTALL** file linked in an **Other files** section says
@@ -101,15 +101,15 @@ The project page is rather developer-centric. An **INSTALL** file linked in an *
 % cpanm RDF::RDB2RDF
 ```
 
-Looks simple, but I have no idea about PERL and `cpanm`. There is also a `README` file but the usage instructions are rather uninformative. I think this is only a library. Even if this gets the job done, there is no way I'm learning PERL for this :roll_eyes:
+Looks simple, but I have no idea about PERL and `cpanm`. There is also a `README` file but the usage instructions are rather uninformative. I think this is only a library. Even if this gets the job done, there is no way I'm learning PERL for this 🙄
 
 ### XSPARQL
 
 While the address linked from the implementation report is now dead, a quick google reveals its new home on GitHub.
 
-| Version | 1.1.0 | :thumbsup: |
-| Last release | 2019-02-04 | :thumbsup: |
-| Installation | `.jar` download | :roll_eyes:  |
+| Version | 1.1.0 | 👍 |
+| Last release | 2019-02-04 | 👍 |
+| Installation | `.jar` download | 🙄 |
 | Developed by | Company (?) ||
 
 The R2RML feature is not well advertised but found in the wiki under [Working with RDBMS SQL](https://github.com/semantalytics/xsparql/wiki/Working-with-RDBMS-SQL)
@@ -126,40 +126,40 @@ Not sure about this one.
 
 ### db2triples
 
-| Version | 2.2 | :thumbsup: |
-| Last release | 2019-08-02 | :thumbsup: |
-| Installation | Build with maven | :thumbsdown: |
+| Version | 2.2 | 👍 |
+| Last release | 2019-08-02 | 👍 |
+| Installation | Build with maven | 👎 |
 | Developed by | Company ||
 
-This one looks promising. Sadly, it appears that the sources have to be built manually. No thank you. On the other hand the `format` parameter can be one of `'RDFXML', 'N3', 'NTRIPLES' or 'TURTLE'` so I guess no named graphs? :cry:
+This one looks promising. Sadly, it appears that the sources have to be built manually. No thank you. On the other hand the `format` parameter can be one of `'RDFXML', 'N3', 'NTRIPLES' or 'TURTLE'` so I guess no named graphs? 😢
 
 ### D2RQ
 
-| Version | 0.8.1 | :ok_hand: |
-| Last release | 2012-06-22 | :thumbsdown: |
-| Installation | Download from d2rq.org | :roll_eyes: |
+| Version | 0.8.1 | 👌 |
+| Last release | 2012-06-22 | 👎 |
+| Installation | Download from d2rq.org | 🙄 |
 | Developed by | Universities ||
 
 Anyway, only Direct Mapping and unmaintained but if it works, it works...
 
 ### SWObjects dm-materialize
 
-:x: It's dead Jim
+❌ It's dead Jim
 
 ### OpenLink Virtuoso
 
-| Version | 7.2 | :sparkles: |
-| Last release | 2018-08-15 | :thumbsup: |
-| Installation | Dedicated installers + a plugin | :confused: |
+| Version | 7.2 | ✨ |
+| Last release | 2018-08-15 | 👍 |
+| Installation | Dedicated installers + a plugin | 😕 |
 | Developed by | Company ||
 
-Virtuoso is a well-known name in the RDF space. It is a commercial product and a triple store. Support for R2RML comes as an add-on and the overall setup looks super complicated and not at all standalone :thumbsdown:. Sorry
+Virtuoso is a well-known name in the RDF space. It is a commercial product and a triple store. Support for R2RML comes as an add-on and the overall setup looks super complicated and not at all standalone 👎. Sorry
 
 ### morph
 
-| Version | 1.0.6 | :ok_hand:  |
-| Last release | 2013-11-05 | :thumbsdown: |
-| Installation | Maven library | :confused: |
+| Version | 1.0.6 | 👌  |
+| Last release | 2013-11-05 | 👎 |
+| Installation | Maven library | 😕 |
 | Developed by | Individual ||
 
 Another package which would have the users create a Java/Scala project and add a library from a package manager. Thank you, but no thank you.
@@ -167,9 +167,9 @@ Another package which would have the users create a Java/Scala project and add a
 
 ### Ontop
 
-| Version | 4.0-rc1 | :ok_hand:  |
-| Last release | 2020-06-08 | :tada: |
-| Installation | JAR download | :ok_hand: |
+| Version | 4.0-rc1 | 👌  |
+| Last release | 2020-06-08 | 🎉 |
+| Installation | JAR download | 👌 |
 | Developed by | University ||
 
 Ontop is mainly a Virtual Graph endpoint, like d2rq, but comes with a CLI command `materialize` which takes a R2RML mapping graph and serializes the resulting triples to a file.
@@ -178,9 +178,9 @@ Unfortunately, at the time of writing named graphs [are not supported](https://g
 
 ### Karma
 
-| Version | 2.4 | :thumbsup: |
-| Last release | 2020-06-03 | :sparkles: |
-| Installation | GUI? `mvn exec:java`? | :confused: |
+| Version | 2.4 | 👍 |
+| Last release | 2020-06-03 | ✨ |
+| Installation | GUI? `mvn exec:java`? | 😕 |
 | Developed by | University ||
 
 Another super active but also quite complex tool. An installation page shows how to install a GUI tool. The README gives examples of commands running Maven within a clone of the original repository. Maybe I'm missing something but it does look like it falls into "easy of use" category.
@@ -193,9 +193,9 @@ as advertised in the repo. Not what I'm looking for though.
 
 ### d2rq/r2rml-kit
 
-| Version | N/A | :thumbsdown: |
-| Last update | 2019-06-19 | :sparkles: |
-| Installation | scripts in repository | :confused: |
+| Version | N/A | 👎 |
+| Last update | 2019-06-19 | ✨ |
+| Installation | scripts in repository | 😕 |
 | Developed by | Individual (?) ||
 
 > r2rml-kit is an offshoot of D2RQ, based on its abandoned develop branch
@@ -205,18 +205,18 @@ Not only is it **pre-alpha**, it is also not really maintained. Too bad...
 
 ### chrdebru/r2rml
 
-| Version | N/A | :thumbsdown: |
-| Last update | 2020-04-13 | :ok_hand: |
-| Installation | build sources | :thumbsdown: |
+| Version | N/A | 👎 |
+| Last update | 2020-04-13 | 👌 |
+| Installation | build sources | 👎 |
 | Developed by | Individual ||
 
 Another Java project which fails to even provide a pre-built JAR. This one has at least seen some development recent time and claims to support quad output formats. Maybe worth a go.
 
 ### RMLMapper
 
-| Version | 4.8.1 | :sparkles:|
-| Last release | 2020-07-03 | :tada: |
-| Installation | docker run | :ok_hand: |
+| Version | 4.8.1 | ✨|
+| Last release | 2020-07-03 | 🎉 |
+| Installation | docker run | 👌 |
 | Developed by | University ||
 
 The last RML implementation looks promising too. Actively maintained, supports SQL server, outputs quads, uses modern tooling. A definite candidate for success.
@@ -233,7 +233,7 @@ And why are so many poorly documented? Again, I can mostly speak of JS and .NET 
 
 Maybe I'm being unfair about that last point. Much software is poorly documented and I have been guilty of that myself in the past but for the RDF community at large it should be critical to provide working, well documented software in order for semantic technologies to achieve any wider recognition.
 
-Finally, I would have said in the past that universities are part of the problem and the Semantic Web has been long viewed as academic and impractical. It pleases me to see that but of the above, the more recent uni-managed packages actually stand out as being more modern and better maintained overall. :+1:
+Finally, I would have said in the past that universities are part of the problem and the Semantic Web has been long viewed as academic and impractical. It pleases me to see that but of the above, the more recent uni-managed packages actually stand out as being more modern and better maintained overall. 👍
 
 And I have not even looked at test coverage but I do not dare.
 
