@@ -21,6 +21,10 @@ Why is it significant? Because all those years later the environment around R2RM
 
 <!--more-->
 
+## Update July 31st, 2020
+
+It has been brought to my attention that Morph is in fact actiavely maintained. I've updated it's details and evaluation.
+
 ## Intro. What is R2RML?
 
 **R2RML** and **Direct Mapping** are two complementary W3C recommendation (specifications) which define language and algorithm respectively which are used to transform relation databases into RDF graphs. The first is a full blown, but not overly complicated RDF vocabulary which lets designers hand-craft the way in which relational tables are converted into RDF. Individual columns are either directly converted into values (taking their respective database types into consideration) or used within simple templates to produce compound values as literals, blank node and literal alike.
@@ -66,7 +70,7 @@ The first logical place to look for R2RML software should be the [Implementation
 5. [D2RQ](http://d2rq.org/) (Direct Mapping)
 6. [SWObjects dm-materialize](http://swobjects.svn.sourceforge.net/) (Direct Mapping)
 7. [OpenLink Virtuoso](http://virtuoso.openlinksw.com/) (R2RML)
-8. [morph](https://github.com/jpcik/morph) (R2RML)
+8. [morph](https://github.com/oeg-upm/morph-rdb) (R2RML)
 
 The listing is clearly not actively maintained (last updated in August 2012) so one would also try searching so the latest and greatest. Here's what I found:
 
@@ -157,13 +161,12 @@ Virtuoso is a well-known name in the RDF space. It is a commercial product and a
 
 ### morph
 
-| Version | 1.0.6 | 👌  |
-| Last release | 2013-11-05 | 👎 |
-| Installation | Maven library | 😕 |
-| Developed by | Individual ||
+| Version | 3.12.5 | 👌 |
+| Last release | 2019-09-20 | 👌 |
+| Installation | JAR download | 👌 |
+| Developed by | Company ||
 
-Another package which would have the users create a Java/Scala project and add a library from a package manager. Thank you, but no thank you.
-
+Much outdated in the original 2012 implementation report, it turns out that Morph has seen much activity since and has been developed by a commercial company. Java-style setup using a JAR download and the awkward `.properties` file but definitely something to try out.
 
 ### Ontop
 
@@ -243,6 +246,7 @@ In the end, it's still a little disappointing how limited the choice seems for s
 
 1. **XSPARQL** (config is going to be a trial & error thing)
 2. **db2triples** (only if the docs are inaccurate and named graphs are supported)
+2. **morph**
 3. **Ontop** (no named graph but deserves a closer look)
 4. **chrdebru/r2rml**
 5. **RMLMapper**
