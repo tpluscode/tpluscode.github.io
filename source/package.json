@@ -2,12 +2,14 @@
   "private": true,
   "name": "tpluscode.github.io",
   "scripts": {
+    "postinstall": "bower install",
     "build": "webpack --mode production",
     "watch": "webpack --watch --mode development"
   },
   "dependencies": {
     "@open-wc/building-webpack": "^2.13.46",
     "@rdfjs-elements/rdf-snippet": "^0.2.1",
+    "bower": "^1.8.8",
     "webpack": "^4.44.2",
     "webpack-cli": "^4.2.0",
     "webpack-merge": "^5.7.3"
