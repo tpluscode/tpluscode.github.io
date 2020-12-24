@@ -30,7 +30,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           build_directory: public
       - name: Publish live
-        if: github.ref == 'refs/heads/source'
+        if: github.ref == 'refs/heads/source' && success()
         uses: crazy-max/ghaction-github-pages@v2.2.0
         with:
           target_branch: master
