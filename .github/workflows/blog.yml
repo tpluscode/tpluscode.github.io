@@ -20,7 +20,7 @@ jobs:
         working-directory: source
       - run: yarn build
         working-directory: source
-      - run: rake generate
+      - run: bundle exec rake generate
 
       - name: Publish preview
         if: github.ref != 'refs/heads/source'
