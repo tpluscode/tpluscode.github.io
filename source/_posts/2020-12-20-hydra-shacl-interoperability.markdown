@@ -13,9 +13,9 @@ keywords: rdf, hypermedia apis, hydra, semantic web
 comments: true
 ---
 
-[Hydra Core][Hydra] is a community-driven specification for describing hypermedia APIs in a machine readable form so that client applications can discover the resources at runtime. On its onw however it does not expressible enough to describe any arbitrary resource representation.
-[SHACL][SHACL], Shapes Constraint Language on the other hand is a beautifully extensible schema-like language which has great power and extensibility in describing graph data structures.
-Combined they provide a complete solution for building hypermedia applications driven by RDF.
+[Hydra Core][Hydra] is a community-driven specification for describing hypermedia APIs in a machine readable form so that client applications can discover the resources at runtime. On its own, however, it is not expressible enough to describe any arbitrary resource representation.
+[SHACL][SHACL], or Shapes Constraint Language, on the other hand is a beautifully extensible schema-like language which offers great power and flexibility in describing graph data structures.
+Combined, they provide a complete solution for building hypermedia applications driven by RDF.
 
 [Hydra]: http://www.hydra-cg.com/spec/latest/core/
 [SHACL]: https://www.w3.org/TR/shacl/
@@ -36,7 +36,7 @@ At the bottom of this post you will see how to configure [shaperone](https://git
 
 The Hydra vocabulary defines a term `hydra:Operation` which represents a HTTP request which a server advertises as being supported by specific resources, either by a specific instance or entire class of resources.
 
-For the sake of this blog post, let's consider a hypothetical API which describes a very registration request:
+For the sake of this blog post, let's consider a hypothetical API which describes a registration request:
 
 <rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra">
    <script type="text/turtle">
@@ -62,7 +62,7 @@ prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 The above snippet, excerpt from the API's [Documentation resource][apidoc], declares that the clients will come across a collection of users (`rdf:type <UserCollection>`) against which a POST request will be possible to create a new resource. That operation will require a representation of the `<User>` class.
 
-While Hydra Core vocabulary does have a basic set of terms which can describe the user class, it may not be enough to cater for rich client-server interactions as well as a UI building block. Neither will be RDFS, and OWL, although quite powerful is a little complex and seriously lacks tooling support.
+While Hydra Core vocabulary does have a basic set of terms which can describe the user class, it may not be enough to cater for rich client-server interactions as well as a UI building block. Neither will be RDFS, and OWL, although quite powerful, is a little complex and seriously lacks tooling support and widespread recognition.
 
 Enter, SHACL.
 
@@ -116,12 +116,12 @@ prefix xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 Hopefully this is quite self-explanatory so far.
 
-1. The objects of `sh:property` require that any instance of `<User>` have exactly on of each properties, declared using `sh:path`. That is achieved using `sh:minCount` and `sh:maxCount`
+1. The objects of `sh:property` require that any instance of `<User>` have exactly one of each property, declared using `sh:path`. That is achieved using `sh:minCount` and `sh:maxCount`
 2. Name must be at least 3 characters long string
 3. Country must be an instance of Wikidata Country class `wd:Q6256`
 4. Exactly one country is allowed
-5. `sh:order` is a UI hint for building a form
-6. `dash:singleLine` is a form builder hint which ensures that the text field does not allow line breaks (ie. no `<textarea>`
+5. `sh:order` is a UI hint for organising inputs in a form
+6. `dash:singleLine` is a form builder hint which ensures that the text field does not allow line breaks (ie. no `<textarea>`)
 7. `dash:editor` instructs the form builder to create an input component with a selection of instances of the desired RDF type
 
 SHACL is quite wonderful in that shapes are useful for many purposes. Check the [SHACL Use Cases and Requirements](https://www.w3.org/TR/shacl-ucr/) note for a host of examples. In the presented scenario, a rich client can use to dynamically produce a form to have users input the data, and the server will run validations to check that requests payloads satisfy the SHACL constraints.
@@ -154,7 +154,7 @@ prefix wd: <http://www.wikidata.org/entity/>
 .
 ```
 
-By adding this property a UI component can load the countries by dereferencing a `hydra:Collection` which would look somewhat like this:
+By adding this property a UI component can load the countries by dereferencing a `hydra:Collection` whose representation would look somewhat like this:
 
 <rdf-snippet formats="application/ld+json,application/n-quads" prefixes="hydra">
    <script type="text/turtle">
@@ -178,7 +178,7 @@ wd:Q145 rdfs:label "United Kingdom"@en , "Zjednoczone Królestwo"@pl , "Vereinig
 
 ![linked data mug](https://hydra.t-code.pl/img/linked_data.jpg)
 
-So far the subject was APIs, but the web is more than just servers returning data, even if that data is RDF. You see, the hypothetical registration form above actually references a third party dataset, which is Wikidata. All of this data is already on the web and use standard formats. By using a simple SPARQL query the countries can be [fetched directly from their source](https://w.wiki/rsz); without even adding the `/countries` resource to your API!
+So far the subject was APIs, but the web is more than just servers returning data, even if that data is RDF. You see, the hypothetical registration form above actually references a third party dataset, which is Wikidata. All of this data is already on the web and use standard formats. By using a simple SPARQL query the countries can be [fetched directly from their source](https://w.wiki/rsz); without even adding the `/countries` resource to your API. Heck, the client appication would not need a dedicated API at all!
 
 {% codeblock lang:sparql %}
 # wd: and wdt: are implicitly added by wikidata's SPARQL endpoint
@@ -203,7 +203,7 @@ CONSTRUCT {
 
 This query can be directly encoded in a URL to GET the countries and populate a dropdown component. You can see that in the [playground][playground], mentioned in the beginning.
 
-ALl possible thanks to web standards 🤘
+All possible thanks to web standards 🤘
 
 ## Implementation notes
 
@@ -229,10 +229,11 @@ The `@hydrofoil/shaperone-hydra` package extends the default behaviour to have `
 
 ## Next steps
 
-In future posts I will present how `hydra:search` URI Templates can be used to:
+In future posts I will present how :
 
 2. using Hydra descriptions to find collections without using `hydra:collection` directly
-3. create forms with dependent fields, so that users first select a country which is then used to narrow down a selection of country's secondary administrative division and so on
-1. improve performance by filtering resources on the data source
+3. `hydra:search` URI Templates can be used to:
+   - create forms with dependent fields, so that users first select a country which is then used to narrow down a selection of country's secondary administrative division and so on
+   - improve performance by filtering resources on the data source
 
 <script src="{{ root_url }}/components/rdf-snippet.js"></script>
