@@ -1,0 +1,38 @@
+name: blog
+
+on:
+  push:
+    branches: 'source'
+  pull_request:
+    branches: '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.4
+      - uses: ruby/setup-ruby@v1.60.1
+        with:
+          ruby-version: 2.5.4
+          bundler-cache: true
+      - run: yarn
+        working-directory: source
+      - run: yarn build
+        working-directory: source
+      - run: bundle exec rake generate
+
+      - name: Publish preview
+        if: github.ref != 'refs/heads/source'
+        uses: jsmrcaga/action-netlify-deploy@master
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          build_directory: public
+      - name: Publish live
+        if: github.ref == 'refs/heads/source'
+        uses: crazy-max/ghaction-github-pages@v2.2.0
+        with:
+          target_branch: master
+          build_dir: public
+          jekyll: false

@@ -22,3 +22,4 @@ bower_components
 *.un~
 *.markdown~
 *.html~
+source/components
