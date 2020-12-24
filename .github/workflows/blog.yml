@@ -29,6 +29,7 @@ jobs:
       - name: Publish live
         if: github.ref == 'refs/heads/source'
         uses: crazy-max/ghaction-github-pages@v2.2.0
-        target_branch: master
-        build_dir: public
-        jekyll: false
+        with:
+          target_branch: master
+          build_dir: public
+          jekyll: false
