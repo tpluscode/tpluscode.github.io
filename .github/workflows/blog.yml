@@ -2,7 +2,7 @@ name: blog
 
 on:
   push:
-    branches: '*'
+    branches: 'source'
   pull_request:
     branches: '*'
 
