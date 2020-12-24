@@ -15,6 +15,7 @@ jobs:
       - uses: ruby/setup-ruby@v1.60.1
         with:
           ruby-version: 2.5.4
+          bundler-cache: true
       - run: yarn
         working-directory: source
       - run: yarn build
