@@ -229,11 +229,11 @@ The `@hydrofoil/shaperone-hydra` package extends the default behaviour to have `
 
 ## Next steps
 
-In future posts I will present how :
+In future posts I will present how to:
 
-2. using Hydra descriptions to find collections without using `hydra:collection` directly
+2. use Hydra descriptions to find collections without `hydra:collection` directly
 3. `hydra:search` URI Templates can be used to:
-   - create forms with dependent fields, so that users first select a country which is then used to narrow down a selection of country's secondary administrative division and so on
+   - create forms with dependent fields, so that users first select a country which is then used to narrow down a selection of country's secondary administrative division and so on **[POST](/blog/2020/12/hydra-shacl-templates)**
    - improve performance by filtering resources on the data source
 
 <script src="{{ root_url }}/components/rdf-snippet.js"></script>
