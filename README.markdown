@@ -1,3 +1,3 @@
 ## Blog @ t-code.pl
 
-[![Build Status](https://travis-ci.org/tpluscode/tpluscode.github.io.svg?branch=source)](https://travis-ci.org/tpluscode/tpluscode.github.io)
+[![blog](https://github.com/tpluscode/tpluscode.github.io/workflows/blog/badge.svg)](https://github.com/tpluscode/tpluscode.github.io/actions?query=workflow%3Ablog)
