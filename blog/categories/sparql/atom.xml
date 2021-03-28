@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sparql | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/sparql/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Using R2RML to translate SPARQL to SQL]]></title>
+    <link href="http://t-code.pl/blog/2014/11/r2rml-and-SQL-store/"/>
+    <updated>2014-11-06T10:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2014/11/r2rml-and-SQL-store</id>
+    <content type="html"><![CDATA[<p>A long time ago, back in 2011, I have implemented the <a href="http://www.w3.org/TR/r2rml/">R2RML</a> using <a href="http://dotnetrdf.org">dotNetRDF</a>.</p>
+
+<p>R2RML is a specification, which defines how to map SQL databases to RDF triples. This way it is possible to publish existing data from relational databases as <a href="http://en.wikipedia.org/wiki/Linked_data">Linked Data</a> to give one example</p>
+
+<!--more-->
+
+<h2 id="do-we-need-it">Do we need it?</h2>
+
+<p>One could argue that there are other implementations of R2RML or similar such as D2RQ. Unfortunately some are not free and none existed (and I think still don’t as of late 2014) for the .NET platform. Also I treated the work I did as training ground for my programming skills. I guess many developers will sympathize with coding to learn.</p>
+
+<p>This way the <a href="http://r2rml.net">r2rml4net</a> was born. It implements the R2RML specification and <a href="http://www.w3.org/TR/rdb-direct-mapping/">Direct Mapping</a>, which in this case works by creating a R2RML mapping document from the tables. Initially I’ve added support for SQL Server only. Truth be told the code has sat there pretty much neglected ever since, but that may finally change.</p>
+
+<h2 id="so-why-r2rml4net">So why r2rml4net?</h2>
+
+<p>I started the project not only to learn but with the intent to actually use it. I have maintain a small database and a simple CRUD app for managing my collection of bus brochures that I occasionally purchase. The collection has grown big enough that my Excel sheet I had previously wasn’t enough anymore. One thing I also wanted were cover scans so that I don’t accidentally buy brochures that I already have - and it has happend all too often in the past.</p>
+
+<p>My choice at the time was to quickly assembly a Windows Forms app backed by SQL Server database. The databse also holds all my books and magazine issues. Initially I wanted that database to be the base for a knowledge base about buses, trams and other aspects of public transport. A project I’ve been planning for many years. I even have set up a MediaWiki site at some point. In the meantime I discovered the Semantic Web and RDF, which completely changed my view of publishing data on the web.</p>
+
+<h3 id="mapping-isnt-enough">Mapping isn’t enough</h3>
+
+<p>Converting entire relational database to triples isn’t perfect. It makes sense only for small databases, because each change forces regeneration, at least partial. And what about the result? Do we keep it in memory? Or maybe put it in another database at the cost of duplication?</p>
+
+<h2 id="dotnetr2rmlstore">dotnetr2rmlstore</h2>
+
+<p>My long-term idea was indeed to create a SPARQL-SQL translator, which would dynamically query the tables. I haven’t had time to do that and in the meantime it got beaten to it by Miloš Chaloupka, who implements an SQL backed SPARQL endpoint.</p>
+
+<p>It reads the r2rml metadata, translates SPARQL queries to SQL and can exposes an endpoint by integrating with dotNetRDF. Miloš is developing the project as part of his master thesis and will continue on during doctoral studies.</p>
+
+<p>The project isn’t yet published and is mostly unfinished but I have high hopes. Fingers crossed :)</p>
+
+]]></content>
+  </entry>
+  
+</feed>

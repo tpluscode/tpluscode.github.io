@@ -1,0 +1,490 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Fight TypeScript with TypeScript - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="My recipe for testing code written in TypeScript with more TypeScript, karma, jasmine and sinon">
+    
+        <meta name="keywords" content="typescript, tdd, jasmine, karma, testing, dajsiepoznac">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/04/test-typescript-with-typescript/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Fight TypeScript With TypeScript</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Given that I’m fairly satisfied with the state of my server-side <a href="http://hydra-cg.org">Hydra</a> library for <a href="http://github.com/nancyfx/nancy">NancyFx</a> called
+<strong>Argolis</strong> it is now time to write some client-side library to consume it. I did some spiking in another small project
+and it was now time to do it properly. I’ve already had some experience with TypeScript and JSPM so I decided to give
+these two a go.</p>
+
+<p>Unfortunately getting the project setup right was harder than I’d hoped. Here’s how I managed to get my first test to pass.</p>
+
+<!--more-->
+
+<h2 id="test-first">Test first</h2>
+
+<p>I want to proceed with a TDD approach but unlike before this time I want to write both my code and modules in TypeScript.</p>
+
+<p><img src="/uploads/2016/04/FightFireWith_Fire.png" alt="fight fire with fire" /></p>
+
+<p>Here’s my first test. I will place all tests in <code>tests</code> folder and my modules in the <code>src</code> folder as you can see in the
+import in line 2.</p>
+
+<p>As you see I’m using ES6/TypeScript syntax here with module imports and arrow functions.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">sinon</span> <span class="nx">from</span> <span class="s1">&#39;sinon&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">heracles</span> <span class="nx">from</span> <span class="s1">&#39;../src/heracles&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Hydra resource&#39;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should load resource with RDF accept header&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">sinon</span><span class="p">.</span><span class="nx">stub</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span> <span class="s1">&#39;fetch&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">returns</span><span class="p">(</span><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="k">new</span> <span class="nx">Response</span><span class="p">()));</span>
+</span><span class="line">
+</span><span class="line">        <span class="nx">heracles</span><span class="p">.</span><span class="nx">Hydra</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;http://example.com/resource&#39;</span><span class="p">)</span>
+</span><span class="line">            <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">expect</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">calledWithMatch</span><span class="p">(</span><span class="s1">&#39;http://example.com/resource&#39;</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">                <span class="nx">done</span><span class="p">();</span>
+</span><span class="line">            <span class="p">})</span>
+</span><span class="line">            <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">done</span><span class="p">);</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">afterEach</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">        <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>In my first test I want to check that <code>window.fetch</code> is called with the expected URL. To do that I’m using <a href="http://sinonjs.org/">sinon</a>
+stub to set up a call (line 8) and verify correct parameters (line 12). To make it work sinon must be installed from jspm.
+Browser other that Chrome and Opera would also need the whatwg-fetch package or similar</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">jspm install npm:sinon npm:whatwg-fetch
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="lets-run-it">Let’s run it</h3>
+
+<p>With the first test in place I wanted to run it so that it becomes <a href="http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html"><strong><span style="color: red">red</span></strong></a>.</p>
+
+<p>I’ve recently found the <a href="https://github.com/testem/testem">Test’em</a> and it looked very promising with the super-easy CI integration and convenient
+command line UI. Unfortunately it turns out that it <a href="https://github.com/testem/testem/issues/784">doesn’t like system.js</a>.
+I’ve tried other solutions and eventually Karma worked.</p>
+
+<h4 id="setting-up-karma">Setting up karma</h4>
+
+<p>First, install karma, local npm packages and initialize karma</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">npm install -g karma karma-jasmine jasmine-core
+</span><span class="line">npm install -g karma-chrome-launcher
+</span><span class="line">npm install -g karma-systemjs systemjs
+</span><span class="line">karma init
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Second, set up systemjs so that karma can load TypeScript tests directly. This is possible thanks to the <a href="https://github.com/rolaveric/karma-systemjs">karma-systemjs</a>.
+To set it up add it as the <strong><em>first</em></strong> framework in karma and add systemjs configuration:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">config</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
+</span><span class="line">    <span class="nx">frameworks</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;systemjs&#39;</span><span class="p">,</span> <span class="s1">&#39;jasmine&#39;</span><span class="p">],</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">      <span class="s1">&#39;tests/*-spec.ts&#39;</span>
+</span><span class="line">    <span class="p">],</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">systemjs</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">configFile</span><span class="o">:</span> <span class="s1">&#39;config.js&#39;</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">serveFiles</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">        <span class="s1">&#39;src/**/*.ts&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;jspm_packages/**/*&#39;</span>
+</span><span class="line">      <span class="p">]</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">})</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The <code>systemjs</code> section reuses jspm configuration and sets up paths served by karma server.</p>
+
+<p>The <code>config.js</code> file should look similar to the one below. 
+Mind the <code>packages</code> and <code>transpiler</code> settings which make systemjs load selected typescript modules directly without upfront
+transpilation.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">System</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+</span><span class="line">  <span class="nx">baseURL</span><span class="o">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">defaultJSExtensions</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">transpiler</span><span class="o">:</span> <span class="s2">&quot;typescript&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="s2">&quot;github:*&quot;</span><span class="o">:</span> <span class="s2">&quot;jspm_packages/github/*&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="s2">&quot;npm:*&quot;</span><span class="o">:</span> <span class="s2">&quot;jspm_packages/npm/*&quot;</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">packages</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="s2">&quot;src&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="s2">&quot;defaultExtension&quot;</span><span class="o">:</span> <span class="s2">&quot;ts&quot;</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="s2">&quot;tests&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="s2">&quot;defaultExtension&quot;</span><span class="o">:</span> <span class="s2">&quot;ts&quot;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">map</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h4 id="lets-run-it-for-real-now">Let’s run it for real now</h4>
+
+<p>If followed the above instructions you should be able to run karma server and have it start Chrome</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">karma start
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This should execute the first test and fail on missing implementation</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Chrome 49.0.2623 (Windows 8.1 0.0.0) ERROR
+</span><span class="line">  Error: Error: XHR error (404 Not Found) loading E:/experiments/karma-ts/src/heracles.ts
+</span><span class="line">        Error loading E:/experiments/karma-ts/src/heracles.ts as &quot;../src/heracles&quot; from E:/experiments/karma-ts/tests/heracles-spec.ts
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="add-some-code">Add some code</h2>
+
+<p>Let’s fix the test by actually adding the first piece of code</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">export</span> <span class="kr">class</span> <span class="nx">Hydra</span> <span class="p">{</span>
+</span><span class="line">  <span class="kr">static</span> <span class="nx">load</span><span class="p">(</span><span class="nx">uri</span><span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">(</span><span class="nx">uri</span><span class="p">);</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>If you haven’t stopped the karma server it will notice the new file being added and rerun the test. The result should be 
+similar to</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">INFO [watcher]: Added file &quot;E:/experiments/karma-ts/src/heracles.ts&quot;.
+</span><span class="line">Chrome 49.0.2623 (Windows 8.1 0.0.0): Executed 1 of 1 SUCCESS (0.009 secs / 0.005 secs)
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="summary">Summary</h2>
+
+<p><em>Et voilà</em>, this was pleasantly simple. There are no build/cleanup steps required to execute the test, because systemjs
+does the transpilation on the fly. Karma may not have the cool little terminal control panel and test summary but it is
+an established testing tool and integrates well with many IDEs</p>
+
+<h2 id="bonus---typings">Bonus - typings</h2>
+
+<p>Speaking of IDE, Webstorm coloured a lot of my code red, because it doesn’t recognize sinon and jasmin and fetch. To remedy
+that there are <a href="https://github.com/typings/typings">typings</a>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">npm install -g typings
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Sinon and jasmine have an <em>official</em> typings package. There is also a repository with typings for <code>window.fetch</code>. They
+are not all installed the same way though:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">typings install sinon --save
+</span><span class="line">typings install jasmine --save --ambient
+</span><span class="line">typings install github:ryan-codingintrigue/typescript-fetch/fetch.js.d.ts --save --ambient
+</span></code></pre></td></tr></table></div></figure>
+
+<p>As you see jasmine and fetch typings are installed as <em>ambient</em>. This is because they populate the global scope (or window).
+Otherwise typings would wrap them in a named module. After all modules can be installed under an alias.</p>
+
+<p>Finally add a typings reference to you source and test files like</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="c1">/// &lt;reference path=&quot;../typings/main.d.ts&quot; /&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>There you go, no there are far less source code errors and also some additional context help from the editor. And remember
+not to commit the <code>typings</code> folder. Instead commit the <code>typings.json</code> file and run <code>typings install</code> to restore them.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/04/test-typescript-with-typescript/';
+        var disqus_url = 'http://t-code.pl/blog/2016/04/test-typescript-with-typescript/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

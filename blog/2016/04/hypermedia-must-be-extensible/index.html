@@ -1,0 +1,448 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Third labour of hypermedia - extensible media types - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Third Labour of Hypermedia - Extensible Media Types Most hypermedia media types like HAL or SIREN are some sort of extension of JSON, which is &hellip;">
+    
+        <meta name="keywords" content="dajsiepoznac, hypermedia, argolis, hydra core vocabulary, heracles">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/04/hypermedia-must-be-extensible/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Third Labour of Hypermedia - Extensible Media Types</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Most hypermedia media types like <a href="http://stateless.co/hal_specification.html">HAL</a> or <a href="https://github.com/kevinswiber/siren">SIREN</a> are some sort of extension of JSON, which is understandable.
+JSON is a natural choice because it already is the most common data interchange format for APIs. However JSON as syntax 
+is by design simple and it doesn’t support vital part - <strong>links</strong>. To plug that hole these media types are intrusive in
+that they impose a very specific structure of documents. Instead of extending the meaning of representations they hijack
+the syntax and structure.</p>
+
+<p>Personally I’m biased towards <a href="http://hydra-cg.com/spec/latest/core/">Hydra Core Vocabulary</a> because, unlike all other I have come across, it is based on
+RDF. Why is it important?</p>
+
+<!--more-->
+
+<h2 id="extending-json-creates-rigid-structures">Extending JSON creates rigid structures</h2>
+
+<p>Consider this sample from HAL specification website (excerpt).</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;_links&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;self&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;/orders&quot;</span> <span class="p">},</span>
+</span><span class="line">        <span class="nt">&quot;curies&quot;</span><span class="p">:</span> <span class="p">[{</span> <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ea&quot;</span><span class="p">,</span> <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;http://example.com/docs/rels/{rel}&quot;</span><span class="p">,</span> <span class="nt">&quot;templated&quot;</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}],</span>
+</span><span class="line">        <span class="nt">&quot;next&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;/orders?page=2&quot;</span> <span class="p">},</span>
+</span><span class="line">        <span class="nt">&quot;ea:find&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">            <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;/orders{?id}&quot;</span><span class="p">,</span>
+</span><span class="line">            <span class="nt">&quot;templated&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class="line">        <span class="p">},</span>
+</span><span class="line">        <span class="nt">&quot;ea:admin&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="line">            <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;/admins/2&quot;</span><span class="p">,</span>
+</span><span class="line">            <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Fred&quot;</span>
+</span><span class="line">        <span class="p">}]</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;currentlyProcessing&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;shippedToday&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;_embedded&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;ea:order&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="line">            <span class="nt">&quot;_links&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">                <span class="nt">&quot;self&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;/orders/123&quot;</span> <span class="p">}</span>
+</span><span class="line">            <span class="p">},</span>
+</span><span class="line">            <span class="nt">&quot;total&quot;</span><span class="p">:</span> <span class="mf">30.00</span><span class="p">,</span>
+</span><span class="line">            <span class="nt">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span>
+</span><span class="line">            <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;shipped&quot;</span>
+</span><span class="line">        <span class="p">}]</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>What is all that business with <code>_links</code> and <code>_embedded</code>? Also would you prefer to serve or consume XML for some reason?
+Well, that will not be possible because most other media types above, except Hydra, HAL is JSON-based. Hence the need for
+that convoluted document structure.</p>
+
+<p>JSON also suffers from another deficiency - key ambiguity. It would be very easy to bump into clashes if we were to enrich
+such representations with custom extensions.</p>
+
+<h2 id="rdf-is-not-syntax">RDF is not syntax</h2>
+
+<p>I wrote that Hydra Core is RDF-based. Unlike JSON RDF is a standard way to describe data structures and not syntax. It is
+possible to write the very same piece of data in a multitude of ways yet still retaining the exact same meaning. First
+there are <a href="https://www.w3.org/2001/sw/RDFCore/ntriples/"><strong>n-triples</strong></a>. Let’s state that my name is <em>Tomasz</em> and my friend can be downloaded from <code>http://t-code.pl/tomasz/friends</code>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">&lt;http://t-code.pl/tomasz&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; &quot;Tomasz&quot; .
+</span><span class="line">&lt;http://t-code.pl/tomasz&gt; &lt;http://t-code.pl/api#friends&gt; &lt;http://t-code.pl/tomasz/friends&gt; .
+</span></code></pre></td></tr></table></div></figure>
+
+<p>As you see almost everything is an URI. This solves the ambiguity problem. This is however very verbose and redundant and
+will waste a lot od bandwidth for large response. Fortunately there are other media types, which can represent the same
+information in different form. There is the compacted flavour of n-triples called <a href="https://www.w3.org/TR/2014/REC-turtle-20140225/"><strong>Turtle</strong></a> and it’s similar twin
+<a href="https://www.w3.org/TeamSubmission/n3/"><strong>Notation3</strong></a>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">@base &lt;http://t-code.pl/&gt; .
+</span><span class="line">@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+</span><span class="line">@prefix api: &lt;http://t-code.pl/api#&gt; .
+</span><span class="line">
+</span><span class="line">&lt;tomasz&gt; foaf:name &quot;Tomasz&quot; ;
+</span><span class="line">         api:friends &lt;tomasz/friends&gt; .
+</span></code></pre></td></tr></table></div></figure>
+
+<p>There is also the old school XML-based format called <a href="https://www.w3.org/TR/2014/REC-rdf-syntax-grammar-20140225/"><strong>RDF/XML</strong></a>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class="line"><span class="nt">&lt;rdf:RDF</span>
+</span><span class="line">   <span class="na">xmlns:foaf=</span><span class="s">&quot;http://xmlns.com/foaf/0.1/&quot;</span>
+</span><span class="line">   <span class="na">xmlns:api=</span><span class="s">&quot;http://t-code.pl/api#&quot;</span>
+</span><span class="line"><span class="nt">&gt;</span>
+</span><span class="line">  <span class="nt">&lt;rdf:Description</span> <span class="na">rdf:about=</span><span class="s">&quot;http://t-code.pl/tomasz&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">    <span class="nt">&lt;api:friends</span> <span class="na">rdf:resource=</span><span class="s">&quot;http://t-code.pl/tomasz/friends&quot;</span><span class="nt">/&gt;</span>
+</span><span class="line">    <span class="nt">&lt;foaf:name&gt;</span>Tomasz<span class="nt">&lt;/foaf:name&gt;</span>
+</span><span class="line">  <span class="nt">&lt;/rdf:Description&gt;</span>
+</span><span class="line"><span class="nt">&lt;/rdf:RDF&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>And finally there are multiple JSON-based formats, the most prominent example being <a href="http://json-ld.org"><strong>JSON-LD</strong></a> which does a great
+job pretending it is not really RDF.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;@base&quot;</span><span class="p">:</span> <span class="s2">&quot;http://t-code.pl/&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;http://xmlns.com/foaf/0.1/name&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;friends&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">            <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://t-code.pl/api#friends&quot;</span><span class="p">,</span>
+</span><span class="line">            <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;@id&quot;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;friends&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz/friends&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="hydra-extends-meaning-not-syntax">Hydra extends meaning not syntax</h2>
+
+<p>What Hydra core does is essentially extend the data (<strong>not the syntax</strong>) with various hint for the clients so that they
+can discover how to perform more requests. For example let’s add a hypermedia control stating that the above resource
+<code>&lt;tomasz&gt;</code> can be updated with a <code>PUT</code> request.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="s2">&quot;http://same.as.above/but/remote&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;friends&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz/friends&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;http://www.w3.org/ns/hydra/core#operation&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;http://www.w3.org/ns/hydra/core#method&quot;</span><span class="p">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;http://www.w3.org/ns/hydra/core#expects&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">            <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://t-code.pl/api#Person&quot;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>You could still convert this between various RDF serailizations and retain the meaning!</p>
+
+<p>For a Hydra-based API to be complete there must be a lot of information provided by the server. The above is the tip of
+the iceberg. The body of the described <code>PUT</code> request must conform the definition of the <code>http://t-code.pl/api#Person</code> type.</p>
+
+<blockquote>
+  <p>But where is this definition? And how detailed can this definition be?</p>
+</blockquote>
+
+<p>Hydra core is served as a runtime API documentation, linked with a specific Link header relation. This documentation can
+contain a number of simple definitions such as required fields, expected data types etc. It can also be extended so that
+clients aware of the extension can adapt better to the API. For example a server can annotate a field as being a password,
+so that an appropriate control is presented on the website.</p>
+
+<p>This is where the first really big hurdle stands.</p>
+
+<blockquote>
+  <p>Where are these aware clients? And where are the servers?</p>
+</blockquote>
+
+<h2 id="we-need-the-tooling">We need the tooling</h2>
+
+<p>I’ve started creating both a server and client tools to produce and consume Hydra-based hypermedia. The server side is 
+implemented as a .NET Library for Nancy called <a href="http://github/com/wikibus/Argolis">Argolis</a>. The client side is a JavsScript library called 
+<a href="http://github/com/wikibus/heracles">heracles</a>. I’m also experimenting with a way to produce a dynamic yet customizable UI with Web Components.</p>
+
+<p>I will be showing usage examples and discussing ideas in future blog posts.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/04/hypermedia-must-be-extensible/';
+        var disqus_url = 'http://t-code.pl/blog/2016/04/hypermedia-must-be-extensible/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

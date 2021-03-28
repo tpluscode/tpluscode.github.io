@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: event storming | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/event-storming/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Solitary event storming to discover application domain]]></title>
+    <link href="http://t-code.pl/blog/2016/03/wikibus-event-storming/"/>
+    <updated>2016-03-30T10:55:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/wikibus-event-storming</id>
+    <content type="html"><![CDATA[<p>Inspired by recent training sessions on <a href="http://www.meetup.com/drugpl/events/228508826/">DRUG Software Craftmanship</a> and
+another on the following week on <a href="http://www.meetup.com/DDD-WRO/events/229281801/">DDD Wro meetup</a> I decided that it would
+be best for me to explore the wikibus.org domain by conducting a solitary <a href="http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html"><strong>event storming</strong></a>.</p>
+
+<!--more-->
+
+<p>I took a stack of small post-its for marking book pages and a document folder to stick them ont. At first I wasn’t very
+much convinced that it was such a good idea. For one, the application is seemingly just simple CRUD but quickly storming
+through some events that came to my mind confirmed that there may be more complexity that meets the eye. Also some events
+helped me discover possible aggregate roots and entities and relationships between them.</p>
+
+<p><a href="/uploads/2016/03/wikibus-events-large.jpg"><img src="/uploads/2016/03/wikibus-events-small.jpg" alt="events on small post-its" /></a></p>
+
+<ul>
+  <li>
+    <p><strong>Datasheet added for classification</strong></p>
+
+    <p>It is easy to think about vehicles as a whole and keep them in the database as such. However due to the variety of 
+ makes and models I decided that it will be better to keep technical details as a separate entity.</p>
+  </li>
+  <li><strong>Datasheet added to Vehicle</strong></li>
+  <li>
+    <p><strong>Datasheet moved between Vehicles</strong></p>
+
+    <p>This way it will be easier to treat a <em>Vehicle</em> as the sum of its <em>Datasheets</em> and if necessary any Vehicle it would
+ be possible to split a vehicle in two</p>
+  </li>
+  <li>
+    <p><strong>Datasheet Source added</strong></p>
+
+    <p>Given my brochure and book collection I want to keep track of where the <em>Datasheet</em> comes from. Sources would also have
+ to include simple link for example to wikipedia.</p>
+  </li>
+  <li><strong>Engine extracted from Datasheet</strong></li>
+  <li>
+    <p><strong>Gearbox extracted from Datasheet</strong></p>
+
+    <p><em>Datasheets</em> often contain additional structured information about internal components like engine, gearbox and axles.
+ I would like to be able to keep a separate structured representation and not only textual description</p>
+  </li>
+  <li><strong>Vehicle created</strong></li>
+  <li>
+    <p><strong>Vehicle marked as defunct</strong></p>
+
+    <p>I’m unsure about this one. It should be possible to infer that information from production end date. However that may
+ not always be available, so maybe there is some merit.</p>
+  </li>
+  <li><strong>Added external link to Vehicle/Manufacturer/Brand</strong></li>
+  <li><strong>Brand created</strong></li>
+  <li><strong>Manufacturer created</strong></li>
+  <li>
+    <p><strong>Manufacturer Merger added</strong></p>
+
+    <p>Lastly there is <em>Manufacturer</em> and <em>Brand</em>. The distinction is important, because a Manufacturer can own multiple
+brands (for example <a href="https://en.wikipedia.org/wiki/Fabrika_automobila_Priboj">FAP</a>, which produced under own brand and
+marketed some buses under the <a href="https://en.wikipedia.org/wiki/FAS_Sanos">Sanos</a> name) and it is even possible that same
+brand name is used by different manufacturers (such <a href="https://en.wikipedia.org/wiki/Ikarus_Bus">Ikarus from Hungary</a> and
+<a href="https://en.wikipedia.org/wiki/Ikarbus#Products">Ikarbus</a>, which used the name Ikarus for some time)</p>
+  </li>
+  <li>
+    <p><strong>Manufacturer Transformation added</strong></p>
+
+    <p>Also it is not uncommon for a brand to close and continue under a different name. This is the case for example with
+Britain’s <a href="https://en.wikipedia.org/wiki/Optare">Optare</a>, which for a time operated as <a href="https://en.wikipedia.org/wiki/North_American_Bus_Industries">NABI</a></p>
+  </li>
+  <li><strong>Vehicles grouped as Series</strong></li>
+  <li><strong>Vehicle hierarchy changed</strong></li>
+  <li>
+    <p><strong>Relationship between Vehicles created</strong></p>
+
+    <p>Vehicles can form simple hierarchies and series, such as subsequent modernizations of a specific model, but also more
+complex relations are possible. For example a city bus can be tha basis for a twin trolleybus. Compare <a href="https://en.wikipedia.org/wiki/Solaris_Urbino_12">Solaris Urbino
+12</a> and <a href="https://pl.wikipedia.org/wiki/Solaris_Trollino_12">Solaris Trollino 12</a></p>
+  </li>
+  <li><strong>Influential Person added to Manufacturer</strong></li>
+  <li>
+    <p><strong>Interesting Fact/Date added</strong></p>
+
+    <p>These are relatively unrelated to the core concepts.</p>
+  </li>
+  <li>
+    <p><strong>Manufacturer marked as defunct</strong></p>
+
+    <p>Finally this one I never thought about before. This is similar to marking a <em>Vehicle</em> as no longer in production</p>
+  </li>
+</ul>
+
+<h2 id="insight">Insight</h2>
+
+<p>I was pleasantly surprised with even a solo event storming. It helped me look at a slightly different angle on the problem
+space and determine some domain object boundaries and possible functionalities. I will definitely do that again in this
+or other projects.</p>
+
+<p>For more about event storming you should click these links</p>
+
+<ol>
+  <li><a href="http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html">http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html</a></li>
+  <li><a href="http://www.slideshare.net/ziobrando/event-storming-recipes">http://www.slideshare.net/ziobrando/event-storming-recipes</a></li>
+</ol>
+]]></content>
+  </entry>
+  
+</feed>

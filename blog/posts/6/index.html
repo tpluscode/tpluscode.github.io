@@ -1,0 +1,537 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="May 9th, 2012 11:38 am .net, silverlight Disable "Missing XML Documentation" Warnings for WCF RIA Services Every project should be well documented &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/posts/6/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2012-05-09T11:38:24-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>11:38 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/silverlight/'>silverlight</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/" itemprop="url">Disable "Missing XML Documentation" Warnings for WCF RIA Services</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Every project should be well documented and Visual Studio has the option to enforce XML code documentation by generating
+warnings when there is a comment missing, a parameter description missing and such. It can be enabled per project by
+enabling XML documentation file option on the Build tab.</p>
+
+<p>There are however cases, when it is not necessary for XML docs to be present.</p>
+
+
+		
+		<a href="/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2012-01-18T10:04:28-05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>10:04 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blog/'>blog</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2012/01/sopa-wikipedia-workaround/" itemprop="url">SOPA Wikipedia Workaround</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><img class="center" src="/uploads/2012/01/WP_SOPA_Splash_Full.jpg" width="565" height="489" title="'SOPA protest'" /></p>
+
+
+		
+		<a href="/blog/2012/01/sopa-wikipedia-workaround/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-11-23T18:41:27-05:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2011</span></span> <span class='time'>6:41 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/semantic-web/'>semantic web</a>, <a class='category' href='/blog/categories/virtuoso/'>virtuoso</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/11/x86-not-equal-to-x64/" itemprop="url">X86 != X64</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><img class="center" src="/uploads/2011/11/957161.jpg" width="450" height="151" title="'Visual C++ Redistributable 2008'" /></p>
+
+<p>Ever tried running some piece of application compiled for the 64bit platform? After a few years there finally are more
+and more applications fully (I think) benefiting from the extra 32 bits.</p>
+
+<p>So I am exploring <a href="http://openlinksw.com/">OpenLink</a> <a href="http://virtuoso.openlinksw.com">Virtuoso</a>, which in it’s open
+source variation comes as a humble downloadable zip. Runs fine on my laptop but didn’t work at first on my VPS. Why?
+Because msvcr100.dll was missing. The commercial flavour of this server comes with an installer, which does include all
+required dependencies.</p>
+
+
+		
+		<a href="/blog/2011/11/x86-not-equal-to-x64/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-11-21T10:01:57-05:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2011</span></span> <span class='time'>10:01 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/c-number/'>c#</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data/" itemprop="url">The Data Source '...&rsquo; Does Not Support Sorting With IEnumerable Data</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>We are currently refactoring a web application, which uses ObjectDataSources extensively. There are places in our app, 
+where they are used for sorting grids, but there is a problem. We switched from DataTables to collections and now an 
+exception occurs:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">The data source &lsquo;ods_DataSource&rsquo; does not support sorting with IEnumerable data.
+</span><span class="line">Automatic sorting is only supported with DataView, DataTable, and DataSet.</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		<a href="/blog/2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-11-19T16:52:33-05:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>4:52 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ontowiki/'>ontowiki</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>, <a class='category' href='/blog/categories/virtuoso/'>virtuoso</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/11/installing-ontowiki-on-windows-with-virtuoso/" itemprop="url">Installing OntoWiki on Windows With Virtuoso</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><img class="right" src="http://semanticweb.org/images/Semantic-Web-Logo-by-W3C.png" width="129" height="155" title="Semantic Web" alt="Semantic Web logo" /></p>
+
+<p>Recently I’ve been experimenting with <a href="http://semanticweb.org">Semantic Web</a> techonogies. Currently I’m trying to choose
+tools for editing the ontology and more importantly instances. There are a number of tools, both commercial and free
+including my favourites: <a href="http://protege.stanford.edu">Protégé</a>, <a href="http://neon-toolkit.org">NeON toolkit</a> or
+<a href="http://www.topquadrant.com/composer/">Top Braid Composer</a>. Each of those have some problem. NeON is nice but desktop
+only, Top Braid is not free and Protégé is very complex. Not to mention it comes in versions 3.x and 4.x
+with <a href="http://protegewiki.stanford.edu/wiki/Protege4Migration">different set of functions</a> which only makes the confusion grow…</p>
+
+
+		
+		<a href="/blog/2011/11/installing-ontowiki-on-windows-with-virtuoso/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-11-02T10:54:34-04:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2011</span></span> <span class='time'>10:54 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/linq-to-sql/'>linq to sql</a>, <a class='category' href='/blog/categories/log4net/'>log4net</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/11/logging-linq-to-sql/" itemprop="url">Logging Linq to SQL</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>There are times when you need a quick way to debug Linq to SQL. Inspired by this <a href="http://stackoverflow.com/questions/86685/debugging-linq-to-sql-submitchanges/90025#90025">answer to a StackOverflow question</a> 
+I easily combined log4net and Linq to SQL. This way I avoided the console, which is not an option in the case of a web application.</p>
+
+
+		
+		<a href="/blog/2011/11/logging-linq-to-sql/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-10-25T10:08:06-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>10:08 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/asp-dot-net/'>asp.net</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/10/comparevalidator-bug-remember-to-call-page-isvalid/" itemprop="url">CompareValidator Bug: Remember to Call Page.IsValid?</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>One of the common mistakes developers make when working with Web Forms pages is using client-side validation, while not 
+checking the validation result on server-side postback.</p>
+
+<p>This mistake is easily noticeable with CustomValidator as it only works on the server’s side. Also when Javascript is 
+disabled you would quickly run into trouble when trying to rely solely on client-side validation.</p>
+
+
+		
+		<a href="/blog/2011/10/comparevalidator-bug-remember-to-call-page-isvalid/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-10-07T19:44:07-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>7:44 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/blade/'>blade</a>, <a class='category' href='/blog/categories/castle-monorail/'>castle monorail</a>, <a class='category' href='/blog/categories/spark/'>spark</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/10/emulating-castle-blades-nested-transitions-with-spark/" itemprop="url">Emulating Castle Blade's Nested Transitions With Spark</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2 id="nested-transitions">Nested transitions</h2>
+
+<p>As described on <a href="http://hammett.castleproject.org/index.php/category/castle/monorail/">Hammet’s post</a>, Castle Blade view 
+engine extends Razor’s syntax to allow nested transitions. Those in turn give Blade a great deal of flexibility. The 
+given example being usage of the new FormHelper.</p>
+
+
+		
+		<a href="/blog/2011/10/emulating-castle-blades-nested-transitions-with-spark/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-10-07T19:43:11-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>7:43 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/blade/'>blade</a>, <a class='category' href='/blog/categories/castle-monorail/'>castle monorail</a>, <a class='category' href='/blog/categories/razor/'>razor</a>, <a class='category' href='/blog/categories/spark/'>spark</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/10/spark-view-engine-for-monorail3/" itemprop="url">Spark View Engine for Monorail3</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><a href="http://hammett.castleproject.org">Hamilton Verissimo</a> currently develops a next version of Monorail, which uses a new
+view engine called Blade. As much as I’d love to use Monorail 3 in the (near) future, Spark is bound to stay my view
+engine of choice.</p>
+
+
+		
+		<a href="/blog/2011/10/spark-view-engine-for-monorail3/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2011-09-16T01:44:15-04:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>1:44 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/prototype/'>prototype</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/09/inserting-style-tag-dynamically/" itemprop="url">Inserting Style Tag Dynamically With Prototype</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Recently I created a small on-screen keyboard. I may present it on my blog some time later. For now I’d like to share my
+experience with IE behaving different than other browsers (yet again).</p>
+
+<p>The on-screen keyboard is a javascript class, which when created adds itself to document’s DOM. Doing that it also
+creates itself some styles. Those styles are also updated when keyboard’s properties change.</p>
+
+
+		
+		<a href="/blog/2011/09/inserting-style-tag-dynamically/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+        <a href="/blog/posts/5" class="prev">Prev</a>
+    
+    
+        <a href="/blog/posts/7" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

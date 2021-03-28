@@ -1,0 +1,530 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>REST misconceptions part 2 - (Not) Linking data (enough) - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Linking is a crucial part of a REST API and yet, despite being so simple, linking is often neglected">
+    
+        <meta name="keywords" content="hypermedia, rest, rest mistakes">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/02/rest-misconceptions-2/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">REST Misconceptions Part 2 - (Not) Linking Data (Enough)</h1>
+	<div class="entry-content" itemprop="articleBody"><p>In the third installment of my REST misconceptions series in which I explore hyperlinks. Links are an essential part of 
+a REST API as has been written down by Richard Fowler in his article about the <a href="http://martinfowler.com/articles/richardsonMaturityModel.html#level3">Richardson Maturity Model</a>. Wonder
+why links are important? Please, do read on.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><strong>Not linked enough</strong></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">More than links</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-4">Resources are application state</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-6">Versioning</a></li>
+</ol>
+
+<h2 id="rest-is-about-links">REST is about links</h2>
+
+<p>REST is defined by Roy Fielding as an</p>
+
+<blockquote>
+  <p>architectural style for <strong>distributed hypermedia</strong> systems</p>
+</blockquote>
+
+<p>The word <em>distributed</em> is important, because it means that resources are spread across the web, possibly even multiple 
+servers or systems. In a REST API these resources are connected by links or hyperlinks, hence the term <em>hypermedia</em>. In
+practice links must be included in the resource representations, so that clients can follow them to transfer to the next
+application state.</p>
+
+<p>Unfortunately many so-called REST APIs don’t follow this simple rule.</p>
+
+<h2 id="real-life-links">Real life links</h2>
+
+<p>A good analogy for URI is an address. A physical location of a person’s home, work or a doctor’s office. Addresses can
+be quite complicated and contain many part like street and flat number, floor number, postal code, building name, etc.
+Addresses also <a href="https://en.wikipedia.org/wiki/Japanese_addressing_system">vary by country</a>. Try deciphering this address
+in Tokyo:</p>
+
+<blockquote>
+  <p>〒100-8994 <br />
+東京都中央区八重洲一丁目5番3号 <br />
+東京中央郵便局</p>
+</blockquote>
+
+<p>But why would you? This is why online store can work on an international scale: you can just print this on an envelope
+and off the letter goes. All you need to know is that the text above is an address, which <code>links</code> the seller to the
+buyer.</p>
+
+<p>So which is more important, the details of the address or where it actually points?</p>
+
+<h3 id="a-world-wide-web-analogy">A World Wide Web analogy</h3>
+
+<p>Another common example is the WWW and how HTML documents are linked. All the browser (and the user by extension) cares 
+about is the link type, which humans derive from the web page’s context. When you see a link to a wikipedia page, you 
+can simply click it and the browser takes you there. Neither you nor the browser is too interested about the address 
+itself. It simply uses the HTTP protocol to retrieve and display the data.</p>
+
+<h2 id="rest-without-links-is-not-rest">REST without links is not REST</h2>
+
+<p>A common, infamous example, which calls itself RESTful is <a href="https://dev.twitter.com/rest">Twitter API</a>. It breaks most of the REST constraints,
+one of them being lack of links to other resources. To retrieve a user’s tweets for instance Twitter exposes the 
+<code>statuses/user_timeline</code> resource. A complete URI used to retrieve two latest posts of user <a href="http://twitter.com/tpluscode">tpluscode</a> is 
+<code>https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=tpluscode&amp;count=2</code>. <em>I’m leaving aside the fact that 
+including version number and json format is a dubious practice</em>. Here’s an excerpt from the JSON response returned from 
+the <code>user_timeline</code> resource as shown in <a href="https://dev.twitter.com/rest/reference/get/statuses/user_timeline">the documentation</a>:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">[</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;coordinates&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;favorited&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Wed Aug 29 17:12:58 +0000 2012&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;id_str&quot;</span><span class="p">:</span> <span class="s2">&quot;240859602684612608&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;entities&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="err">//</span> <span class="err">...</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_user_id_str&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;contributors&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Introducing the Twitter Certified Products Program: https://t.co/MjJ8xAnT&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;retweet_count&quot;</span><span class="p">:</span> <span class="mi">121</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_status_id_str&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">240859602684612608</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;geo&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;retweeted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;possibly_sensitive&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_user_id&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;place&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="err">//</span> <span class="err">...</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_screen_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_status_id&quot;</span><span class="p">:</span> <span class="kc">null</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;coordinates&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;favorited&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sat Aug 25 17:26:51 +0000 2012&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;id_str&quot;</span><span class="p">:</span> <span class="s2">&quot;239413543487819778&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;entities&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="err">//</span> <span class="err">...</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_user_id_str&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;contributors&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;We are working to resolve issues with application management &amp; logging in to the dev portal: https://t.co/p5bOzH0k ^TS&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;retweet_count&quot;</span><span class="p">:</span> <span class="mi">105</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_status_id_str&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">239413543487819778</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;geo&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;retweeted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;possibly_sensitive&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_user_id&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;place&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="err">//</span> <span class="err">...</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_screen_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_status_id&quot;</span><span class="p">:</span> <span class="kc">null</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>I’ve removed some of the nested objects for brevity. Do notice the <code>id</code>, <code>in_reply_to_status_id</code> and <code>in_reply_to_user_id</code> 
+properties in the two tweets. The latter two are null in the sample representation but both would be simple numeric values. 
+Having retrieved such response for a GET, <strong>the client has no way to proceed to the next state!</strong></p>
+
+<h2 id="the-problem-out-of-band-information">The problem: Out-of-band information</h2>
+
+<p>Well, you could say that the last sentence isn’t true. After all there is the documentation, which <a href="https://dev.twitter.com/rest/reference/get/statuses/show/%3Aid">describes how to retrieve
+a single status</a>. It’s as simple as using the <code>id</code> as parameter for the <code>statuses/show/:id</code> resource:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="err">https://api.twitter.com/</span><span class="mf">1.1</span><span class="err">/statuses/show.json?id=</span><span class="mi">239413543487819778</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>That’s great, but it requires the client implementation to be hardcoded against a specific URI pattern. Relying on URI 
+structure like this is risky business, which <a href="/blog/2016/02/rest-misconceptions-1">I mentioned in part one of this series</a>.</p>
+
+<h2 id="rest-apis-must-be-hypertext-driven">REST APIs must be hypertext driven</h2>
+
+<p>The above header is the title of <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">a post</a> by Roy Fielding, which is a great read as it sheds light on 
+some unclear part of his <a href="http://presentations.t-code.pl/hateoas/fielding_dissertation.pdf">dissertation</a>. Here’s a quote from that post:</p>
+
+<blockquote>
+  <p>A REST API <strong>must not define fixed resource names or hierarchies</strong> (an obvious coupling of client and server). Servers 
+must have the freedom to control their own namespace. Instead, allow servers to <strong>instruct clients on how to construct 
+appropriate URIs</strong>, such as is done in HTML forms and URI templates, by defining those instructions within media types 
+and <strong>link relations</strong>. <em>[Failure here implies that clients are assuming a resource structure due to out-of band information,
+such as a domain-specific standard, which is the data-oriented equivalent to RPC’s functional coupling].</em></p>
+</blockquote>
+
+<p>This passage reveals flaws in the example above. A client of Twitter’s API relies on specific URI structure, which will
+break shall the server change how it assigns identifiers. Instead of that the client should be coded against a documented
+set of relations or links between resources. The most obvious relation is often called the <strong>self relation</strong>. It tells
+the client the identifier of any given resource. In the above representations, the values the <code>id</code> property could be
+changed to contain actual URIs so that the client can simply <code>GET</code> it. The <code>in_reply_to_user_id</code> and <code>in_reply_to_status_id</code> 
+properties could become <code>in_reply_to_user</code> and <code>in_reply_to_status</code> and similarly hold URIs.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">[</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/statuses/show.json?id=240859602684612608&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_user&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/users/show.json?screen_name=twitterdev&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_status&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/statuses/show.json?id=5498415978181&quot;</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/statuses/show.json?id=239413543487819778&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_user&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/users/show.json?screen_name=tpluscode&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;in_reply_to_status&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/statuses/show.json?id=1616516513585&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="filling-in-the-blanks">Filling in the blanks</h3>
+
+<p>It may not always be possible to give the client complete links. The web already has a standard solution for such 
+circumstances called URI templates, which have been standardized in <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a>. There a readily available 
+implementations for many languages. If there is a need to let the client supply a parameter value within a URI, it can be 
+served an incomplete URI. For example Twitter could define a <code>user_search</code> relation, which allows the client to find users 
+by <code>user_id</code> or <code>screen_name</code> as it currently does:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;user_search&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.twitter.com/1.1/users/show.json{?user_id,screen_name}&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>How the client knows what are the possible values for the parameters or whether they are required is a different matter
+entirely and extends beyond links.</p>
+
+<h2 id="not-only-inline-links">Not only inline links</h2>
+
+<p>Most examples around the web show links, which are included within the response body itself. However with the HTTP in 
+particular it’s not the only option. The protocol defines the <a href="https://tools.ietf.org/html/rfc5988">Link header</a>, which can be used to connect
+resources on the web. <em>It is especially important for media types, which don’t define a clear link semantics or even any
+means of including links to other resources</em>. The list includes images, video and to some extent vanilla JSON, where links
+are actually indistinguishable from simple text. Link header is also useful in media types which do allow linking, but
+the link doesn’t have domain-specific meaning for a resource, etc. Common example is collection paging, where links are
+included to other pages within a larger set.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span class="line"><span class="na">Link</span><span class="o">:</span> <span class="l">&lt;http://book.store/books?author=Homer&gt;; rel=&quot;first&quot;,</span>
+</span><span class="line">      <span class="l">&lt;http://book.store/books?author=Homer&amp;page=9&gt;; rel=&quot;next&quot;,</span>
+</span><span class="line">      <span class="l">&lt;http://book.store/books?author=Homer&amp;page=46&gt;; rel=&quot;last&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Notice the use of <a href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">predefined link relations</a>.
+It is also possible to use custom relations, by referring to them with their URIs. This allows link relations to become
+resources in their own rights, with human- and machine-readable representations available. <strong>How cool is that for meta-REST
+programming?</strong> A common example I give is links to weakly related resources, which can help the client build a complete
+user interface. These can include a representation of common element such as breadcrumbs, navigation menu or user’s 
+authentication status.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span class="line"><span class="na">Link</span><span class="o">:</span> <span class="l">&lt;http://book.store/ui/breadcrubms?for=/books&gt;; </span>
+</span><span class="line">        <span class="l">rel=&quot;http://book.store/api/breadcrumbs&quot;,</span>
+</span><span class="line">      <span class="l">&lt;http://book.store/ui/unauthorized-user-menu&gt;; </span>
+</span><span class="line">        <span class="l">rel=&quot;http://book.store/api/navigation/main-menu&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="is-that-it">Is that it?</h2>
+
+<p>As far as linking is concerned it actually is. Bottom line is that <strong>clients are interested in specific kind of data and 
+not details about how to get it</strong> (pun intended).</p>
+
+<p>Of course links are not enough for a complete description of possible client-server interaction. I will expand upon this
+subject in the next post.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/02/rest-misconceptions-2/';
+        var disqus_url = 'http://t-code.pl/blog/2016/02/rest-misconceptions-2/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,495 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Testing database access with SpecFlow and NDbUnit and LocalDb - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="A moderately pleasant way to write specification-by-example tests against a physical database">
+    
+        <meta name="keywords" content="dajsiepoznac, gherkin, specflow, unit tests, database">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/04/specflow-database-testing/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Testing Database Access With SpecFlow and NDbUnit and LocalDb</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I know that some people will hate me for mixing the words <strong>testing database with gherkin</strong> all in one sentence, but I’ve
+found that it’s a quite nice combination. <a href="https://github.com/cucumber/cucumber/wiki/Gherkin">Gherkin</a>’s <a href="https://cucumber.io/docs/reference#data-tables">table feature</a> (<a href="http://www.specflow.org/">SpecFlow</a> in my
+case) allow for very nice test definitions, with <a href="https://github.com/NDbUnit/NDbUnit">NDbUnit</a> it is quite simple to populate the database, and
+thanks to <a href="https://msdn.microsoft.com/pl-pl/library/hh510202%28v=sql.110%29.aspx">LocalDb</a> the tests are beautifully portable.</p>
+
+<!--more-->
+
+<h2 id="why-unit-test-database">Why unit test database?</h2>
+
+<p><img src="/uploads/2016/03/testing-db-wtf.jpg" alt="why test db" /></p>
+
+<p>Wait, I never said that these are going to be unit tests right? More of integration tests. Otherwise how would you test
+repositories etc. without actual database?</p>
+
+<h2 id="my-use-case">My use case</h2>
+
+<p>A long time ago I implemented a small library called <a href="http://r2rml.net">r2rml4net</a>, which implements the <a href="https://www.w3.org/TR/r2rml/">R2RML specification</a>.
+R2RML is a RDF language, in which it is possible to map data from relational databases to <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a>. What is RDF is
+completely out of scope of this post. There’s a good introduction <a href="http://www.dataversity.net/introduction-to-rdf/">here</a>.</p>
+
+<p>In my project I use my tool to convert an SQL database of public transport brochures I own to RDF for publishing over
+the web. I wanted automatic tests for those mappings to ensure that the results are correct. Did I mention I have <strong>a
+lot</strong> of those brochures? My wife almost hates me for it.</p>
+
+<p><img src="/uploads/2016/03/over-1600.jpg" alt="over 1600 brochures" /></p>
+
+<h2 id="automatic-database-tests-with-specflow">Automatic database tests with SpecFlow</h2>
+
+<p>Most of the data sits in a table called <code>Sources.Source</code>. It’s called that, because it holds brochures but also book and
+magazine issues.</p>
+
+<p><img src="/uploads/2016/03/table-diagram.png" alt="database-table" /></p>
+
+<p>What r2rml4net does is convert a single row like</p>
+
+<pre><code>+----+------------+----------+-----------+-------+-------------------------+
+| Id | SourceType | Language | Language2 | Pages | FolderName              |
++----+------------+----------+-----------+-------+-------------------------+
+| 1  | folder     | tr       | en        | 2     | Türkkar City Angel E.D. |
++----+------------+----------+-----------+-------+-------------------------+
+</code></pre>
+
+<p>Into some RDF data. Here it’s turtle, which will be important in a moment.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">@base &lt;http://wikibus.org/&gt; .
+</span><span class="line">@prefix wbo: &lt;http://wikibus.org/ontology#&gt; .
+</span><span class="line">@prefix bibo: &lt;http://purl.org/ontology/bibo/&gt; .
+</span><span class="line">@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+</span><span class="line">@prefix graph: &lt;http://data.wikibus.org/graph/r2rml/&gt; .
+</span><span class="line">
+</span><span class="line">&lt;brochure/1&gt;
+</span><span class="line">    a wbo:Brochure ;
+</span><span class="line">    bibo:pages 2 ;
+</span><span class="line">    dcterms:title &quot;Türkkar City Angel E.D.&quot; ;
+</span><span class="line">    dcterms:language &lt;http://lexvo.org/id/iso639-1/tr&gt;,
+</span><span class="line">                     &lt;http://lexvo.org/id/iso639-1/en&gt; .
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="defining-the-test-case">Defining the test case</h2>
+
+<p>Each test is structured int test same way. First I define the table(s) contents similarly to the ASCII art above and in
+the <code>Then</code> clauses I write a <a href="https://www.w3.org/TR/sparql11-overview/">SPARQL query</a>, which matches the expected result with the output data.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="gherkin"><span class="line"><span class="k">Scenario:</span><span class="nf"> Mapping brochure row</span>
+</span><span class="line"><span class="k">   Given </span><span class="nf">table Sources.Source with data:</span>
+</span><span class="line"><span class="k">      |</span><span class="s"> Id</span><span class="k"> |</span><span class="s"> SourceType</span><span class="k"> |</span><span class="s"> Language</span><span class="k"> |</span><span class="s"> Language2</span><span class="k"> |</span><span class="s"> Pages</span><span class="k"> |</span><span class="s"> FolderName</span><span class="k">              |</span><span class="nf"></span>
+</span><span class="line"><span class="k">      |</span><span class="s"> 1</span><span class="k">  |</span><span class="s"> folder</span><span class="k">     |</span><span class="s"> tr</span><span class="k">       |</span><span class="s"> en</span><span class="k">        |</span><span class="s"> 2</span><span class="k">     |</span><span class="s"> Türkkar City Angel E.D.</span><span class="k"> |</span><span class="nf"></span>
+</span><span class="line"><span class="nf">   </span><span class="k">When </span><span class="nf">retrieve all triples</span>
+</span><span class="line"><span class="nf">   </span><span class="k">Then </span><span class="nf">resulting dataset should contain &#39;</span><span class="s">6</span><span class="nf">&#39; triples</span>
+</span><span class="line"><span class="nf">   </span><span class="k">And </span><span class="nf">resulting dataset should match query:</span>
+</span><span class="line"><span class="nf">      </span><span class="k">&quot;&quot;&quot;</span><span class="s"></span>
+</span><span class="line"><span class="s">      base </span><span class="nv">&lt;http://wikibus.org/&gt;</span><span class="s"></span>
+</span><span class="line"><span class="s">      prefix wbo: </span><span class="nv">&lt;http://wikibus.org/ontology#&gt;</span><span class="s"></span>
+</span><span class="line"><span class="s">      prefix bibo: </span><span class="nv">&lt;http://purl.org/ontology/bibo/&gt;</span><span class="s"></span>
+</span><span class="line"><span class="s">      prefix dcterms: </span><span class="nv">&lt;http://purl.org/dc/terms/&gt;</span><span class="s"></span>
+</span><span class="line"><span class="s">      prefix graph: </span><span class="nv">&lt;http://data.wikibus.org/graph/r2rml/&gt;</span><span class="s"></span>
+</span><span class="line">
+</span><span class="line"><span class="s">      ASK</span>
+</span><span class="line"><span class="s">      FROM </span><span class="nv">&lt;http://data.wikibus.org/graph/folder/1/imported&gt;</span><span class="s"></span>
+</span><span class="line"><span class="s">      {</span>
+</span><span class="line"><span class="s">         </span><span class="nv">&lt;brochure/1&gt;</span><span class="s"></span>
+</span><span class="line"><span class="s">            a wbo:Brochure ;</span>
+</span><span class="line"><span class="s">            bibo:pages 2 ;</span>
+</span><span class="line"><span class="s">            dcterms:title &quot;Türkkar City Angel E.D.&quot; ;</span>
+</span><span class="line"><span class="s">            dcterms:language </span><span class="nv">&lt;http://lexvo.org/id/iso639-1/tr&gt;</span><span class="s">,</span>
+</span><span class="line"><span class="s">                             </span><span class="nv">&lt;http://lexvo.org/id/iso639-1/en&gt;</span><span class="s"> .</span>
+</span><span class="line"><span class="s">      }</span>
+</span><span class="line"><span class="s">      </span><span class="k">&quot;&quot;&quot;</span><span class="nf"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p><strong>Notice how similar the SPARQL syntax is to that of turtle</strong>. In simple English the above means:</p>
+
+<ul>
+  <li>return a boolean value (<code>ASK</code>)</li>
+  <li>stating that <code>graph &lt;http://data.wikibus.org/graph/folder/1/imported&gt;</code></li>
+  <li>contains the data from inside <code>{ the curly braces }</code></li>
+</ul>
+
+<p>Right, enough RDF and SPARQL. Let’s focus on testing the database.</p>
+
+<h2 id="preparing-the-database-for-tests">Preparing the database for tests</h2>
+
+<p>It was important to me that each test case runs a fresh database with only the data defined in that test case alone. This
+is when I found <a href="https://github.com/NDbUnit/NDbUnit">NDbUnit</a>, which exposes an <code>INDbUnitTest</code> interface for manipulating database contents with
+old skool <code>DataSet</code>s. Here’s the code I execute at the beginning of each test scenario, which recreates and initializes
+an LocalDb instance.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">private</span> <span class="k">const</span> <span class="n">InstanceName</span> <span class="p">=</span> <span class="s">&quot;WikibusTest&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="k">public</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">TestConnectionString</span> <span class="p">=</span> <span class="n">ConfigurationManager</span><span class="p">.</span><span class="n">ConnectionStrings</span><span class="p">[</span><span class="s">&quot;sql&quot;</span><span class="p">].</span><span class="n">ConnectionString</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="k">static</span> <span class="n">INDbUnitTest</span> <span class="nf">Initialize</span><span class="p">(</span><span class="n">SqlConnection</span> <span class="n">connection</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="c1">// stop and delete database instance</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="n">SqlLocalDbApi</span><span class="p">.</span><span class="n">GetInstanceInfo</span><span class="p">(</span><span class="n">InstanceName</span><span class="p">).</span><span class="n">Exists</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">SqlLocalDbApi</span><span class="p">.</span><span class="n">StopInstance</span><span class="p">(</span><span class="n">InstanceName</span><span class="p">,</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="m">10</span><span class="p">));</span>
+</span><span class="line">        <span class="n">SqlLocalDbApi</span><span class="p">.</span><span class="n">DeleteInstance</span><span class="p">(</span><span class="n">InstanceName</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// create database instance</span>
+</span><span class="line">    <span class="n">SqlLocalDbApi</span><span class="p">.</span><span class="n">CreateInstance</span><span class="p">(</span><span class="n">InstanceName</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="kt">var</span> <span class="n">database</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SqlDbUnitTest</span><span class="p">(</span><span class="n">connection</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// init database with some scripts</span>
+</span><span class="line">    <span class="n">database</span><span class="p">.</span><span class="n">Scripts</span><span class="p">.</span><span class="n">AddSingle</span><span class="p">(</span><span class="s">&quot;Scripts\\InitSchema.sql&quot;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">database</span><span class="p">.</span><span class="n">Scripts</span><span class="p">.</span><span class="n">AddWithWildcard</span><span class="p">(</span><span class="s">&quot;Scripts&quot;</span><span class="p">,</span> <span class="s">&quot;InitTable_*.sql&quot;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">database</span><span class="p">.</span><span class="n">ExecuteScripts</span><span class="p">();</span>
+</span><span class="line">    <span class="c1">// initialize schema from DataSet</span>
+</span><span class="line">    <span class="n">database</span><span class="p">.</span><span class="n">ReadXmlSchema</span><span class="p">(</span><span class="n">Resource</span><span class="p">.</span><span class="n">AsStream</span><span class="p">(</span><span class="s">&quot;Wikibus.xsd&quot;</span><span class="p">));</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">database</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>As you see I had to create a <code>DataSet</code> to be able to load data in each test case. More on that later. And of course I had
+to create the dataset <code>Wikibus.xsd</code> to match the database structure:</p>
+
+<p><img src="/uploads/2016/03/dataset.png" alt="dataset-table" /></p>
+
+<p>The <code>SqlLocalDbApi</code> is also of great help. <a href="https://github.com/wikibus/data.wikibus.org/blob/2bf2d98226a023c0784d0ab69c4e9890607d2924/src/wikibus.tests/Mappings/Database.cs#L14">Before</a> I would first connect to <code>master</code> to create the 
+database for tests. Without that it’s not possible to connect to SQL Server and so I had to keep two connection strings. 
+Now there is only one and the code above ensures that the instance is available and recreated every time. The only 
+requirement is that the <code>InstanceName</code> matches what you have in the connection string.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;connectionStrings&gt;</span>
+</span><span class="line">  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;sql&quot;</span> <span class="na">connectionString=</span><span class="s">&quot;Data Source=(localdb)\WikibusTest;Integrated Security=true;&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;/connectionStrings&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It even works out of the box on <a href="https://www.appveyor.com">AppVeyor</a> and doesn’t care whether developers have their SQL instance named
+that way or another! All you need is SQL Server installed (I think it’s 2012 or newer). Oh and did I mention that you can
+connect to this database using SQL Server Management Studio? <img class="emoji" title=":smile:" alt=":smile:" src="https://assets.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle" /></p>
+
+<p><img src="/uploads/2016/03/localdb.png" alt="connection to LocalDb" /></p>
+
+<h2 id="populating-database-with-data">Populating database with data</h2>
+
+<p>With that ready I can now fill the database with some data. Here’s how I bind the <code>Given</code> step above to a SpecFlow method</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">private</span> <span class="k">readonly</span> <span class="n">SqlConnection</span> <span class="n">_sqlConnection</span><span class="p">;</span>
+</span><span class="line"><span class="k">private</span> <span class="k">readonly</span> <span class="n">INDbUnitTest</span> <span class="n">_database</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="nf">MappingSourcesSteps</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">_sqlConnection</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SqlConnection</span><span class="p">(</span><span class="n">Database</span><span class="p">.</span><span class="n">TestConnectionString</span><span class="p">);</span>
+</span><span class="line">    <span class="n">_database</span> <span class="p">=</span> <span class="n">Database</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">_sqlConnection</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="na">[Given(@&quot;table (.*) with data:&quot;)]</span>
+</span><span class="line"><span class="k">public</span> <span class="k">void</span> <span class="nf">GivenTableWithData</span><span class="p">(</span><span class="kt">string</span> <span class="n">tableName</span><span class="p">,</span> <span class="n">Table</span> <span class="n">table</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="kt">var</span> <span class="n">datasetFile</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">GetTempFileName</span><span class="p">();</span>
+</span><span class="line">    <span class="n">DataSet</span> <span class="n">ds</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">ToDataSet</span><span class="p">(</span><span class="n">tableName</span><span class="p">);</span>
+</span><span class="line">    <span class="n">ds</span><span class="p">.</span><span class="n">WriteXml</span><span class="p">(</span><span class="n">datasetFile</span><span class="p">);</span>
+</span><span class="line">    <span class="n">_database</span><span class="p">.</span><span class="n">AppendXml</span><span class="p">(</span><span class="n">datasetFile</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>That’s actually quite simple. The only hard and boring part is to convert the weak <code>Table</code> into a <code>DataSet</code> object for
+loading. It’s simple copying the table values for each row. As long as the header names match column names all is dandy.
+The source code can be viewed <a href="https://github.com/wikibus/data.wikibus.org/blob/master/src/wikibus.tests/Mappings/TableExtensions.cs#L14">on GitHub</a> of course.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>And that’s it. Now I can proceed with the <code>When</code> and <code>Then</code>s to run the code I want tested and with every test case I am
+starting with a blank database so that each test is guaranteed to be independent from any other.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/04/specflow-database-testing/';
+        var disqus_url = 'http://t-code.pl/blog/2016/04/specflow-database-testing/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: .net framework | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/dot-net-framework/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hidden gem - easiest way to manage SqlLocalDB]]></title>
+    <link href="http://t-code.pl/blog/2018/05/hidden-gem-sqllocaldb/"/>
+    <updated>2018-05-06T18:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/05/hidden-gem-sqllocaldb</id>
+    <content type="html"><![CDATA[<p>SQL Server LocalDB is not something new to me. The ability quickly to run, and destroy a database without much
+hassle has been great aid in running test code which was meant to target a live SQL database. That said, it
+wasn’t always without any hassle at all. I tried various tools which make it a bit easier than the command line
+tool but nothing was perfect. Until recently, when I’ve discovered the humbly named <a href="https://www.nuget.org/packages/SqlLocalDb/">NuGet package</a> which
+is as simple as it gets.</p>
+
+<!--more-->
+
+<h2 id="what-is-sql-localdb">What is SQL LocalDB?</h2>
+
+<p>SQL Server LocalDB is a simple utility which ships with recent SQL Server editions (Express included). It let’s
+you create a temporary, yet full-featured database. It may not seem like much, after all it’s possible with SQL
+server itself to connect to <code>master</code> database, run <code>create database</code> and initialize it according to your needs.</p>
+
+<p>The difference is though that one doesn;t have to manage two connections and doesn’t have to share credentials
+to the <code>master</code> database or require Windows Authentication. Instead, an automatic instance is always available
+locally. However to run a fully isolated database it is necessary to create it, start it and eventually destroy.</p>
+
+<p><code>
+&gt; SqlLocalDB.exe create MyTestingDB
+&gt; SqlLocalDB.exe start MyTestingDB
+&gt; SqlLocalDB.exe stop MyTestingDB
+&gt; SqlLocalDB.exe delete MyTestingDB
+</code></p>
+
+<p>It is also possible to use a magic <code>Server=(LocalDB)\MSSQLLocalDB</code> connection string (also supports
+attaching to file db). Personally though I’ve had mixed results with using a connection string. To be honest
+I never fully understood how it’s supposed to be used ;).</p>
+
+<h2 id="managed-code-to-the-rescue">Managed code to the rescue</h2>
+
+<p>There are a number of C# libraries which aim at simplifying the use of SQL LocalDB. In a previous project
+we had integration tests run against a temporary database created in code yet the steps still followed the 
+same patter showed above:</p>
+
+<ol>
+  <li>Create LocalDB instance</li>
+  <li>Start the instance</li>
+  <li>Get its connection string</li>
+  <li>Create a ADO.NET connection</li>
+  <li>Stop the databse</li>
+  <li>Destroy it</li>
+</ol>
+
+<p>I had a feeling back then that it’s not as friendly as it could get and just this week, while migrating an
+old <a href="https://github.com/r2rml4net/r2rml4net">open source library of mine</a> to .NET Standard I discovered what has to be the most 
+hassle-free solution.</p>
+
+<h3 id="sqllocaldbnupkg">SqlLocalDb.nupkg</h3>
+
+<p>Turns out it’s not new but it somehow slipped under my radar the last time I was looking.</p>
+
+<p>It’s really dead simple to use it:</p>
+
+<p>```c#
+using(var database = new LocalDatabase())
+{
+    using (var connection = database.GetConnection())
+    {
+        connection.Open();</p>
+
+<pre><code>    // do your thing
+    // run your tests
+    // or whatever
+} } ``` 
+</code></pre>
+
+<p>No need to manage the LocalDB instances at all. The library will make sure that it’s created and then get
+rid of it once the <code>LocalDatabase</code> object is disposed. It’s as convenient as it gets.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

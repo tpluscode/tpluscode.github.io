@@ -1,0 +1,495 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Building UI like LEGO (with string template literals) - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="A better way to create composable user interface using new ES6 features">
+    
+        <meta name="keywords" content="web components, javascript, polymer">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2017/08/lego-templates-with-template-literals/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Building UI Like LEGO (With String Template Literals)</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Some time ago I experimented and <a href="/blog/2016/04/hypermedia-driven-ui/">wrote</a> about building composable UI using Polymer and <code>&lt;template&gt;</code> was my
+main building block. I used it to declare building blocks for my pages which I would dynamically interchange depending on
+the displayed content. Unfortunately I’ve hit a number of roadblocks but I think I’ve just recently found a solution.</p>
+
+<!--more-->
+
+<p>Just last week I attended the <a href="https://www.youtube.com/watch?v=yTASiOaXlck">third Polymer Summit</a> in Copenhagen where <a href="https://twitter.com/justinfagnani">Justin Fagnani</a> showed his
+newest experiment: <a href="https://github.com/PolymerLabs/lit-html"><code>lit-html</code></a>. You should definitely watch his presentation:</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">What is the middle ground between full VDOM and manual DOM manipulation? Check out <a href="https://twitter.com/justinfagnani">@justinfagnani</a>’s lit-html <a href="https://t.co/a0aR7c70FV">https://t.co/a0aR7c70FV</a></p>&mdash; Surma (@DasSurma) <a href="https://twitter.com/DasSurma/status/902500278905303041">August 29, 2017</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="the-end-of-dom-module">The end of <code>&lt;dom-module&gt;</code></h2>
+
+<p>Why is this important? Apparently, the next version of Polymer won’t directly use the <code>&lt;template&gt;</code> tag. Instead, it will
+be 100% JS. Yes, you heard correctly. No more <code>&lt;dom-module&gt;</code>:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">Element</span> <span class="nx">as</span> <span class="nx">PolymerElement</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../@polymer/polymer/polymer-element.js&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">export</span> <span class="kr">class</span> <span class="nx">MyElement</span> <span class="kr">extends</span> <span class="nx">PolymerElement</span> <span class="p">{</span>
+</span><span class="line">    <span class="kr">static</span> <span class="nx">get</span> <span class="nx">template</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">return</span> <span class="err">`</span>
+</span><span class="line">      <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">Hello</span> <span class="nx">World</span><span class="o">!&lt;</span><span class="err">/h1&gt;</span>
+</span><span class="line">    <span class="err">`</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;my-element&#39;</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>As you see, instead of HTML+JS, there is only code. Looks more like React+JSX, doesn’t it? It sparked heated discussions
+at the conference, on Polymer’s Slack channel and on Twitter.</p>
+
+<p>At this stage though, the above <code>template()</code> method returns a static HTML string, which is then injected into a HTML
+template and later stamped into the element’s shadow root. Justin’s lit-html, akin to a number of earlier libraries takes
+this one step further, thanks to the properties of JavaScript’s <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Template_literals">template literals</a> (the backtick strings, duh!).</p>
+
+<h2 id="template-literals">Template literals</h2>
+
+<p>Here’s an example how a basic component could use lit-html</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">export</span> <span class="kr">class</span> <span class="nx">CountLit</span> <span class="kr">extends</span> <span class="nx">HTMLElement</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">constructor</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="kr">super</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">this</span><span class="p">.</span><span class="nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">connectedCallback</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">this</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span><span class="p">;</span>
+</span><span class="line">      <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">let</span> <span class="nx">times</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">counter</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">times</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">times</span> <span class="o">=</span> <span class="s1">&#39;times&#39;</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kr">const</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">html</span><span class="err">`</span><span class="nx">You</span> <span class="nx">clicked</span> <span class="nx">me</span> <span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">times</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">render</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This is has all advantages of JS: scoping, syntax highlighting and suggestions and the ability to compose a template from
+multiple other literals. This opens completely new possibilities where one can create decorator components or override
+extensible points of parent element. Features which were very cumbersome with plain <code>&lt;template&gt;</code> tags.</p>
+
+<p>But most importantly, lit-html is <strong>FAST</strong>.</p>
+
+<h2 id="lit-html-is-not-virtual-dom-but-better">lit-html is not Virtual DOM… but better</h2>
+
+<p>By design, the template literal can be prefixed with a tag (did you open the MDN link above?).
+A tag, in this case called <code>html</code> is actually a function with a simple signature:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">html</span><span class="p">(</span><span class="nx">strings</span><span class="p">,</span> <span class="p">...</span><span class="nx">values</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The strings will be an array of all static parts and the values are the interpolated expressions. The trick is that
+whenever the <code>render</code> function is called with the same template it will actually be just one instance (even if it’s) not
+visible in code. lit-html takes advantage of that fact and whenever the same template is used, it will only update any
+changed expressions.</p>
+
+<p>In the example above each click will only update a tiny piece of the rendered HTML which will keep DOM operations to the
+minimum. Even though the <code>times</code> variable is calculated each time, it will only ever be rendered when it actually changes
+between renders. Not every time.</p>
+
+<h2 id="so-what-about-declarative-ui">So what about declarative UI?</h2>
+
+<p>Previously I struggled to bend <code>&lt;template&gt;</code> to suit my needs in pursuit of a declarative solution for defining views
+which are dynamically selected based on the content.</p>
+
+<p>First of all, in my current implementation the order in which the templates appear in the page is important for the
+order in which the will be selected. In case there are multiple matches.</p>
+
+<p>Secondly, I used Polymer 1.0’s <a href="/blog/2015/08/polymer-templatizer/"><code>Templatizer</code></a> which not only disappeared in Polymer 2.0, but it was also
+notoriously buggy and hard to master.</p>
+
+<p>With <code>lit-html</code> I will be “freed” from Polymer and likely implement my elements will in plain JS. Additionally it will
+be much easier to work with those templates; to extend with ES classes and compose with less custom element on the page.</p>
+
+<h3 id="some-sample-code">Some sample code</h3>
+
+<p>At the top level would still be a view element</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;object-view</span> <span class="na">id=</span><span class="s">&quot;top-view&quot;</span><span class="nt">&gt;&lt;/object-view&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">objectView</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;top-view&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">objectView</span><span class="p">.</span><span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">        <span class="s2">&quot;@type&quot;</span><span class="o">:</span> <span class="s2">&quot;http://example.com/vocab#Person&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="s2">&quot;http://example.com/vocab#avatar&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">            <span class="s2">&quot;@type&quot;</span><span class="o">:</span> <span class="s2">&quot;http://schema.org/ImageObject&quot;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">};</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>But from there on it could be all templates composed of smaller parts. Each part rendered with a template selected from
+some <code>templateRepository</code>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">import</span> <span class="p">{</span><span class="nx">TemplateRepository</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;template-repository&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span><span class="nx">render</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;template-selector&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span><span class="nx">html</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;lit-html&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm">* Will render http://example.com/vocab#Person</span>
+</span><span class="line"><span class="cm">*/</span>
+</span><span class="line"><span class="kr">class</span> <span class="nx">PersonTemplate</span> <span class="kr">extends</span> <span class="nx">TypeTemplate</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">get</span> <span class="nx">type</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="s1">&#39;http://example.com/vocab#Person&#39;</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">get</span> <span class="nx">context</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;@vocab&#39;</span><span class="o">:</span> <span class="s1">&#39;http://example.com/vocab#&#39;</span> <span class="p">};</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">get</span> <span class="nx">template</span><span class="p">(</span><span class="nx">person</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">html</span><span class="err">`</span><span class="o">&lt;</span><span class="nx">h2</span><span class="o">&gt;</span>
+</span><span class="line">                        <span class="nx">$</span><span class="p">{</span><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span>
+</span><span class="line">                    <span class="o">&lt;</span><span class="err">/h2&gt;</span>
+</span><span class="line">                    <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;details&quot;</span><span class="o">&gt;</span>
+</span><span class="line">                        <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;${person.website}&quot;</span><span class="o">&gt;</span><span class="nx">My</span> <span class="nx">website</span><span class="o">&lt;</span><span class="err">/a&gt;</span>
+</span><span class="line">                    <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class="line">                    <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;avatar&quot;</span><span class="o">&gt;</span>
+</span><span class="line">                        <span class="nx">$</span><span class="p">{</span><span class="nx">render</span><span class="p">(</span><span class="nx">person</span><span class="p">.</span><span class="nx">avatar</span><span class="p">)}</span>
+</span><span class="line">                    <span class="o">&lt;</span><span class="err">/div&gt;`;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm">* Will render http://schema.org/ImageObject </span>
+</span><span class="line"><span class="cm">*/</span>
+</span><span class="line"><span class="kr">class</span> <span class="nx">SchemaImageTemplate</span> <span class="kr">extends</span> <span class="nx">TypeTemplate</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">TemplateRepository</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">PersonTemplate</span><span class="p">);</span>
+</span><span class="line"><span class="nx">TemplateRepository</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">SchemaImageTemplate</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The <code>render</code> imported above would select a template from the repository and insert it into the parent template. No need
+for nesting <code>&lt;object-view&gt;</code> elements. That is of course if I figure out how to observe changes ;)</p>
+
+<h2 id="bottom-line">Bottom line</h2>
+
+<p>I really do like what’s coming with Polymer 3.0. It will embrace ES6 modules, finally. It may be that Polymer will become
+more similar to Vue or React but it will still be closest to the Web Platform.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2017/08/lego-templates-with-template-literals/';
+        var disqus_url = 'http://t-code.pl/blog/2017/08/lego-templates-with-template-literals/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: js | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/js/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Creating cool components with Polymer.Templatizer]]></title>
+    <link href="http://t-code.pl/blog/2015/08/polymer-templatizer/"/>
+    <updated>2015-08-23T10:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2015/08/polymer-templatizer</id>
+    <content type="html"><![CDATA[<p>I’ve been looking for a way to create a collection component, in which I would declare the collection 
+item template in the <a href="http://webcomponents.org/polyfills/shadow-dom/">Light DOM</a> and then render that template bound to each item. I’m using
+Polymer, because it is fun and insanely productive tool for creating Web Components. When I was already
+close to actually writing my component in pure Web Component API I discovered the <a href="https://github.com/Polymer/polymer/blob/master/src/lib/template/templatizer.html">Templatizer bevahiour</a>.</p>
+
+<!--more-->
+
+<p>I am working with <a href="http://json-ld.org">JSON-LD</a> and <a href="https://www.w3.org/community/hydra/">Hydra</a>. Nicely compacted, a Hydra collection is a JSON object with
+an array of <code>members</code>:</p>
+
+<p><code>js
+{
+  "@context": [
+    "http://www.w3.org/ns/hydra/context.jsonld"
+    {
+      "label": "http://www.w3.org/2000/01/rdf-schema#label"
+    }
+  ],
+  "@id": "http://example.com/my/collection",
+  "@type": "Collection",
+  "member": [
+    {
+      "label": "Item one"
+    },
+    {
+      "label": "Item two"
+    }
+  ]
+}
+</code></p>
+
+<p>A simple way to display such collection would be to create a <code>&lt;template is="dom-repeat"&gt;</code> to iterate over the members.
+However this isn’t perfect and I wanted a better component, where the item’s template is supplied in the Light DOM.
+This way it can be reused for rendering various collections and also extended with <code>&lt;content&gt;</code> tags to support stuff 
+like custom header/footer or paging controls (see <a href="http://www.hydra-cg.com/spec/latest/core/#collections">PagedCollection</a>). For the time being, I call it 
+simply <code>&lt;hydra-collection&gt;</code>.</p>
+
+<p><strong>TL;DR;</strong> <a href="#templatizer">here’s the working solution</a></p>
+
+<h2 id="first-attempt-doesnt-work">First attempt <em>(¡doesn’t work!)</em></h2>
+
+<p>My naive attempt was to distribute an item template inside a repeater.</p>
+
+<p>``` html
+<!-- The Light DOM declares an .item element, which is used as the template --></p>
+<hydra-collection collection="{{myCollection}}">
+  <div class="member">
+    Label: <span>{{member.label}}</span>
+  </div>
+</hydra-collection>
+
+<!-- Now in my element I place <content> in <dom-repeat> -->
+<dom-module id="hydra-collection">
+  <template>
+    <template is="dom-repeat" items="{{collection.members}}">
+      <content select=".member" member="{{item}}"></content>
+    </template>
+  </template>
+</dom-module>
+<p>```</p>
+
+<p>Unfortunately this cannot work, because it is not how <code>&lt;content&gt;</code> tags are used. Basically, the first time
+the repeating template iterates, all nodes matched by <code>&lt;content&gt;</code> are distributed and subsequent iterations 
+render nothing. The other problem is with data binding, which is done in the parent scope. Obviously I need a 
+template in the Light DOM.</p>
+
+<h2 id="template-in-light-dom-almost-works"><code>&lt;template&gt;</code> in Light DOM <em>(¡almost works!)</em></h2>
+
+<p>Inspired by a <a href="https://groups.google.com/d/msg/polymer-dev/sEyfXJMAkQc/Ga5_8YGPksEJ">google group post</a> by 
+Eric Bidelman I thought that I could define a template in the Light DOM and then clone and bind it inside my 
+component. This will first solve the binding problem</p>
+
+<p>``` html
+<!-- Template in the Light DOM --></p>
+<hydra-collection collection="{{myCollection}}">
+  <template class="member">
+    Label: <span>{{member.label}}</span>
+  </template>
+</hydra-collection>
+
+<!-- <content> sits outside of the repeater -->
+<dom-module id="hydra-collection">
+  <template>
+    <div id="repeater"></div>
+    <content id="templates" select="template.member"></content>
+  </template>
+</dom-module>
+
+<!-- distributed template is cloned in loop and added to the Local DOM -->
+<script>
+  
+  Polymer({
+    is: 'hydra-collection',
+    parameters: {
+        collection: Object
+    },
+    ready: function() {
+      var template = Polymer.dom(this.$.templates).getDistributedNodes()[0];
+     
+      var items = this.collection.member;
+      for(var i=0; i < items.length; i++) {
+        var clone = document.importNode(template.content, true);
+        clone.member = items[i];
+        Polymer.dom(this.$.repeater).appendChild(clone);
+      }
+    }
+  });
+  
+</script>
+
+<p>```</p>
+
+<p>This time I tried instantiate the templates by using native <a href="http://www.html5rocks.com/en/tutorials/webcomponents/template/">Web Components API</a>. Unfortunately
+the template cloned from a node distributed by Polymer contains only an empty <code>#document-fragment</code>. It may be a problem
+with <a href="https://www.polymer-project.org/1.0/articles/shadydom.html">Shady DOM</a> so other Polymer quirk (it definitely works with pure-WC with Shadow DOM). Also the native
+way doesn’t help with data binding anyway.</p>
+
+<p>Nevertheless Polymer’s <code>dom-repeat</code> component does a similar thing and looking at the source code I discovered
+Polymer.Templatizer.</p>
+
+<h2 id="polymertemplatzier-a-nametemplatizera">Polymer.Templatzier <a name="templatizer"></a></h2>
+
+<p>Polymer.Templatizer is the Polymer way to create instances of templates and takes care of data binding too. It can be 
+added to any Polymer element as a <a href="https://www.polymer-project.org/1.0/docs/devguide/behaviors.html">behaviour</a> and adds a number of methods, out of which the most
+important are <code>templatize</code> and <code>stamp</code>, which prepare the template and create actual instance respectively.</p>
+
+<p>``` html
+<!-- Same as above, <template> is used in Light DOM --></p>
+<hydra-collection collection="{{myCollection}}">
+  <template class="member">
+    Label: <span>{{member.label}}</span>
+  </template>
+</hydra-collection>
+
+<!-- <content> sits outside of the repeater -->
+<dom-module id="hydra-collection">
+  <template>
+    <div id="repeater"></div>
+    <content id="templates" select="template.member"></content>
+  </template>
+</dom-module>
+
+<!-- templates are instantiated with Templatizer instead -->
+<script>
+  
+  // add Templatizer behavior
+  Polymer({
+    is: 'hydra-collection',
+    behaviors: [
+      Polymer.Templatizer
+    ],
+    parameters: {
+        collection: Object
+    },
+    ready: function() {
+      var template = Polymer.dom(this.$.templates).getDistributedNodes()[0];
+      
+      // templatize must be called once before stamp is called
+      this.templatize(template);
+     
+      var items = this.collection.member;
+      for(var i = 0; i < items.length; i++) {
+      
+        // clone the template and bind with the model
+        var clone = this.stamp({});
+        clone.member = items[i];
+        
+        // append clone.root to DOM instead
+        Polymer.dom(this.$.repeater).appendChild(clone.root);
+      }
+    }
+  });
+  
+</script>
+
+<p>```</p>
+
+<p>This works like charm but I find two minor issues with this API. First, it is weird that <code>templatize</code> doesn’t return
+a value, but rather modifies some internal state used by <code>stamp</code>. I would prefer that to be more functional:</p>
+
+<p><code>js
+var template = this.templatize(templateNode);
+var clone = this.stamp(template, { });
+dom.appendChild(clone.root);
+</code></p>
+
+<p>Second is a problem with the stamp method. The documentation says it accepts an object with the initial state to bind
+to but that didn’t work for me. It is merely a nuisance though, because any property set on the stamped clone and bound
+just fine. So, that’s why instead of</p>
+
+<p><code>js 
+var clone = this.stamp(template, {
+  member: items[i]
+});
+</code></p>
+
+<p>I had to write</p>
+
+<p><code>js 
+var clone = this.stamp(template, { });
+clone.member = items[i];
+</code></p>
+
+<p>I’m not sure why I had this problem though, because it sure as hell <a href="http://plnkr.co/edit/MyPOz12b2MkTpfravUGy">works in plunker</a>.</p>
+
+<h2 id="bottom-line">Bottom line</h2>
+
+<p>I very much like the Templatizer <img class="emoji" title=":heart_eyes:" alt=":heart_eyes:" src="https://assets.github.com/images/icons/emoji/unicode/1f60d.png" height="20" width="20" align="absmiddle" />. It makes it possible to create very rich and composable web components 
+while still giving the developers full power of Polymer magic! <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Declarative UI "routing" with Web Components]]></title>
+    <link href="http://t-code.pl/blog/2015/02/declarative-ui/"/>
+    <updated>2015-02-01T10:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2015/02/declarative-ui</id>
+    <content type="html"><![CDATA[<p>For a long time now W3C has been working on <a href="http://webcomponents.org/">Web Components</a>, the groundbreaking
+specification, which will dramatically change the way web applications are
+created. Google’s own <a href="https://twitter.com/ebidel">Eric Bidelman</a> calls it a <a href="http://webcomponents.org/presentations/web-components-a-tectonic-shift-for-web-development-at-google-io/">Tectonic Shift</a>
+and for good reason.</p>
+
+<!--more-->
+
+<p>In my <a href="">previous post</a> I proposed a novel way for managing the application state of RESTful
+clients - that is clients of RESTful services. To recap, the idea is that the user interface should be rendered first
+and foremost based on the resource returned by the server rather. I propose that is an alternative to client-side
+URL routing.</p>
+
+<h2 id="web-components">Web Components</h2>
+
+<p>I will be showing examples written with custom elements - part of an upcoming W3C standard, which will allow creating
+custom HTML elements. Those custom elements act like the standard HTML tags, accepting attributes and exposing methods
+and firing events. Altogether the Web Components specification will define four complementary standards:</p>
+
+<ul>
+  <li><a href="http://w3c.github.io/webcomponents/spec/shadow/">Shadow DOM</a> - allowing encapsulation and separation of markup and CSS</li>
+  <li><a href="https://html.spec.whatwg.org/multipage/scripting.html#the-template-element">Templates</a> - for defining reusable portions HTML (not just text)</li>
+  <li><a href="http://w3c.github.io/webcomponents/spec/imports/">Imports</a> - so that elements can be loaded on demand</li>
+  <li><a href="http://w3c.github.io/webcomponents/spec/custom/">Custom elements</a> - to enrich HTML with custom, semantically significant elements</li>
+</ul>
+
+<p>Combined, though each could be used separately if needed, these standards empower web developers to create web applications
+in ways unimagined before. For example, there is a custom google maps element, which makes adding a map to your page as
+simple as shown below.</p>
+
+<p>``` html
+<script src="http://t-code.pl/bower_components/webcomponentsjs/webcomponents.min.js"></script></p>
+<link rel="import" href="http://t-code.pl/bower_components/google-map/google-map.html" />
+
+<style>
+    google-map {
+        height: 400px;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+</style>
+
+<google-map latitude="51.110921" longitude="17.028160" zoom="15">
+  <google-map-marker latitude="51.110921" longitude="17.028160" title="Wrocław .NET user group">
+    <a href="http://wrocnet.github.io" target="_blank">
+      <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    </a>
+  </google-map-marker>
+</google-map>
+<p>```</p>
+
+<script src="http://t-code.pl/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+
+<link rel="import" href="http://t-code.pl/bower_components/google-map/google-map.html" />
+
+<style>
+    google-map {
+        height: 400px;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+</style>
+
+<google-map latitude="51.110921" longitude="17.028160" zoom="15">
+  <google-map-marker latitude="51.110921" longitude="17.028160" title="Wrocław .NET user group">
+    <a href="http://wrocnet.github.io" target="_blank">
+      <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    </a>
+  </google-map-marker>
+</google-map>
+
+<p>No boilerplate JavaScript that would traditionally obscure intent. <em>And</em> it would be so much easier to replace Google
+map with <a href="https://github.com/just-boris/polymer-ymaps">Yandex</a>, <a href="https://github.com/ruben96/open-map">Open Street Map</a>,
+<a href="https://github.com/nhnb/leaflet-map">Leaflet</a> or <a href="http://customelements.io/?q=map">other from custom elements</a>.</p>
+
+<p><strong>Note</strong> The <code>webcomponents.js</code> is a polyfill currently required for browsers other than Chrome and Opera.</p>
+
+<p>You can find dozens more components on <a href="http://component.kitchen/">component kitchen</a>, <a href="http://customelements.io/">customelements.io</a>
+and <a href="http://googlewebcomponents.github.io/">some more experiments by google</a>.</p>
+
+<p>I really, really love how Web Components turn the traditional <a href="http://drupal.stackexchange.com/questions/2917/can-you-do-anything-about-the-div-soup"><code>&lt;div&gt;&lt;soup&gt;</code></a>
+into <strong><em>meaningful</em></strong> code. They are a tool for creating <a href="http://en.wikipedia.org/wiki/Domain-specific_language">Domain-Specific Language</a> for HTML.</p>
+
+<h2 id="routing-with-custom-elements">Routing with Custom Elements</h2>
+
+<p>There is a neat component, which implements traditional URL routing as a custom <a href="https://github.com/erikringsmuth/app-router"><code>&lt;app-router&gt;</code></a> element.</p>
+
+<p>``` html</p>
+<app-router>
+  <!-- matches an exact path -->
+  <app-route path="/home" import="/pages/home-page.html"></app-route>
+
+  <!-- matches using a wildcard -->
+  <app-route path="/customer/*" import="/pages/customer-page.html"></app-route>
+
+  <!-- matches using a path variable -->
+  <app-route path="/order/:id" import="/pages/order-page.html"></app-route>
+
+  <!-- matches a pattern like '/word/number' -->
+  <app-route path="/^\/\w+\/\d+$/i" regex="" import="/pages/regex-page.html"></app-route>
+
+  <!-- matches everything else -->
+  <app-route path="*" import="/pages/not-found-page.html"></app-route>
+</app-router>
+<p>```</p>
+
+<p>It supports imported and inline templates, binding to route parameters and all other features found in all-javascript
+routers.</p>
+
+<p>It is still URL-routing though. Also the approach to handle routing and browser history in one component violates the
+<a href="http://www.oodesign.com/single-responsibility-principle.html">single responsibility principle</a> IMO.</p>
+
+<h2 id="linked-data-to-the-rescue">Linked Data to the rescue</h2>
+
+<p>The <code>&lt;app-router&gt;</code> component is a great base, which can be adapted to handle REST models. Below is my idea, which I have
+been experimenting with by modifying the app-router’s code, thus retaining the template loading functionality and events.</p>
+
+<p>``` html</p>
+<ld-presenter id="main-content">
+  <!-- load a view asynchronously for Person -->
+  <ld-view type="http://schema.org/Person" import="/views/person.html"></ld-view>
+
+  <!-- no type attribute would match anything -->
+  <ld-view>
+    <template>
+      Sorry, unsupported model
+    </template>
+  </ld-view>
+</ld-presenter>
+<p>```</p>
+
+<p>Unlike <code>&lt;app-router&gt;</code> I think that <code>&lt;ld-presenter&gt;</code> should only handle selecting a view to honour the <a href="http://www.oodesign.com/single-responsibility-principle.html">Single
+Responsibility Principle</a>. History could be handled by another custom element created for that specific task:</p>
+
+<p>``` html</p>
+<ld-history baseUri="http://example.com/my-api/"></ld-history>
+<p>```</p>
+
+<p>Dropping the above anywhere in the page would automatically change the page URL (by using hashes or HTML5 history)
+whenever the model changes.</p>
+
+<h3 id="so-where-is-the-model-actually-and-how-is-it-retrieved">So where is the model actually? And how is it retrieved?</h3>
+
+<p>The approach to build UI based on a model has an important implication - it has to be connected to some remote (RESTful)
+data source. Because the <code>&lt;ld-presenter&gt;</code> is only responsible for handling UI changes, a separate object is needed to
+retrieve the model.</p>
+
+<p>Speaking of single responsibilities, the <code>&lt;ld-presenter&gt;</code> should probably work simply by being bound to the object displayed.
+This would be achieved by setting a model attribute on the presenter’s node.</p>
+
+<p>``` html
+<!-- set declaratively -->
+<ld-presenter model="{{ boundModel }}" id="main-content">
+  <!-- routes here -->
+</ld-presenter></p>
+
+<!-- set from javascript -->
+<script>
+  var model = { };
+  document.querySelector("#main-content").model = model;
+</script>
+
+<p>```</p>
+
+<p>Either way the model must come from somewhere. For a complete solution the <a href="https://facebook.github.io/flux/">Flux pattern from Facebook</a> can be used
+to achieve low coupling. Out of a number of solutions <a href="https://github.com/spoike/refluxjs">reflux</a> appealed to me most, but the idea is similar
+regardless of the implementation. The idea behind Flux is that all communication should be unidirectional. The views fire
+actions, which are simply events. Those events are handled by stores. Stores are anything ranging from simple local storage
+to proxies for a remote service. When stores are ready they also signal changes via events to all listening views so
+that the can be updated.</p>
+
+<p><img src="/uploads/2015/02/flux.png" alt="flux" /></p>
+
+<p>What’s important, is that stores and views never communicate directly. This way it is easier to keep things decoupled and
+synchronized. Note that in Reflux’s case there is no dispatcher. Stores listen directly to actions.</p>
+
+<h3 id="using-reflux-to-handle-a-linked-data-api">Using Reflux to handle a Linked Data API</h3>
+
+<p>Because in Linked Data any identifier is a URI, readible links can be rendered simply as an anchor <code>&lt;a&gt;</code>. Let’s take a
+simple JSON-LD model of a person (<code>@context</code> ignored for brevity):</p>
+
+<p><code>javascript
+{
+  "@id": "/person/tomasz"
+  "foaf:givenName": "Tomasz",
+  "ex:friends": {
+    "@id": "/person/tomasz/friends"
+  }
+}
+</code></p>
+
+<p>That model could be displayed using the template below (think Polymer/mustache syntax)</p>
+
+<p>``` html</p>
+<template>
+<p>Hi, my name is {{ model['foaf:givenName'] }}</p>
+  <p>
+    Here's a list of my 
+    <a id="friendsLink" href="{{ model['ex:friends'] }}">friends</a>.
+  </p>
+</template>
+<p>```</p>
+
+<p>The link will by default navigate the browser to a new address, so the click event must be handled to prevent that from
+happening. Instead an action will be triggered. Below is how that could work with Reflux and requirejs. First we define
+the actions.</p>
+
+<p><code>javascript
+define('navigation', ['Reflux'], function(Reflux) {
+	return Reflux.createAction({
+    children: [ 'success' ]
+  });
+});
+</code></p>
+
+<p>We fire the action when the link is clicked.</p>
+
+<p>``` javascript
+require([‘navigation’], function(navigation) {
+  var friendsLink = document.getElementById(‘friendsLink’);
+  friendsLink.addEventListener(‘click’, function(ev) {
+    ev.preventDefault();</p>
+
+<pre><code>navigation(ev.target.href);   }); }); ```
+</code></pre>
+
+<p>It is handled in a store. When that happens, a GET request is fired. After the request has been processed (JSON-LD here),
+it is forwarded with the child action <code>success</code>.</p>
+
+<p>``` javascript
+define(
+  ‘modelStore’, 
+  [‘navigation’, ‘jsonld’], 
+  function(navigation, jsonld) {
+    var promises = jsonld.Promises;</p>
+
+<pre><code>return Reflux.createStore({
+  model: {},
+  init: function() {
+    this.listenTo(navigation, this.loadResource);
+  },
+  loadResource: function(uri) {
+    var self = this;
+  
+    executeXhr(uri)
+      .then(function(resource) {
+        return promises.expand(xhr);
+      })
+      .then(function(expanded) {
+        navigation.success(expanded);
+      });
+  }
+});   } ); ```
+</code></pre>
+
+<p>Lastly the <code>navigation.success</code> action is handled to update the ld-presenter.</p>
+
+<p>``` javascript
+require([‘navigation’], function(navigation) {
+  navigation.success.listen(fuction(resource) {
+    var presenter = document.querySelector(‘ld-presenter’);</p>
+
+<pre><code>presenter.model = resource;   }); }); ```
+</code></pre>
+
+<h3 id="rough-edges">Rough edges</h3>
+
+<p>My current <a href="https://github.com/tpluscode/polymer-flux/tree/master">experiment I’ve implemented</a> more or less follows this pattern but the <code>&lt;ld-presenter&gt;</code> 
+(there called <code>&lt;hydra-router&gt;</code>) is tied to the navigation actions, which means that anyone using such presenter is 
+automatically required to use Reflux. Real presenter should be independent from any third party components. Such
+integration could be achieved with minimal javascript code. Preferably by <a href="http://www.html5rocks.com/en/tutorials/webcomponents/customelements/">extending the custom element</a> or
+inside an angular directive, etc.</p>
+
+<p>Also with a hard dependency on navigation action, any instance of the presenter element in DOM would every time react to 
+the action being fired. This may be less than ideal when multiple and maybe nested presenters are used on a page. In a 
+real app there could be multiple model stores for various parts of the UI like main menu or master-detail kind of view.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

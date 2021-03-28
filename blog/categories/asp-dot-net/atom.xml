@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: asp.net | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/asp-dot-net/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CompareValidator bug: remember to call Page.IsValid?]]></title>
+    <link href="http://t-code.pl/blog/2011/10/comparevalidator-bug-remember-to-call-page-isvalid/"/>
+    <updated>2011-10-25T10:08:06-04:00</updated>
+    <id>http://t-code.pl/blog/2011/10/comparevalidator-bug-remember-to-call-page-isvalid</id>
+    <content type="html"><![CDATA[<p>One of the common mistakes developers make when working with Web Forms pages is using client-side validation, while not 
+checking the validation result on server-side postback.</p>
+
+<p>This mistake is easily noticeable with CustomValidator as it only works on the server’s side. Also when Javascript is 
+disabled you would quickly run into trouble when trying to rely solely on client-side validation.</p>
+
+<!--more-->
+
+<p>Now, in other cases you should be fine right? Not really, no. I’ve just found a little bug in CompareValidator. Let’s 
+try this:</p>
+
+<p>``` xml</p>
+<asp:CompareValidator Type="Date" Operator="DataTypeCheck" runat="server" ControlToValidate="SomeTB" Display="Dynamic">
+   Message
+</asp:CompareValidator>
+<p>```</p>
+
+<p>And on the server side:</p>
+
+<p><code>c#
+protected void HandleEvent(object sender, EventArgs e)
+{
+   DateTime.Parse(SomeTB.Text);
+}
+</code></p>
+
+<p>There is an obvious problem. Page.IsValid is not checked to ensure the submitted form is valid. With built-in validators
+and JS enabled this shouldn’t be a problem.</p>
+
+<p>However the ComapreValidator is a bit picky. It works fine for input like 2000-10-10, or 2000-00-00. Also writing for
+example 20-10-10 validates correctly and parsing it would not be a problem.</p>
+
+<p>Surprisingly though date 25-25-25, which is not valid causes the JS validation to fail inside ScripResource.axd with an
+exception and postback is not stopped even though the form is not valid. So what happens then? Event handler throws an
+exception where it tries to parse the input. For that reason always remember to write your handlers like</p>
+
+<p><code>c#
+protected void HandleEvent(object sender, EventArgs e)
+{
+   if(IsValid)
+   {
+      DateTime.Parse(SomeTB.Text);
+   }
+}
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

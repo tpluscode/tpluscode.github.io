@@ -1,0 +1,403 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Strategy pattern and (one reason) why I love Nancy - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Open-closed principle is an important part o SOLID. I this post I present how it can be used to achieve extensibility of a Nancy web application">
+    
+        <meta name="keywords" content="dajsiepoznac, nancy, strategy pattern, nancy registrations, hypermedia">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/03/strategy-pattern-nancy/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Strategy Pattern and (One Reason) Why I Love Nancy</h1>
+	<div class="entry-content" itemprop="articleBody"><p>The open-closed principle is the second letter of the <a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a> acronym. SOLID is a set of software design guidelines 
+which help build better software. The open-closed principle declares that</p>
+
+<blockquote>
+  <p>software entities should be open for extension, but closed for modification</p>
+</blockquote>
+
+<p>One way to satisfy this principle is through the use of the <a href="http://www.oodesign.com/strategy-pattern.html">Strategy design pattern</a>, sometimes called Policy. I’d
+like to show how easy it is to employ this pattern in reusable and extensible components for a <a href="https://github.com/NancyFx/Nancy/">Nancy</a> application.</p>
+
+<!--more-->
+
+<p><img src="/uploads/2016/03/Set_of_security_screw_driver_bits.jpg" alt="screwdrivers" /></p>
+
+<p>While implementing my <a href="https://github.com/wikibus/Argolis">Argolis</a> library I wanted to provide multiple extension points so that the behaviour can
+be changed by consumers. For example there is an interface called <code>ISupportedClassMetaProvider</code> which return some basic
+metadata about the given <code>Type</code>.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">namespace</span> <span class="nn">Hydra.Discovery.SupportedClasses</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="k">interface</span> <span class="n">ISupportedClassMetaProvider</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">SupportedClassMeta</span> <span class="nf">GetMeta</span><span class="p">(</span><span class="n">Type</span> <span class="n">type</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The default implementation <code>DefaultSupportedClassMetaProvider</code> looks at the type name and <code>[Description]</code> attribute to
+provide default label and description for a documented type. This can be changed by library consumers simply by creating
+a custom implementation from scratch, inheriting from the default implementation or decorating it.</p>
+
+<h2 id="registering-dependencies-with-nancy">Registering dependencies with Nancy</h2>
+
+<p>This is where Nancy comes in with it’s magnificent extensibility model. In Nancy there is <code>IRegistrations</code> interface and
+it’s abstract implementation called… <code>Registrations</code>. They provide simple abstraction over Dependency Injection, which
+is an integral part of Nancy. This abstraction will only let you do basic DI registrations, but it should be enough. Here’s
+an example setup which registers a shared instance of <code>IAppSettings</code> and an implementation of some <code>IUserContext</code>, which
+will be resolved per-request.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">Registrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">IAppSettings</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">WebConfigSettings</span><span class="p">());</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">IUserContext</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">UserContext</span><span class="p">),</span> <span class="n">Lifetime</span><span class="p">.</span><span class="n">PerRequest</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Nancy will discover implementations of <code>IRegistrations</code> at startup and translate <code>Register&lt;&gt;()</code> calls to the underlying
+container. It is very important because Nancy supports <a href="https://github.com/NancyFx/Nancy/wiki/Container-Support">(m)any dependency injection container(s)</a> and
+otherwise it would not be possible to create reusable assemblies agnostic of the chosen DI library.</p>
+
+<h3 id="injecting-into-registrations">Injecting into <code>Registrations</code></h3>
+
+<p>Because the very same container is used to create instances of <code>IRegistrations</code>, it is even possible to inject into them.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">Registrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">(</span><span class="n">IAppSettings</span> <span class="n">settings</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="n">settings</span><span class="p">.</span><span class="n">IsDebug</span><span class="p">)</span>
+</span><span class="line">            <span class="n">Register</span><span class="p">&lt;</span><span class="n">IUserContext</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">TestUserContext</span><span class="p">),</span> <span class="n">Lifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">);</span>
+</span><span class="line">        <span class="k">else</span>
+</span><span class="line">            <span class="n">Register</span><span class="p">&lt;</span><span class="n">IUserContext</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">UserContext</span><span class="p">),</span> <span class="n">Lifetime</span><span class="p">.</span><span class="n">PerRequest</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Depending on the container used however this comes with a limitation that the injected type must either:</p>
+
+<ul>
+  <li>be a concrete type (resolving concrete types automatically is supported eg. by <a href="http://stackoverflow.com/a/3267742/1103498">Unity</a> or the bundled <a href="https://github.com/grumpydev/TinyIoC">TinyIoC</a>)</li>
+  <li>be registered up-front in the <a href="https://github.com/NancyFx/Nancy/wiki/Bootstrapping-nancy">Bootstrapper</a></li>
+</ul>
+
+<h2 id="providing-defaults-registrations-to-consumers">Providing defaults registrations to consumers</h2>
+
+<p>Because Nancy provides a container-agnostic way for registering dependencies and will discover them at startup it is
+trivially easy to bundle defaults within a reusable package. In addition to the above it is also possible to register
+defaults, which will only be used if no consumer-defined type is found. <img class="emoji" title=":tada:" alt=":tada:" src="https://assets.github.com/images/icons/emoji/unicode/1f389.png" height="20" width="20" align="absmiddle" /></p>
+
+<p><a href="https://github.com/wikibus/Argolis/blob/master/src/Lernaean.Hydra.Nancy/HydraRegistrations.cs">In Argolis</a> I have a 
+<code>HydraRegistrations</code> class, which defines defaults. It is also possible to register multiple implementations of which can
+be resolved as <code>IEnumerable&lt;&gt;</code>.</p>
+
+<p>Here’s an excerpt showing default registration for the <code>ISupportedClassMetaProvider</code> and three defaults for
+<code>IPropertyRangeMappingPolicy</code>.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">HydraRegistrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">RegisterWithDefault</span><span class="p">&lt;</span><span class="n">ISupportedClassMetaProvider</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">DefaultSupportedClassMetaProvider</span><span class="p">));</span>
+</span><span class="line">        <span class="n">RegisterWithUserThenDefault</span><span class="p">&lt;</span><span class="n">IPropertyRangeMappingPolicy</span><span class="p">&gt;(</span><span class="k">new</span><span class="p">[]</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="k">typeof</span><span class="p">(</span><span class="n">XsdDatatypesMappingPolicy</span><span class="p">),</span>
+</span><span class="line">            <span class="k">typeof</span><span class="p">(</span><span class="n">XsdDatatypesNullablesMappingPolicy</span><span class="p">),</span>
+</span><span class="line">            <span class="k">typeof</span><span class="p">(</span><span class="n">SupportedClassRangeMappingPolicy</span><span class="p">),</span>
+</span><span class="line">        <span class="p">});</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p><code>RegisterWithDefault&lt;&gt;()</code> means that if not other implementation is found within user code, the type <code>DefaultSupportedClassMetaProvider</code>
+will be used.</p>
+
+<p><code>RegisterWithUserThenDefault&lt;&gt;()</code> means that the three given types will be used alongside any consumer’s implementations.</p>
+
+<h2 id="switching-the-policy">Switching the policy</h2>
+
+<p>So how does the user provide a different implementation of <code>ISupportedClassMetaProvider</code>? The easy way is simply creating
+an implementation and it will be registered instead. Alternatively it is possible to create another registrations class
+and register there.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">ConsumerRegistrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">ISupportedClassMetaProvider</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">MyBetterProvider</span><span class="p">));</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="super-duper-happy-path-at-its-best">Super-duper-happy-path at its best</h2>
+
+<p>I can’t state enough how much I <img class="emoji" title=":sparkling_heart:" alt=":sparkling_heart:" src="https://assets.github.com/images/icons/emoji/unicode/1f496.png" height="20" width="20" align="absmiddle" /> this. Thanks to the <code>Registrations</code> class it is possible to create 
+reusable Nancy libraries, which don’t require any unnecessary setup.</p>
+
+<p>No boilerplate, no NuGet (<img class="emoji" title=":poop:" alt=":poop:" src="https://assets.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle" />) code generated from text templates, no DI-container dependency. It is just works out of
+the box. <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /></p>
+
+<p>Show me how your .NET web framework does it… <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" /></p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/03/strategy-pattern-nancy/';
+        var disqus_url = 'http://t-code.pl/blog/2016/03/strategy-pattern-nancy/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

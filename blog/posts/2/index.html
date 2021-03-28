@@ -1,0 +1,540 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Nov 13th, 2016 11:15 pm nancy, rest, uri Towards Server-side Routing With URI Templates (RFC 6570) There are many MVC frameworks out there and all &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/posts/2/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-11-13T23:15:00+00:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:15 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/nancy/'>nancy</a>, <a class='category' href='/blog/categories/rest/'>rest</a>, <a class='category' href='/blog/categories/uri/'>uri</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/11/Towards-server-side-routing-with-URI-Templates/" itemprop="url">Towards Server-side Routing With URI Templates (RFC 6570)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>There are many MVC frameworks out there and all of them share a common feature - routing. Most libraries use a form of
+URI patterns to match incoming requests. On top of powerful features like limiting allowed values to certain types or
+by using regular expressions, they all share a common flaw - great simplification of the <a href="https://tools.ietf.org/html/rfc3986">URI</a>.</p>
+
+<p>There is however a similar <a href="https://en.wikipedia.org/wiki/Internet_Standard#Proposed_Standard">proposed standard</a> described by <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a> and appropriately called <strong>URI Template</strong>
+As the name implies, it defines URI patterns which can be then expanded to actual URIs by substituting variables and work
+the opposite way by extracting variables from a given URI. This makes it a viable option for matching request URIs on the
+server to determine what code to execute, if any.</p>
+
+
+		
+		<a href="/blog/2016/11/Towards-server-side-routing-with-URI-Templates/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-11-11T10:00:00+00:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/nancy/'>nancy</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/11/RFC-7807-and-Nancy/" itemprop="url">Problem Details for HTTP APIs and Nancy</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>There are a number of guidelines for returning errors from a REST API in a consistent way. Of course, API authors should
+<a href="http://www.micheltriana.com/blog/2013/09/27/http-status-codes-in-rest-web-api">use status codes correctly</a> to signify
+the result of an action. It is also a good idea to return some error details in resource representation. Some API vendors,
+like Facebook or Twitter <a href="https://apigee.com/about/blog/technology/restful-api-design-what-about-errors">have come up with their own solutions</a>.</p>
+
+<p>However, there is a Internet Engineering Task Force (IETF) proposed standard called <strong>Problem Details for HTTP APIs</strong>. It
+was created be Mark Nottingham and is described in document <a href="https://tools.ietf.org/html/rfc7807">RFC 7807</a>. Interestingly
+though there is fairly little support in for .NET Web API libraries and none for Nancy 1.x.</p>
+
+
+		
+		<a href="/blog/2016/11/RFC-7807-and-Nancy/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-08-15T10:00:00+00:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/polymer/'>polymer</a>, <a class='category' href='/blog/categories/typescript/'>typescript</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/08/publishing-polymerts-elements/" itemprop="url">Publishing Polymer Elements Written in TypeScript (With Dependencies)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I love consuming <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements">custom elements</a> but writing them in <a href="http://polymer-project.org">Polymer</a> with ES5 is far from ideal. ES6 (<a href="http://benmccormick.org/2015/09/14/es5-es6-es2016-es-next-whats-going-on-with-javascript-versioning/">or
+more correctly ES2015</a>) could offer some improvement but it is still not officially supported by the Polymer
+team and their toolset.</p>
+
+<p>Thankfully, there is <a href="https://github.com/nippur72/PolymerTS">PolymerTS</a> which offers a vastly improved Polymer API, mainly thanks to decorators. It 
+also let’s developers take advantage of ES6 modules but there is one problem: how do you publish elements with dependencies
+both on JSPM packages and other elements from Bower?</p>
+
+
+		
+		<a href="/blog/2016/08/publishing-polymerts-elements/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-06-19T22:45:00+00:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:45 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/conference/'>conference</a>, <a class='category' href='/blog/categories/icwe/'>icwe</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/06/ICWE-2016-day-2/" itemprop="url">Lest I Forget&#58; International Conference on Web Engineering - Day 2 Research Tracks</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Earlier this week I shortly wrote about the first day Research Track at <a href="http://icwe2016.inf.usi.ch">International Conference on Web Engineering</a> 
+which took place between June 6-7. Today it’s time for day 2 (keynote included).</p>
+
+
+		
+		<a href="/blog/2016/06/ICWE-2016-day-2/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-06-13T22:45:00+00:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:45 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/conference/'>conference</a>, <a class='category' href='/blog/categories/icwe/'>icwe</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/06/ICWE-2016-day-1/" itemprop="url">Lest I Forget&#58; International Conference on Web Engineering - Day 1 Research Tracks</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>This past week I took part in the <a href="http://icwe2016.inf.usi.ch">International Conference on Web Engineering</a> or ICWE for
+short. I’d like to round up the lectures I attended, demos I watched and posters I saw. While I still remember, I want to
+write about my impressions about each individual one, at least at the very shortest. Of course I won’t be able to cover
+it all, because I wasn’t able to attend every session for obvious reasons and at the same time I didn’t find everything
+equally interesting. I’ll do my best nonetheless.</p>
+
+
+		
+		<a href="/blog/2016/06/ICWE-2016-day-1/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-05-15T20:20:00+00:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:20 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javacript/'>javacript</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/05/indexing-object-with-array/" itemprop="url">Interesting JavaScript Quirk When Accessing Object With Index</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’ve just discovered an interesting JavaScript quirk which I haven’t seen before. It turns out that indexing an object with a single
+element array has the exact same effect as indexing with that array’s element.</p>
+
+
+		
+		<a href="/blog/2016/05/indexing-object-with-array/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-30T22:25:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:25 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/polymer/'>polymer</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/hypermedia-driven-ui/" itemprop="url">Consuming Hypermedia - Declarative UI</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’ve been going on about hypermedia for a long time now. I’ve touched both client and server side in terms of processing
+resource representations. There is however a big missing piece in how developers should build user interfaces. Personally
+I have been hooked on the idea of <a href="http://webcomponents.org/">Web Components</a> and I’ve had some success experimenting with using a declarative
+way for defining User Interface building blocks.</p>
+
+
+		
+		<a href="/blog/2016/04/hypermedia-driven-ui/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-24T16:00:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>4:00 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/hypermedia-must-be-extensible/" itemprop="url">Third Labour of Hypermedia - Extensible Media Types</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Most hypermedia media types like <a href="http://stateless.co/hal_specification.html">HAL</a> or <a href="https://github.com/kevinswiber/siren">SIREN</a> are some sort of extension of JSON, which is understandable.
+JSON is a natural choice because it already is the most common data interchange format for APIs. However JSON as syntax 
+is by design simple and it doesn’t support vital part - <strong>links</strong>. To plug that hole these media types are intrusive in
+that they impose a very specific structure of documents. Instead of extending the meaning of representations they hijack
+the syntax and structure.</p>
+
+<p>Personally I’m biased towards <a href="http://hydra-cg.com/spec/latest/core/">Hydra Core Vocabulary</a> because, unlike all other I have come across, it is based on
+RDF. Why is it important?</p>
+
+
+		
+		<a href="/blog/2016/04/hypermedia-must-be-extensible/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-24T15:40:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:40 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/labours-of-hypermedia/" itemprop="url">The Labours of Hypermedia</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Going full-on with hypermedia takes some preparations and to convince the masses will require some tooling and examples.
+Especially tooling. The ability to produce rich developer experience is the determinant of many successful technologies. 
+Another crucial factor are real-life uses cases solved by the technology in question. I would like to focus on the former.</p>
+
+<p>As much as the industry has bought into lightweight Web APIs, often inappropriately called RESTful, there has been an uphill
+battle to have real hypermedia gain traction.</p>
+
+
+		
+		<a href="/blog/2016/04/labours-of-hypermedia/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-20T08:45:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:45 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/heracles/'>heracles</a>, <a class='category' href='/blog/categories/hydra/'>hydra</a>, <a class='category' href='/blog/categories/typescript/'>typescript</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/heracles-compacting-resources/" itemprop="url">Heracles Resources vs JSON-LD Compaction - Enumerable Js Properties</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In my <a href="/blog/2016/04/introducing-heracles/">previous post</a> I presented the first incarnation of Heracles, the Hydra Core
+client library. While trying to replace my makeshift client I’d implemented for an in-house training project at <a href="http://pgs-soft.com">PGS</a>
+I quickly decided that I’m going to need a way to compact my resources. It wasn’t that hard but there was one simple
+hurdle to overcome.</p>
+
+
+		
+		<a href="/blog/2016/04/heracles-compacting-resources/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+        <a href="/blog/posts/1" class="prev">Prev</a>
+    
+    
+        <a href="/blog/posts/3" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

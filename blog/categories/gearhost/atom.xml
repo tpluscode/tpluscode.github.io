@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: gearhost | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/gearhost/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Goodbye Heroku, welcome Gearhost (for now)]]></title>
+    <link href="http://t-code.pl/blog/2016/03/goodbye-heroku-welcome-gearhost/"/>
+    <updated>2016-03-29T13:25:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/goodbye-heroku-welcome-gearhost</id>
+    <content type="html"><![CDATA[<p>In a <a href="/2016/03/mono-paket-heroku-deployment/">previous post</a> I detailed my struggle with deploying a .NET (<a href="http://github.com/nancyfx/nancy">Nancy</a>)
+application to Heroku. Longer story short, <strong>I failed</strong>. I guess it should be possible with .NET Core, but I don’t plan
+to migrate just yet, because I don’t see clear benefits and there are some limitations. Running my application on Linux
+is not a goal itself, so instead I looked for an alternative.</p>
+
+<!--more-->
+
+<h2 id="appharbor---for-now-ill-pass">AppHarbor - for now I’ll pass</h2>
+
+<p>Unfortunately, there aren’t many options for hosting .NET code in the cloud. One provider I’ve known about for some time
+now is <a href="https://appharbor.com/">AppHarbor</a>. Unfortunately it seems somewhat limited in terms of the deployment flow. As I understand,
+the only way is to push code, much like with Heroku, which is then picked up and the Web Application is deployed. One the
+up side AppHarbor also executes unit tests and does monitoring and load balancing but all in all it strikes me as poorly
+documented and not at all customizable.</p>
+
+<p>That said I may yet try it in the future however for now I will be using a simpler option call <a href="https://www.gearhost.com/">Gear Host</a>.</p>
+
+<h2 id="gearhost">Gear.host</h2>
+
+<p>Just like Heroku and AppHarbor, GearHost is a cloud hosting solution and free albeit with limitations. More about that
+later.</p>
+
+<p><img src="/uploads/2016/03/gearhost-logo.png" alt="gearhost logo" /></p>
+
+<p>Upon logging in for the first time (surprisingly no GitHub login, etc.) we are presented with a simple dashboard from
+which it is possible to create <em>Cloud Sites</em> and databases and buy/add SSL certificates.</p>
+
+<h3 id="cloud-sites">Cloud Sites</h3>
+
+<p>In the free plan each cloud site comes with</p>
+
+<ul>
+  <li>1 GB storage</li>
+  <li>1 GB bandwidth, which resets every 61 hrs</li>
+  <li>256 MB RAM, which resets every 60 minutes</li>
+  <li>60 minutes of CPU time, which resets every 24 hrs</li>
+</ul>
+
+<p>I don’t really understand how the running limit works for memory consumption. Needless to say, whenever these limits are
+exceeded, the site becomes suspended until it resets. Paid plans come for $5 and $25 per month.</p>
+
+<p>Each site comes with a minimal overview page where it is possible to view resource usage graph and statistics and recycle
+the application pool.</p>
+
+<h3 id="publishing">Publishing</h3>
+
+<p>Publishing can be done by copying the files directly over FTP and WebDeploy or in continuous deployment fashion from
+GitHub, Bitbucket or Git repository hosted by GearHost. Personally I chose WebDeploy, because it plays nicely with my
+AppVeyor setup. I was already publishing my web applications as zipped packages and pushing to GearHost. On AppVeyor I 
+created testing environments. Here’s a screenshot showing one of them:</p>
+
+<p><img src="/uploads/2016/03/appveyor-deploy-env.png" alt="Web Deploy environment on AppVeyor" /></p>
+
+<p>Whenever there is a successful build AppVeyor pushes the zipped web project to GearHost. To do that there must be an
+<code>appveyor.yml</code> which defines when and what to deploy. In my case its relevant contents are as follows.</p>
+
+<p>``` yaml
+build:
+  publish_wap: true</p>
+
+<p>configuration:<br />
+  - Debug
+  - Release</p>
+
+<p>deploy:
+  - provider: Environment
+    name: ‘[TEST] data.wikibus.org’
+    on:
+      Configuration: Debug
+  - provider: Environment
+    name: ‘[TEST] wikibus.org’
+    on:
+      Configuration: Debug
+```</p>
+
+<p>This means that:</p>
+
+<ol>
+  <li>msbuild will create zip packages for all Web Application projects within the solution</li>
+  <li>I’m building both Debug and Release</li>
+  <li>Debug build is automatically pushed to testing environment</li>
+</ol>
+
+<h3 id="other-features">Other features</h3>
+
+<p>I’ve not used most of what GearHost has to offer but it seems featured enough. It is possible to configure per-site app
+settings and connection string, attach custom domains and enable logging (accessible via FTP). There is also an add-ons
+tab, but only a Scheduler addon is showing.</p>
+
+<p>Outside Cloud Sites I mentioned certificates and databases. The former seem quite expensive but of course it is possible
+to use one bought from a third-party vendor. Database is offered for free albeit with a very modest 5 MB size limitation.
+of course larger databases are also available for $5 per month for up to 10 GB.</p>
+
+<p>Lastly there an email tab, but I haven’t been able to use this feature without verifying my account which means adding
+credit card details to the account.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I’m a bit unsure about the free account limitation. It will be enough for testing but it seems that hitting the ceiling
+will be quite easy. I suppose I would try the $5 plan in the future to see how it works.</p>
+
+<p>Other that that it’s a very pleasant experience. The website is very simple and the hosting just works :)</p>
+
+]]></content>
+  </entry>
+  
+</feed>

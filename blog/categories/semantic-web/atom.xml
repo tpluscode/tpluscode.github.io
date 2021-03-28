@@ -1,0 +1,1244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: semantic web | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/semantic-web/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hydra and SHACL - part 2 - IRI Templates]]></title>
+    <link href="http://t-code.pl/blog/2020/12/hydra-shacl-templates/"/>
+    <updated>2020-12-28T00:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2020/12/hydra-shacl-templates</id>
+    <content type="html"><![CDATA[<p>In the <a href="/blog/2020/12/hydra-shacl-interoperability">previous post</a> I presented the simplest functionality of loading remote form contents by having <a href="https://www.w3.org/TR/shacl/">SHACL</a> property shape reference a <a href="http://www.hydra-cg.com/spec/latest/core/">Hydra Core</a> collection.</p>
+
+<p>In the second part I will extend that example to create a form with multiple connected dropdowns, where each one is only populated when other(s) have been selected, which is a common scenario seen in (web) applications.</p>
+
+<!--more-->
+
+<h2 id="tldr-can-i-see-it-working">TL;DR; can I see it working?</h2>
+
+<p>The screenshot below links to Shaperone Playground which implements the ideas described in the subsequent paragraphs.</p>
+
+<p>[<img src="/images/shaperone/hydra-search.png" alt="shaperone playground" />][playground]</p>
+
+<h2 id="filtering-collections-with-hydra">Filtering collections with Hydra</h2>
+
+<p>In addition to <code>hydra:collection</code>, the Hydra Core vocabulary comes with another general-purpose property <code>hydra:search</code>. Unlike most predicates which would link to another resource, identified by a concrete URI, its objects are instances of URI Templates, defined by <a href="https://tools.ietf.org/html/rfc6570">RFC6570</a>.</p>
+
+<p>For example, let’s have a “State collection” resource which returns country’s first-level administrative division. It would come with a search template so that clients can construct filtered URIs:</p>
+
+<rdf-snippet formats="text/turtle,application/n-quads" prefixes="schema,hydra">
+<script type="application/ld+json">
+{
+  "@context": {
+    "@vocab": "http://www.w3.org/ns/hydra/core#",
+    "schema": "http://schema.org/",
+    "property": { "@type": "@id" }
+  },
+  "@id": "/states",
+  "@type": "Collection",
+  "search": {
+    "@type": "IriTemplate",
+    "template": "/states?country={country}",
+    "mapping": [{
+      "variable": "country",
+      "property": "schema:addressCountry",
+      "required": true
+    }]
+  }
+}
+</script>
+</rdf-snippet>
+
+<p>The client must provide template values to a Hydra library which will return a URI fit for dereferencing. This is called <code>expansion</code> by the RFC6570. A Hydra client will take a graph node with values being attached to that node using the <code>hydra:property</code> as defined by the template and match those property/object pairs to the template variables.</p>
+
+<p>Here’s an example of such a template variable model, where JSON-LD <code>@context</code> has been constructed from the <code>hydra:mapping</code>, although the JSON keys may be irrelevant for the expansion if the implementation only relies on the actual graph data.</p>
+
+<rdf-snippet formats="text/turtle,application/n-quads" prefixes="schema,hydra">
+<script type="application/ld+json">
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "country": "schema:addressCountry"
+  },
+  "country": { "@id": "http://www.wikidata.org/entity/Q27" }
+}
+</script>
+</rdf-snippet>
+
+<p>Combine this with the template above to get</p>
+
+<blockquote>
+  <p><code>/states?country=http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ27</code></p>
+</blockquote>
+
+<p>Read more about Hydra’s template <a href="http://www.hydra-cg.com/spec/latest/core/#templated-links">here</a></p>
+
+<h2 id="connecting-form-fields">Connecting form fields</h2>
+
+<p>The idea is simple:</p>
+
+<ol>
+  <li>A SHACL Shape describes a graph structure</li>
+  <li>A form can be generated for agents (usu. humans) to create an instance of such a graph</li>
+  <li>Use the created graph to expand a template</li>
+</ol>
+
+<p>Now, a form in such a scenario could simply be used to filter a collection for display, but I propose to short-circuit it back into the form itself so that the filtered collection, when dereferenced, provides values for other fields.</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra,sh,dash">
+<script type="text/turtle">
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <http://schema.org/> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+@prefix ex: <http://example.com/> .
+
+schema:Person
+  a rdfs:Class, sh:NodeShape ;
+  rdfs:label "Register" ;
+  sh:property ex:CountryProperty , ex:StateProperty .
+
+ex:CountryProperty
+  sh:name "Country" ;
+  dash:editor dash:InstancesSelectEditor ;
+  sh:path schema:addressCountry ;
+  hydra:collection </countries> .
+
+ex:StateProperty
+  sh:name "State" ;
+  sh:path ex:state ;
+  dash:editor dash:InstancesSelectEditor ;
+  hydra:search [
+    hydra:template "/states?country={country}" ;
+    hydra:mapping [
+      hydra:property schema:addressCountry ;
+      hydra:variable "country" ;
+      hydra:required true ;
+    ] ;
+  ] .
+</script>
+</rdf-snippet>
+
+<p>The <code>Person</code> shape above has two properties. The first will generate a dropdown with a selection of countries as described in <a href="/blog/2020/12/hydra-shacl-interoperability">the first Hydra+SHACL post</a>. The second, while it’s also going to render a dropdown, will not be populated until a country is selected (<code>hydra:required true</code>).</p>
+
+<p>The glue here is matching property shared between <code>sh:path</code> of the upstream field and <code>hydra:property</code> of the downstream’s search template. In other words, when the form’s graph node receives the value for the <code>schema:addressCountry</code> predicate, the “states” will be loaded.</p>
+
+<h2 id="less-apis-more-web-standards">Less APIs, more Web Standards!</h2>
+
+<p>Again this time, the [playground][playground] example does not “talk” to an actual API but instead runs SPARQL queries encoded into query string parameters of Wikidata’s query endpoint. The trick is to replace a URI of the variable with a URI Template placeholder. <strong>Just gotta make sure that the braces are not percent-encoded</strong>.</p>
+
+<p>The query to load states is simple:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='sparql'><span class='line'><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;a href=&quot;http://www.wikidata.org/entity/&quot;&gt;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">wikid</span><span class="k">a</span><span class="err">t</span><span class="k">a</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">entity</span><span class="o">/</span><span class="nl">&lt;/a&gt;</span><span class="w"></span>
+</span><span class='line'><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;a href=&quot;http://www.wikidata.org/prop/direct/&quot;&gt;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">wikid</span><span class="k">a</span><span class="err">t</span><span class="k">a</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">prop</span><span class="o">/</span><span class="err">direct</span><span class="o">/</span><span class="nl">&lt;/a&gt;</span><span class="w"></span>
+</span><span class='line'><span class="k">prefix</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;a href=&quot;http://www.w3.org/ns/hydra/core#&quot;&gt;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">w</span><span class="mi">3</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">ns</span><span class="o">/</span><span class="err">hydr</span><span class="k">a</span><span class="o">/</span><span class="err">core</span><span class="c">#&lt;/a&gt;&lt;/p&gt;</span><span class="w"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">&lt;p&gt;</span><span class="k">CONSTRUCT</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="k">a</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">Collection</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">member</span><span class="w"> </span><span class="nv">?division</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?division</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="p">}</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="k">BIND</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nl">&lt;urn:contry:collection&gt;</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nv">?col</span><span class="w"> </span><span class="p">)</span><span class="nl">&lt;/urn:contry:collection&gt;&lt;/p&gt;</span><span class="w"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">&lt;p&gt;</span><span class="err">&amp;lt</span><span class="p">;{</span><span class="err">COUNTRY</span><span class="p">}</span><span class="err">&amp;gt</span><span class="p">;</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P150</span><span class="w"> </span><span class="nv">?division</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?division</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="k">filter</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">lang</span><span class="p">(</span><span class="nv">?label</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="err">‘en’</span><span class="p">,</span><span class="w"> </span><span class="err">‘de’</span><span class="p">,</span><span class="w"> </span><span class="err">‘fr’</span><span class="p">,</span><span class="w"> </span><span class="err">‘pl’</span><span class="p">,</span><span class="w"> </span><span class="err">‘es’</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class='line'><span class="p">}</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Loading cities is slightly more complicated, accounting for deeper graphs where a state is the root and also various types of cities recognised by Wikidata.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='sparql'><span class='line'><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;a href=&quot;http://www.wikidata.org/entity/&quot;&gt;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">wikid</span><span class="k">a</span><span class="err">t</span><span class="k">a</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">entity</span><span class="o">/</span><span class="nl">&lt;/a&gt;</span><span class="w"></span>
+</span><span class='line'><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;a href=&quot;http://www.wikidata.org/prop/direct/&quot;&gt;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">wikid</span><span class="k">a</span><span class="err">t</span><span class="k">a</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">prop</span><span class="o">/</span><span class="err">direct</span><span class="o">/</span><span class="nl">&lt;/a&gt;</span><span class="w"></span>
+</span><span class='line'><span class="k">prefix</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;a href=&quot;http://www.w3.org/ns/hydra/core#&quot;&gt;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">w</span><span class="mi">3</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">ns</span><span class="o">/</span><span class="err">hydr</span><span class="k">a</span><span class="o">/</span><span class="err">core</span><span class="c">#&lt;/a&gt;&lt;/p&gt;</span><span class="w"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">&lt;p&gt;</span><span class="k">CONSTRUCT</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="k">a</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">Collection</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">member</span><span class="w"> </span><span class="nv">?city</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?city</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="p">}</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="k">BIND</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nl">&lt;urn:contry:collection&gt;</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nv">?col</span><span class="w"> </span><span class="p">)</span><span class="nl">&lt;/urn:contry:collection&gt;&lt;/p&gt;</span><span class="w"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">&lt;STATE&gt;</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P150</span><span class="o">*</span><span class="w"> </span><span class="nv">?city</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?city</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?city</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P31</span><span class="w"> </span><span class="nv">?cityType</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="w">  </span><span class="nv">?cityType</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P279</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="nt">Q515</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'>
+</span><span class='line'><span class="w">  </span><span class="k">filter</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">lang</span><span class="p">(</span><span class="nv">?label</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&#39;en&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;de&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;fr&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;pl&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;es&#39;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class='line'><span class="p">}</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+Tried as I might, the cities query does not work for every country. United States, Germany and Poland are fine. On the other hand, for Colombia and Australia it finds no cities at all. Queries for Australian cities are also surprisingly slow...
+
+It is not important for the example, but I would be curious to learn from a Wikidata expert how it can be improved.
+
+<script src="/components/rdf-snippet.js"></script>
+
+[playground]: https://forms.hypermedia.app/playground?resource=%7B%0A++%22%40context%22%3A+%7B%0A++++%22rdf%22%3A+%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%2C%0A++++%22rdfs%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%22%2C%0A++++%22xsd%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%0A++++%22schema%22%3A+%22http%3A%2F%2Fschema.org%2F%22%2C%0A++++%22foaf%22%3A+%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%22%2C%0A++++%22vcard%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2006%2Fvcard%2Fns%23%22%0A++%7D%2C%0A++%22%40id%22%3A+%22http%3A%2F%2Fexample.com%2Fjohn-doe%22%2C%0A++%22%40type%22%3A+%22schema%3APerson%22%2C%0A++%22schema%3AaddressCountry%22%3A+%7B%0A++++%22%40id%22%3A+%22http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ39%22%0A++%7D%0A%7D&amp;selectedResource=http%3A%2F%2Fexample.com%2Fjohn-doe&amp;shapes=%40prefix+sh%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fshacl%23%3E+.%0A%40prefix+schema%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E+.%0A%40prefix+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E+.%0A%40prefix+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E+.%0A%40prefix+dash%3A+%3Chttp%3A%2F%2Fdatashapes.org%2Fdash%23%3E+.%0A%40prefix+hydra%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fhydra%2Fcore%23%3E+.%0A%40prefix+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E+.%0A%40prefix+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E+.%0A%0A%40prefix+ex%3A+%3Chttp%3A%2F%2Fexample.com%2F%3E+.%0A%0Aschema%3APerson%0A++a+rdfs%3AClass%2C+sh%3ANodeShape+%3B%0A++rdfs%3Alabel+%22Register%22+%3B%0A++sh%3Aproperty+ex%3ANameProperty+%2C+%0A%09%09++++++ex%3ACountryProperty+%2C+%0A%09%09%09++ex%3AStateProperty+%2C%0A++++++++++++++ex%3ASubStateProperty+%3B%0A.%0A%0Aex%3ANameProperty%0A++sh%3Apath+schema%3Aname+%3B%0A++sh%3Aname+%22Name%22+%3B%0A++sh%3Adatatype+xsd%3Astring+%3B%0A++dash%3AsingleLine+true+%3B%0A++sh%3AmaxCount+1+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3Aorder+10+%3B%0A.%0A%0Aex%3ACountryProperty%0A++sh%3Aname+%22Country%22+%3B%0A++sh%3Aclass+wd%3AQ6256+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++sh%3Apath+schema%3AaddressCountry+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++hydra%3Acollection+%3Chttps%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3Dprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcountry%2520.%250A%2520%2520%253Fcountry%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%250A%2520%2520%253Fcountry%2520wdt%253AP31%2520wd%253AQ6256%2520%253B%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%3E+%3B%0A++sh%3Aorder+20+%3B%0A.%0A%0A%0Aex%3AStateProperty%0A++sh%3Aname+%22State%22+%3B%0A++sh%3Apath+schema%3AaddressRegion+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++hydra%3Asearch+%5B%0A++++hydra%3Atemplate+%22https%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3DPREFIX%2520wd%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fentity%252F%253E%250APREFIX%2520wdt%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fprop%252Fdirect%252F%253E%250Aprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fdivision%2520.%250A%2520%2520%253Fdivision%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%2520%2520%250A%2520%2520%253C%7BCOUNTRY%7D%253E%2520wdt%253AP150%2520%253Fdivision%2520.%250A%2520%2520%253Fdivision%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%22+%3B%0A++++hydra%3Amapping+%5B%0A++++++hydra%3Aproperty+schema%3AaddressCountry+%3B%0A++++++hydra%3Avariable+%22COUNTRY%22+%3B%0A++++++hydra%3Arequired+true+%3B%0A++++%5D+%3B%0A++%5D+%3B%0A++sh%3Aorder+30+%3B%0A.%0A%0A%0Aex%3ASubStateProperty%0A++sh%3Aname+%22City%22+%3B%0A++sh%3Apath+schema%3AaddressLocality+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++hydra%3Asearch+%5B%0A++++hydra%3Atemplate+%22https%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3DPREFIX%2520wd%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fentity%252F%253E%250APREFIX%2520wdt%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fprop%252Fdirect%252F%253E%250Aprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcity%2520.%250A%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%2520%250A%2520%2520%257B%250A%2520%2520%2520%2520SELECT%2520%253Fcity%2520%253Flabel%2520WHERE%2520%257B%250A%2520%2520%2520%2520%2520%2520%253C%7BSTATE%7D%253E%2520wdt%253AP150%252B%2520%253Fcity%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520wdt%253AP31%2520%253FcityType%2520.%250A%2520%2520%2520%2520%2520%2520%253FcityType%2520wdt%253AP279%2520wd%253AQ515%2520.%250A%2520%2520%2520%2520%257D%250A%2520%2520%257D%250A%2520%2520UNION%250A%2520%2520%257B%250A%2520%2520%2520%2520SELECT%2520%253Fcity%2520%253Flabel%2520WHERE%2520%257B%2520%2520%2520%2520%250A%2520%2520%2520%2520%2520%2520%253C%7BSTATE%7D%253E%2520wdt%253AP150%252B%2520%253Fcity%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520wdt%253AP31%2520wd%253AQ515%2520.%250A%2520%2520%2520%2520%257D%250A%2520%2520%257D%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%22+%3B%0A++++hydra%3Amapping+%5B%0A++++++hydra%3Aproperty+schema%3AaddressRegion+%3B%0A++++++hydra%3Avariable+%22STATE%22+%3B%0A++++++hydra%3Arequired+true+%3B%0A++++%5D+%3B%0A++%5D+%3B%0A++sh%3Aorder+40+%3B%0A.
+</STATE>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hydra and SHACL - a perfect couple - part 1]]></title>
+    <link href="http://t-code.pl/blog/2020/12/hydra-shacl-interoperability/"/>
+    <updated>2020-12-20T00:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2020/12/hydra-shacl-interoperability</id>
+    <content type="html"><![CDATA[<p><a href="http://www.hydra-cg.com/spec/latest/core/">Hydra Core</a> is a community-driven specification for describing hypermedia APIs in a machine readable form so that client applications can discover the resources at runtime. On its own, however, it is not expressible enough to describe any arbitrary resource representation.
+<a href="https://www.w3.org/TR/shacl/">SHACL</a>, or Shapes Constraint Language, on the other hand is a beautifully extensible schema-like language which offers great power and flexibility in describing graph data structures.
+Combined, they provide a complete solution for building hypermedia applications driven by RDF.</p>
+
+<!--more-->
+
+<h2 id="tldr-i-want-some-action">TL;DR; I want some action!</h2>
+
+<p>Click the image to open Shaperone Playground, which demonstrates a working example of a form generated from a SHACL shape which dynamically loads Wikidata resources using SPARQL.</p>
+
+<p>At the bottom of this post you will see how to configure <a href="https://github.com/hypermedia-app/shaperone">shaperone</a> this way.</p>
+
+<p><a href="https://forms.hypermedia.app/playground?resource=%7B%0A++%22%40context%22%3A+%7B%0A++++%22rdf%22%3A+%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%2C%0A++++%22rdfs%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%22%2C%0A++++%22xsd%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%0A++++%22schema%22%3A+%22http%3A%2F%2Fschema.org%2F%22%2C%0A++++%22foaf%22%3A+%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%22%2C%0A++++%22vcard%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2006%2Fvcard%2Fns%23%22%2C%0A++++%22dcat%22%3A+%22http%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%22%0A++%7D%2C%0A++%22%40id%22%3A+%22http%3A%2F%2Fexample.com%2Fjohn-doe%22%2C%0A++%22%40type%22%3A+%22schema%3APerson%22%2C%0A++%22schema%3Aname%22%3A+%22John+Doe%22%0A%7D&amp;selectedResource=http%3A%2F%2Fexample.com%2Fjohn-doe&amp;shapes=%40prefix+sh%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fshacl%23%3E+.%0A%40prefix+schema%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E+.%0A%40prefix+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E+.%0A%40prefix+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E+.%0A%40prefix+dash%3A+%3Chttp%3A%2F%2Fdatashapes.org%2Fdash%23%3E+.%0A%40prefix+hydra%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fhydra%2Fcore%23%3E+.%0A%40prefix+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E+.%0A%40prefix+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E+.%0A%0A%40prefix+ex%3A+%3Chttp%3A%2F%2Fexample.com%2F%3E+.%0A%0Aschema%3APerson%0A++a+rdfs%3AClass%2C+sh%3ANodeShape+%3B%0A++rdfs%3Alabel+%22Register%22+%3B%0A++sh%3Aproperty+ex%3ANameProperty+%2C+ex%3ACountryProperty+%3B%0A.%0A%0Aex%3ANameProperty%0A++sh%3Apath+schema%3Aname+%3B%0A++sh%3Aname+%22Name%22+%3B%0A++sh%3Adatatype+xsd%3Astring+%3B%0A++dash%3AsingleLine+true+%3B%0A++sh%3AmaxCount+1+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3Aorder+10+%3B%0A.%0A%0Aex%3ACountryProperty%0A++a+sh%3APropertyShape+%3B%0A++sh%3Aname+%22Country%22+%3B%0A++sh%3Aclass+wd%3AQ6256+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++sh%3Apath+wdt%3AP27+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++hydra%3Acollection+%3Chttps%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3Dprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcountry%2520.%250A%2520%2520%253Fcountry%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%250A%2520%2520%253Fcountry%2520wdt%253AP31%2520wd%253AQ6256%2520%253B%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%3E+%3B%0A++sh%3Aorder+20+%3B%0A.%0A&amp;disableEditorChoice=true&amp;components=vaadin"><img src="/images/shaperone/hydra-collection.png" alt="shaperone playground" /></a></p>
+
+<h2 id="hydra-http-request-descriptions">Hydra HTTP request descriptions</h2>
+
+<p>The Hydra vocabulary defines a term <code>hydra:Operation</code> which represents a HTTP request which a server advertises as being supported by specific resources, either by a specific instance or entire class of resources.</p>
+
+<p>For the sake of this blog post, let’s consider a hypothetical API which describes a registration request:</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra">
+   <script type="text/turtle">
+base <http://example.app/api#>
+prefix schema: <http://schema.org/>
+prefix hydra:  <http://www.w3.org/ns/hydra/core#>
+prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+<UsersCollection>
+  a hydra:Class ;
+  rdfs:subClassOf hydra:Collection ;
+  hydra:supportedOperation <RegisterUser> .
+
+<RegisterUser>
+  a hydra:Operation , schema:CreateAction ;
+  hydra:method "POST" ;
+  hydra:expects <User> ;
+.
+
+<User> a hydra:Class .
+   </script>
+</rdf-snippet>
+
+<p>The above snippet, excerpt from the API’s <a href="http://www.hydra-cg.com/spec/latest/core/#documenting-a-web-api">Documentation resource</a>, declares that the clients will come across a collection of users (<code>rdf:type &lt;UserCollection&gt;</code>) against which a POST request will be possible to create a new resource. That operation will require a representation of the <code>&lt;User&gt;</code> class.</p>
+
+<p>While Hydra Core vocabulary does have a basic set of terms which can describe the user class, it may not be enough to cater for rich client-server interactions as well as a UI building block. Neither will be RDFS, and OWL, although quite powerful, is a little complex and seriously lacks tooling support and widespread recognition.</p>
+
+<p>Enter, SHACL.</p>
+
+<h2 id="using-shacl-to-describe-api-payloads">Using SHACL to describe API payloads</h2>
+
+<p>SHACL is another RDF vocabulary, which describes data graphs by constraining properties and values of precisely targeted nodes in an RDF graph. It could be used to complement the API Documentation graph above by providing the required shape of instances of the <code>&lt;User&gt;</code> class. This is easiest done by turning it into an <a href="https://www.w3.org/TR/shacl/#implicit-targetClass">implicitly targeted</a> <a href="https://www.w3.org/TR/shacl/#node-shapes"><code>sh:NodeShape</code></a>.</p>
+
+<p>In this example let’s require users to provide exactly one name (using <code>schema:name</code>) and exactly one country of citizenship (using said Wikidata property <a href="https://www.wikidata.org/wiki/Property:P27">P27</a>)</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra,sh,dash">
+   <script type="text/turtle">
+prefix hydra:  <http://www.w3.org/ns/hydra/core#>
+prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+prefix sh:     <http://www.w3.org/ns/shacl#>
+prefix schema: <http://schema.org/>
+prefix dash:   <http://datashapes.org/dash#>
+prefix wdt:    <http://www.wikidata.org/prop/direct/>
+prefix wd:     <http://www.wikidata.org/entity/>
+prefix xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+<User>
+  a hydra:Class , rdfs:Class , sh:NodeShape ;
+  sh:property [
+    a sh:PropertyShape ;
+    sh:path schema:name ;
+    sh:name "Name" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 3 ;
+    sh:order 10 ;
+    dash:singleLine true ;
+  ] , [
+    a sh:PropertyShape ;
+    sh:name "Country" ;
+    sh:class wd:Q6256 ;
+    sh:path wdt:P27 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 20 ;
+    dash:editor dash:InstancesSelectEditor ;
+  ] ;
+.
+   </script>
+</rdf-snippet>
+
+<p>Hopefully this is quite self-explanatory so far.</p>
+
+<ol>
+  <li>The objects of <code>sh:property</code> require that any instance of <code>&lt;User&gt;</code> have exactly one of each property, declared using <code>sh:path</code>. That is achieved using <code>sh:minCount</code> and <code>sh:maxCount</code></li>
+  <li>Name must be at least 3 characters long string</li>
+  <li>Country must be an instance of Wikidata Country class <code>wd:Q6256</code></li>
+  <li>Exactly one country is allowed</li>
+  <li><code>sh:order</code> is a UI hint for organising inputs in a form</li>
+  <li><code>dash:singleLine</code> is a form builder hint which ensures that the text field does not allow line breaks (ie. no <code>&lt;textarea&gt;</code>)</li>
+  <li><code>dash:editor</code> instructs the form builder to create an input component with a selection of instances of the desired RDF type</li>
+</ol>
+
+<p>SHACL is quite wonderful in that shapes are useful for many purposes. Check the <a href="https://www.w3.org/TR/shacl-ucr/">SHACL Use Cases and Requirements</a> note for a host of examples. In the presented scenario, a rich client can use to dynamically produce a form to have users input the data, and the server will run validations to check that requests payloads satisfy the SHACL constraints.</p>
+
+<p>There is one piece missing however: <strong>where do the Country instances come from?</strong> 🤨</p>
+
+<h2 id="circling-back-to-hydra">Circling back to Hydra</h2>
+
+<p>Out of the box, a SHACL processor would assume that any instances would be part the <a href="https://www.w3.org/TR/shacl/#data-graph">Data Graph</a>. While this works for validation inside of TopBraid it is not feasible to build a browser application that way. For example, at the time of writing there are 171 instances of Country in Wikidata. Combined with a multitude of labels in various languages that is total of over 40 thousand triples. It’s hardly a good idea to push that proactively to the client up front.</p>
+
+<p>Instead, I propose to connect the Shape back with the API using Hydra Core term <code>hydra:collection</code>. It is defined modestly:</p>
+
+<blockquote>
+  <p>Collections somehow related to this resource.</p>
+</blockquote>
+
+<p>It also does not have and <code>rdfs:range</code> or <code>rdfs:domain</code> making it a good candidate for linking a property shape directly with its data source:</p>
+
+<p>```diff
+prefix hydra: <a href="http://www.w3.org/ns/hydra/core#">http://www.w3.org/ns/hydra/core#</a>
+prefix sh: <a href="http://www.w3.org/ns/shacl#">http://www.w3.org/ns/shacl#</a>
+prefix wdt: <a href="http://www.wikidata.org/prop/direct/">http://www.wikidata.org/prop/direct/</a> 
+prefix wd: <a href="http://www.wikidata.org/entity/">http://www.wikidata.org/entity/</a></p>
+
+<User> 
+  sh:property [
+    a sh:PropertyShape ;
+    sh:class wd:Q6256 ;
+    sh:path wdt:P27 ;
++   hydra:collection &lt;https://example.app/countries&gt; ;
+  ] ;
+.
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>By adding this property a UI component can load the countries by dereferencing a `hydra:Collection` whose representation would look somewhat like this:
+</span><span class='line'>
+</span><span class='line'>&lt;rdf-snippet formats="application/ld+json,application/n-quads" prefixes="hydra"&gt;
+</span><span class='line'>   &lt;script type="text/turtle"&gt;
+</span><span class='line'>prefix hydra: &lt;http://www.w3.org/ns/hydra/core#&gt;
+</span><span class='line'>prefix wd:    &lt;http://www.wikidata.org/entity/&gt;
+</span><span class='line'>prefix rdfs:  &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;https://example.app/countries&gt;
+</span><span class='line'>  a hydra:Collection ;
+</span><span class='line'>  hydra:member wd:Q36 , wd:Q183 , wd:Q145 ;
+</span><span class='line'>  hydra:totalItems 171 ;
+</span><span class='line'>.
+</span><span class='line'>
+</span><span class='line'>wd:Q36 rdfs:label "Poland"@en , "Polska"@pl , "Polen"@de .
+</span><span class='line'>wd:Q183 rdfs:label "Germany"@en , "Niemcy"@pl , "Deutschland"@de .
+</span><span class='line'>wd:Q145 rdfs:label "United Kingdom"@en , "Zjednoczone Królestwo"@pl , "Vereinigtes Königreich"@de .
+</span><span class='line'>   &lt;/script&gt;
+</span><span class='line'>&lt;/rdf-snippet&gt;
+</span><span class='line'>
+</span><span class='line'>## APIs are dead; Long live (Linked Data) APIs!
+</span><span class='line'>
+</span><span class='line'>![linked data mug](https://hydra.t-code.pl/img/linked_data.jpg)
+</span><span class='line'>
+</span><span class='line'>So far the subject was APIs, but the web is more than just servers returning data, even if that data is RDF. You see, the hypothetical registration form above actually references a third party dataset, which is Wikidata. All of this data is already on the web and use standard formats. By using a simple SPARQL query the countries can be [fetched directly from their source](https://w.wiki/rsz); without even adding the `/countries` resource to your API. Heck, the client appication would not need a dedicated API at all!
+</span><span class='line'>
+</span><span class='line'><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='sparql'><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="c"># wd: and wdt: are implicitly added by wikidata&#39;s SPARQL endpoint</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="k">prefix</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="w"> </span><span class="err">&amp;lt</span><span class="p">;</span><span class="err">http</span><span class="p">:</span><span class="o">//</span><span class="err">www</span><span class="p">.</span><span class="err">w</span><span class="mi">3</span><span class="p">.</span><span class="err">org</span><span class="o">/</span><span class="err">ns</span><span class="o">/</span><span class="err">hydr</span><span class="k">a</span><span class="o">/</span><span class="err">core</span><span class="c">#&amp;gt;</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="k">CONSTRUCT</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="k">a</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">Collection</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">member</span><span class="w"> </span><span class="nv">?country</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="nv">?country</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="p">}</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="k">BIND</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="err">&amp;lt</span><span class="p">;</span><span class="err">https</span><span class="p">:</span><span class="o">//</span><span class="err">ex</span><span class="k">a</span><span class="err">mple</span><span class="p">.</span><span class="k">a</span><span class="err">pp</span><span class="o">/</span><span class="err">countries&amp;gt</span><span class="p">;</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nv">?col</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="c"># wdt:P31 - &quot;instance of&quot;</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="c"># wd:Q6256 - &quot;country&quot;</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="nv">?country</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P31</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="nt">Q6256</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="c"># only request labels in a handful of languages</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="c"># to dramatically reduce response size</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w">  </span><span class="k">FILTER</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">lang</span><span class="p">(</span><span class="nv">?label</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&#39;en&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;de&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;fr&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;pl&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;es&#39;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="p">}</span><span class="w"></span>
+</span><span class='line'><span class="nl">&lt;/span&gt;&lt;span class=&#39;line&#39;&gt;</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>
+</span><span class='line'>This query can be directly encoded in a URL to GET the countries and populate a dropdown component. You can see that in the [playground][playground], mentioned in the beginning.
+</span><span class='line'>
+</span><span class='line'>All possible thanks to web standards 🤘
+</span><span class='line'>
+</span><span class='line'>## Implementation notes
+</span><span class='line'>
+</span><span class='line'>Shaperone makes building a Hydra-aware form like this easy:
+</span></code></pre></td></tr></table></div></figure></notextile></div>ts
+import * as components from '@hydrofoil/shaperone-wc/NativeComponents'
+// OR import * as components from '@hydrofoil/shaperone-wc-material/components'
+// OR import * as components from '@hydrofoil/shaperone-wc-vaadin/components'
+// OR roll your own rendering components
+import * as configure from '@hydrofoil/shaperone-wc/configure'
+import { instancesSelector } from '@hydrofoil/shaperone-hydra/components'
+
+// register UI component which will do the rendering
+configure.components.pushComponents(components)
+
+// add Hydra extension to dash:InstancesSelectEditor
+configure.editors.decorate(instancesSelector.matcher)
+configure.components.decorate(instancesSelector.decorator())
+```
+
+The `@hydrofoil/shaperone-hydra` package extends the default behaviour to have `hydra:collection` dereferenced rather than looking for the instance data locally.
+
+## Next steps
+
+In future posts I will present how to:
+
+2. use Hydra descriptions to find collections without `hydra:collection` directly
+3. `hydra:search` URI Templates can be used to:
+   - create forms with dependent fields, so that users first select a country which is then used to narrow down a selection of country's secondary administrative division and so on **[POST](/blog/2020/12/hydra-shacl-templates)**
+   - improve performance by filtering resources on the data source
+
+<script src="/components/rdf-snippet.js"></script>
+</User>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Why RDF is struggling - the case of R2RML]]></title>
+    <link href="http://t-code.pl/blog/2020/07/rdf-struggling-case-of-r2rml/"/>
+    <updated>2020-07-24T00:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2020/07/rdf-struggling-case-of-r2rml</id>
+    <content type="html"><![CDATA[<p>In 2012 I started my .NET implementation of <a href="https://www.w3.org/TR/r2rml/">R2RML</a> and <a href="https://www.w3.org/TR/rdb-direct-mapping/">RDB to RDF Direct mapping</a> which I called <a href="https://github.com/r2rml4net/r2rml4net">r2rml4net</a>. It never reached the maturity it should have but now, 8 years later, I have little choice but to polish it and use it for converting my database to triples. A task I had originally intended but never really completed.</p>
+
+<p>Why is it significant? Because all those years later the environment around R2RML as a standard is almost as broken, incomplete and sad as it was when I started. Let’s explore that as an example of what is wrong with RDF in general.</p>
+
+<!--more-->
+
+<h2 id="update-july-31st-2020">Update July 31st, 2020</h2>
+
+<p>It has been brought to my attention that Morph is in fact actiavely maintained. I’ve updated it’s details and evaluation.</p>
+
+<h2 id="intro-what-is-r2rml">Intro. What is R2RML?</h2>
+
+<p><strong>R2RML</strong> and <strong>Direct Mapping</strong> are two complementary W3C recommendation (specifications) which define language and algorithm respectively which are used to transform relation databases into RDF graphs. The first is a full blown, but not overly complicated RDF vocabulary which lets designers hand-craft the way in which relational tables are converted into RDF. Individual columns are either directly converted into values (taking their respective database types into consideration) or used within simple templates to produce compound values as literals, blank node and literal alike.</p>
+
+<p>Direct Mapping is a simpler approach, often using R2RML internally as the mapping model, which creates an automatic mapping from any given relational database into triples. The specification defines way in which tables, rows and values are meant to map into triples. It can be either executed standalone and then the resulting RDF would be refined, or an R2RML document can be produced so that it can be fine-tune before the actual transformation happens.</p>
+
+<p>Complementary to these two specs there are a two sets of test cases which can be exercised by implementors claiming compatibility and advertised at a central <a href="https://www.w3.org/TR/rdb2rdf-implementations/">RDB2RDF implementation report</a> page hosted by W3C.</p>
+
+<p>Related to R2RML, there is also a newer specification <a href="https://rml.io">RML.io</a> which extends it into supporting also other sources like XML and CSV.</p>
+
+<h2 id="why-is-it-important">Why is it important?</h2>
+
+<p>I had an interesting twitter exchange recently where I tried to present arguments why applying RDF selectively, without really using it in every layer of the application architecture is problematic.</p>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">You need to look at the big picture, entire stack of a single or multiple applications<br /><br />Polyglot persistence becomes a burden if you convert JSONs and relational data into RDF all the time<br /><br />If RDF is not your programming model then you&#39;re in for pain<br /><br />And no, JSON-LD is snake oil</p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/1283701660552962048?ref_src=twsrc%5Etfw">July 16, 2020</a></blockquote>
+
+<p>In that case JSON-LD got the bashing but the bottom like here is that when building an application using RDF technologies it is worth using it in all software components. From the user interface all the way to the database. This is the only way which prevents constant tension between graph and non-graph models, such as the mentioned issue where JSON-LD hides the graphy nature of data. It is a similar problem which haunted software where relation data model is mapped into object complex models. For that I recommend the classic blog post by Jeff Atwood titled <a href="https://blog.codinghorror.com/object-relational-mapping-is-the-vietnam-of-computer-science/">Object-Relational Mapping is the Vietnam of Computer Science</a></p>
+
+<p>R2RML should be an important tool in the toolkit of any <em>Semantic Web development team</em> as it aims to provide an effective way for migrating existing datasets stored in SQL silos into RDF. This can be done by performing a one-time conversion as mentioned above but an alternative approach some take is running the mapping on-demand, for example by translating SPARQL queries into SQL without ever persisting the converted triples.</p>
+
+<hr />
+
+<p>You could think that surely, over the years we should have grown a vibrant ecosystem around this cornerstone piece of technology. Well, think again…</p>
+
+<h2 id="my-humble-requirements">My humble requirements</h2>
+
+<p>For my use case I have simple requirements. I need to perform a fairly simple mapping of a handful of tables into quads. That is, I want to partition the dataset into named graphs, mostly in a graph-per-entity fashion. Pretty standard as R2RML goes.</p>
+
+<p>My database is Azure SQL so MS SQL has to be supported.</p>
+
+<p>I expect also ease of use. Preferably a standalone CLI, easily installed and usable on CI.</p>
+
+<h2 id="r2rml-implementations-in-the-wild">R2RML implementations in the wild</h2>
+
+<p>The first logical place to look for R2RML software should be the <a href="https://www.w3.org/TR/rdb2rdf-implementations/">Implementation Report</a>. It lists 8 implementations, 4 out of which implement both R2RML and Direct mapping:</p>
+
+<ol>
+  <li><a href="https://metacpan.org/release/RDF-RDB2RDF">RDF-RDB2RDF</a> (both)</li>
+  <li><a href="https://github.com/semantalytics/xsparql">XSPARQL</a> (both)</li>
+  <li><a href="http://www.capsenta.com/">ultrawrap</a> (both)</li>
+  <li><a href="https://github.com/antidot/db2triples">db2triples</a> (both)</li>
+  <li><a href="http://d2rq.org/">D2RQ</a> (Direct Mapping)</li>
+  <li><a href="http://swobjects.svn.sourceforge.net/">SWObjects dm-materialize</a> (Direct Mapping)</li>
+  <li><a href="http://virtuoso.openlinksw.com/">OpenLink Virtuoso</a> (R2RML)</li>
+  <li><a href="https://github.com/oeg-upm/morph-rdb">morph</a> (R2RML)</li>
+</ol>
+
+<p>The listing is clearly not actively maintained (last updated in August 2012) so one would also try searching so the latest and greatest. Here’s what I found:</p>
+
+<ol>
+  <li><a href="https://ontop-vkg.org">Ontop</a></li>
+  <li><a href="https://github.com/usc-isi-i2/Web-Karma">Karma</a></li>
+  <li><a href="https://github.com/d2rq/r2rml-kit">d2rq/r2rml-kit</a></li>
+  <li><a href="https://github.com/chrdebru/r2rml">chrdebru/r2rml</a></li>
+  <li><a href="https://github.com/carml/carml">CARML</a> (RML)</li>
+  <li><a href="https://github.com/RMLio/rmlmapper-java">RML.io RMLMapper</a> (RML)</li>
+  <li><a href="https://github.com/SDM-TIB/SDM-RDFizer">SDM-RDFizer</a> (RML)</li>
+  <li><a href="https://github.com/semantifyit/RocketRML">RocketRML</a> (RML)</li>
+</ol>
+
+<p>Let’s take a closer look to check if they present a viable option. I’m only interested in R2RML so that eliminates D2RQ and SWObjects dm-materialize but let’s check them out either way.</p>
+
+<p>Of the RML implementations, CARML and RocketRML do not support SQL data source and SDM-RDFizer does not support SQL Server. That leaves RMLMapper.</p>
+
+<p>Finally, there are a bunch of commercial products which incorporate R2RML and other kinds of mappings and migrations from other data sources to semantic graphs. Names like Stardog or Anzo which are aimed at big corporate settings. They often don’t have free versions, require adopting their entire, integrated environment and cost big buck.</p>
+
+<h3 id="rdf-rdb2rdf">RDF-RDB2RDF</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>0.008</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2013-09-20</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Perl package manager</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>individual</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The project page is rather developer-centric. An <strong>INSTALL</strong> file linked in an <strong>Other files</strong> section says</p>
+
+<blockquote>
+  <p>Installing RDF-RDB2RDF should be straightforward.
+If you have cpanm, you only need one line:</p>
+</blockquote>
+
+<p><code>
+% cpanm RDF::RDB2RDF
+</code></p>
+
+<p>Looks simple, but I have no idea about PERL and <code>cpanm</code>. There is also a <code>README</code> file but the usage instructions are rather uninformative. I think this is only a library. Even if this gets the job done, there is no way I’m learning PERL for this 🙄</p>
+
+<h3 id="xsparql">XSPARQL</h3>
+
+<p>While the address linked from the implementation report is now dead, a quick google reveals its new home on GitHub.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>1.1.0</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2019-02-04</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td><code>.jar</code> download</td>
+      <td>🙄</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company (?)</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The R2RML feature is not well advertised but found in the wiki under <a href="https://github.com/semantalytics/xsparql/wiki/Working-with-RDBMS-SQL">Working with RDBMS SQL</a></p>
+
+<p>Configuration is provided using a <code>.properties</code> file. Awkward but doable. Unfortunately the project does not show an example of how to set it up.</p>
+
+<h3 id="ultrawrap">ultrawrap</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The linked company Capsenta redirects to <a href="https://data.world">https://data.world</a> and appears to be a commercial product. There is also a <strong>Community tier</strong> of what seems to be a SaaS offering.</p>
+
+<p>Not sure about this one.</p>
+
+<h3 id="db2triples">db2triples</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>2.2</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2019-08-02</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Build with maven</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This one looks promising. Sadly, it appears that the sources have to be built manually. No thank you. On the other hand the <code>format</code> parameter can be one of <code>'RDFXML', 'N3', 'NTRIPLES' or 'TURTLE'</code> so I guess no named graphs? 😢</p>
+
+<h3 id="d2rq">D2RQ</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>0.8.1</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2012-06-22</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Download from d2rq.org</td>
+      <td>🙄</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Universities</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Anyway, only Direct Mapping and unmaintained but if it works, it works…</p>
+
+<h3 id="swobjects-dm-materialize">SWObjects dm-materialize</h3>
+
+<p>❌ It’s dead Jim</p>
+
+<h3 id="openlink-virtuoso">OpenLink Virtuoso</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>7.2</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2018-08-15</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Dedicated installers + a plugin</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Virtuoso is a well-known name in the RDF space. It is a commercial product and a triple store. Support for R2RML comes as an add-on and the overall setup looks super complicated and not at all standalone 👎. Sorry</p>
+
+<h3 id="morph">morph</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>3.12.5</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2019-09-20</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>JAR download</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Much outdated in the original 2012 implementation report, it turns out that Morph has seen much activity since and has been developed by a commercial company. Java-style setup using a JAR download and the awkward <code>.properties</code> file but definitely something to try out.</p>
+
+<h3 id="ontop">Ontop</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>4.0-rc1</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2020-06-08</td>
+      <td>🎉</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>JAR download</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>University</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Ontop is mainly a Virtual Graph endpoint, like d2rq, but comes with a CLI command <code>materialize</code> which takes a R2RML mapping graph and serializes the resulting triples to a file.</p>
+
+<p>Unfortunately, at the time of writing named graphs <a href="https://github.com/ontop/ontop/issues/343">are not supported</a>. The project is very actively maintained and that might change very soon.</p>
+
+<h3 id="karma">Karma</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>2.4</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2020-06-03</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>GUI? <code>mvn exec:java</code>?</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>University</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Another super active but also quite complex tool. An installation page shows how to install a GUI tool. The README gives examples of commands running Maven within a clone of the original repository. Maybe I’m missing something but it does look like it falls into “easy of use” category.</p>
+
+<p>To do it justice, this definitely looks super useful as a</p>
+
+<blockquote>
+  <p>an information integration tool that enables users to quickly and easily integrate data from a variety of data sources</p>
+</blockquote>
+
+<p>as advertised in the repo. Not what I’m looking for though.</p>
+
+<h3 id="d2rqr2rml-kit">d2rq/r2rml-kit</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>N/A</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Last update</td>
+      <td>2019-06-19</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>scripts in repository</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Individual (?)</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>r2rml-kit is an offshoot of D2RQ, based on its abandoned develop branch
+r2rml-kit is currently in pre-alpha stage.</p>
+</blockquote>
+
+<p>Not only is it <strong>pre-alpha</strong>, it is also not really maintained. Too bad…</p>
+
+<h3 id="chrdebrur2rml">chrdebru/r2rml</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>N/A</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Last update</td>
+      <td>2020-04-13</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>build sources</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Individual</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Another Java project which fails to even provide a pre-built JAR. This one has at least seen some development recent time and claims to support quad output formats. Maybe worth a go.</p>
+
+<h3 id="rmlmapper">RMLMapper</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>4.8.1</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2020-07-03</td>
+      <td>🎉</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>docker run</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>University</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The last RML implementation looks promising too. Actively maintained, supports SQL server, outputs quads, uses modern tooling. A definite candidate for success.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>For such a crucial piece of software it’s quite disappointing to see in what state the environment is and how little it has changed since 2012 when I first had a look at R2RML.</p>
+
+<p>The old implementations died off or became commercial products. C’est la vie.</p>
+
+<p>The surviving ones on the other hand mostly fail to provide a usable package. Why should I be interested in running Maven or even manually downloading a JAR to run. Where is the simplicity of package managers effortless installation one can find in JavaScript (<code>npm i -g hypothetical-r2rml</code>) or the latest .NET (<code>dotnet tool install -g hypothetical-r2rml</code>). Once installed it should simply create a global executable to run the transformation.</p>
+
+<p>And why are so many poorly documented? Again, I can mostly speak of JS and .NET ecosystems and there are plenty of examples of beautiful, detailed documentation pages and guides. How is it possible that most of those above fail on that front.</p>
+
+<p>Maybe I’m being unfair about that last point. Much software is poorly documented and I have been guilty of that myself in the past but for the RDF community at large it should be critical to provide working, well documented software in order for semantic technologies to achieve any wider recognition.</p>
+
+<p>Finally, I would have said in the past that universities are part of the problem and the Semantic Web has been long viewed as academic and impractical. It pleases me to see that but of the above, the more recent uni-managed packages actually stand out as being more modern and better maintained overall. 👍</p>
+
+<p>And I have not even looked at test coverage but I do not dare.</p>
+
+<h2 id="coming-next">Coming next</h2>
+
+<p>In the end, it’s still a little disappointing how limited the choice seems for someone looking for an unimposing but functional R2RML solution. In the two lists above I gathered 16 potential candidates out of which only a handful remain:</p>
+
+<ol>
+  <li><strong>XSPARQL</strong> (config is going to be a trial &amp; error thing)</li>
+  <li><strong>db2triples</strong> (only if the docs are inaccurate and named graphs are supported)</li>
+  <li><strong>morph</strong></li>
+  <li><strong>Ontop</strong> (no named graph but deserves a closer look)</li>
+  <li><strong>chrdebru/r2rml</strong></li>
+  <li><strong>RMLMapper</strong></li>
+</ol>
+
+<p>I initially intended to give more details about each of the promising implementation in this post but I decided that I should look in more detail and actually try running and comparing those most promising implementations to see if they can actually deliver. In a subsequent post I will take my mappings and try processing them with the 5 tools I selected.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Introduction to Dydra, the cloud-based RDF store]]></title>
+    <link href="http://t-code.pl/blog/2016/03/getting-started-with-dydra/"/>
+    <updated>2016-03-07T22:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/getting-started-with-dydra</id>
+    <content type="html"><![CDATA[<p>For anyone interested in the <a href="https://www.w3.org/standards/semanticweb/">Semantic Web</a>, data storage continues to be an issue. Although there is a fair number
+of <a href="https://en.wikipedia.org/wiki/Triplestore">triple- and quadstore</a>, your mileage may vary. Some triple stores offer mediocre performance, there are
+stability issues, missing features or unsupported platforms. There however one simple, but hassle-free alternative in the
+cloud.</p>
+
+<!--more-->
+
+<h2 id="in-the-beginning-there-was-file">In the beginning there was file</h2>
+
+<p>As I wrote, I am a keen collector of any printed, public transport-related material such as promotional brochures and books.
+I’ve created a small tool, which helps me manage my collection. It was crucial for me at some point, because it had happened
+more than once that I bought another copy of something I already had <img class="emoji" title=":grimacing:" alt=":grimacing:" src="https://assets.github.com/images/icons/emoji/unicode/1f62c.png" height="20" width="20" align="absmiddle" />. With the tool I can scan and import the 
+cover and input some basic data about my collection.</p>
+
+<p><img src="/uploads/2016/03/sources-kb-list.png" alt="My knowledge base tool" /></p>
+
+<p><img src="/uploads/2016/03/sources-kb-item.png" alt="My knowledge base tool" /></p>
+
+<p>Default and obvious choice at the time was SQL Server. Now however, lured by the glorious vision of <a href="http://linkeddata.org/">Linked Data</a> I
+intend to publish my collection (and other, <em>real</em> wikibus stuff later) as <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a>. Thus I convert my tables from
+relations to graphs using <a href="https://www.w3.org/TR/r2rml/">R2RML</a> - that I will also expand upon in another post. But because my experience with
+triplestores was rocky at best, I decided to keep the small dataset (roughly 20k facts) in a file. That would be generated
+at first application start and loaded to memory for querying.</p>
+
+<p>Of course that’s not a perfect solution and so I recalled that out there a free, cloud-based triple store exist.</p>
+
+<h2 id="welcome-dydra-the-data-tree">Welcome Dydra, the data tree</h2>
+
+<p><img src="/uploads/2016/03/datatree.png" alt="data tree" /></p>
+
+<p>Dydra signup page says that invite code is required to create an account. It doesn’t mean that another registered user
+is required. It simply means that an invitation request must be sent, before one can register. I didn’t have high hopes
+but to my pleasant surprise, I got my code within two days. <img class="emoji" title=":+1:" alt=":+1:" src="https://assets.github.com/images/icons/emoji/unicode/1f44d.png" height="20" width="20" align="absmiddle" />.</p>
+
+<p>Interestingly, Dydra is completely free of charge. A paid service is available, but on a case-by-case basis as far as I
+can tell.</p>
+
+<h3 id="creating-a-repository">Creating a repository</h3>
+
+<p>Dydra hosts their files somewhere over at Amazon <img class="emoji" title=":cloud:" alt=":cloud:" src="https://assets.github.com/images/icons/emoji/unicode/2601.png" height="20" width="20" align="absmiddle" />, and user’s data is split into virtual <strong><em>repositories</em></strong>. Upon
+logging in for the first time in I can create on straight away and then import some existing data. I imported my converted 
+triples.</p>
+
+<p><video width='900' height='658' preload='metadata' controls poster='/uploads/2016/03/dydra-repo.png'><source src='/uploads/2016/03/dydra-repo.webm' type='video/webm; codecs=vp8, vorbis'></video></p>
+
+<p>As you see above, a repository can be assigned various levels of privacy between <em>completely private</em> to <em>visible to anyone</em>.
+Unfortunately, <a href="https://github.com/dydra/support/issues/41">what looks like a bug to me</a>, a public repository can not only be viewed by anyone but also modified.
+<strong>Beware</strong> <img class="emoji" title=":skull:" alt=":skull:" src="https://assets.github.com/images/icons/emoji/unicode/1f480.png" height="20" width="20" align="absmiddle" /></p>
+
+<h3 id="accessing-dydra-repositories">Accessing Dydra repositories</h3>
+
+<p>Dydra repositories are accessible over standard SPARQL endpoints and can also be downloaded in various RDF syntaxes. Simple.</p>
+
+<p><video width='900' height='658' preload='metadata' controls poster='/uploads/2016/03/dydra-endpoints.png'><source src='/uploads/2016/03/dydra-endpoints.webm' type='video/webm; codecs=vp8, vorbis'></video></p>
+
+<p>Private repositories can be access by using a <a href="http://docs.dydra.com/api/authentication">number of authentication options</a> <img class="emoji" title=":+1:" alt=":+1:" src="https://assets.github.com/images/icons/emoji/unicode/1f44d.png" height="20" width="20" align="absmiddle" />.</p>
+
+<h3 id="sparql-online">SPARQL Online</h3>
+
+<p>Lastly, Dydra has this cool little feature they call views, which can be used to create canned queries. Those queries can
+then be accessed over the web in a number of formats. <a href="https://github.com/dydra/support/issues/24">If only they allowed input parameters</a> <img class="emoji" title=":pray:" alt=":pray:" src="https://assets.github.com/images/icons/emoji/unicode/1f64f.png" height="20" width="20" align="absmiddle" />.</p>
+
+<p><video width='900' height='658' preload='metadata' controls poster='/uploads/2016/03/dydra-views.png'><source src='/uploads/2016/03/dydra-views.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></p>
+
+<h2 id="go-dydra">Go Dydra!</h2>
+
+<p>I must say I like Dydra pretty much. There may be minor issues, like <a href="https://github.com/dydra/support/issues/42">not using <code>https</code> by default</a> and problems
+I mentioned above. However all in all it’s a very simple yet powerful solution. Did I mention it’s free? <img class="emoji" title=":smile:" alt=":smile:" src="https://assets.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle" /> I remains
+to see how performant the repositories are and how quick the team responds to <a href="https://github.com/dydra/support">support issues</a>.</p>
+
+<h2 id="usage-with-net">Usage with .NET</h2>
+
+<p>I’m using <a href="http://dotnetrdf.org">dotNetRDF</a> and with the SPARQL endpoints it works like charm.</p>
+
+<p><code>csharp
+var endpointUri = "http://dydra.com/repository/path/sparql";
+return new RemoteQueryProcessor(new SparqlRemoteEndpoint(endpointUri));
+</code></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HATEOAS as if you meant it]]></title>
+    <link href="http://t-code.pl/blog/2015/01/hateoas-as-if-you-meant-it/"/>
+    <updated>2015-01-27T21:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2015/01/hateoas-as-if-you-meant-it</id>
+    <content type="html"><![CDATA[<p>Lately I have been considering employing Web Components in my ever-upcoming hobby
+project. The missing piece I haven’t found in modern web app frameworks is UI
+based on application state (think <a href="http://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/">REST</a>). Typically the UI displayed to the use
+is tied to the route - or address, which is potentially brittle and not ideal for
+a truly <a href="http://restcookbook.com/Basics/hateoas/">hypermedia-driven application</a>.</p>
+
+<!--more-->
+
+<p>I have already written about <a href="/2014/06/rest-rdf-and-hypermedia/">Hypermedia-driven applications with RDF
+backend</a>. There I explained what is REST and
+how it fits the Semantic Web. This time I’ll delve into effectively managing
+client state using resource representations.</p>
+
+<h2 id="haters-gonna-hateoas">Haters gonna HATEOAS</h2>
+
+<p><em>FYI I pronounce HATOAS as <strong>hideous</strong></em></p>
+
+<p>REST has become a de-facto standard for many web services out there. Actual
+understanding varies but the general community has long ago recognized its
+elegance in building services. At the same however there has been too little
+adoption of what many find the crucial bit - Hypermedia. The idea is strikingly
+simple: whatever the server returns is enough for clients to perform all
+subsequent requests.</p>
+
+<p>But lets ignore that fact for now and assume we built a perfect, holy grail
+HATEAOS server and now need a client. In JavaScript, so that we’re trendy
+<img class="emoji" title=":sunglasses:" alt=":sunglasses:" src="https://assets.github.com/images/icons/emoji/unicode/1f60e.png" height="20" width="20" align="absmiddle" />.</p>
+
+<h2 id="managing-application-state">Managing application state</h2>
+
+<h3 id="routing">Routing</h3>
+
+<p>Modern JavaScript frameworks typically manage their UI state with routing, which
+means that each application state is bound to a specific path. It works this way
+in every major contender.</p>
+
+<p><a href="http://emberjs.com/guides/routing/defining-your-routes/">Ember</a>:</p>
+
+<p><code>js
+App.Router.map(function() {
+  this.route("about", { path: "/about" });
+});
+</code>
+<a href="https://docs.angularjs.org/api/ngRoute/service/$route#example">Angular’s ng-router</a>:</p>
+
+<p><code>js
+$routeProvider
+  .when('/Book/:bookId', {
+    templateUrl: 'book.html'
+  })
+</code></p>
+
+<p><a href="https://github.com/angular-ui/ui-router">Angular’s ui-router</a>:</p>
+
+<p><code>js
+$stateProvider
+  .state('state1', {
+    url: "/state1"
+  })
+</code></p>
+
+<p>The list could go on and include Backbone, Durandal, Knockout routers and standalone
+solutions.</p>
+
+<p>This approach doesn’t work very well with a truly hypermedia-driven API where the
+state of an application is determined by the server’s response. The problem is
+that the flow is reversed. With routing client-side navigation works like this:</p>
+
+<blockquote>
+  <ol>
+    <li>User clicks a link</li>
+    <li>A route is matched to the path</li>
+    <li>Client performs a request to the server</li>
+    <li>Server returns a resource</li>
+    <li>Route’s view is rendered</li>
+  </ol>
+</blockquote>
+
+<p>There is more than one issue here. Managing the route paths is unnecessary burden.
+And what if the server returns something we didn’t expect? Not to mention that
+parametrized routes are effectively holding developers back from building
+real, self-descriptive back ends by introducing out-of-band information. After all
+the REST paradigm states that the resource is the one and only place where clients
+get information necessary to perform requests. Path on the client is not.</p>
+
+<p>We are inadvertedly falling back to inferior design and the real “gain” is usually increased maintenance.</p>
+
+<h3 id="hateoas-as-if-you-meant-it">HATEOAS as if you meant it</h3>
+
+<p>To my surprise and despair I haven’t found a real solution for resource-based
+navigation. With Hypermedia-driven APIs the resource is king - as per the <strong>R</strong> in REST.
+As described by Ruben Verborgh in his <a href="http://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/">post</a>:</p>
+
+<blockquote>
+  <p>Application state is information about where you are in the interaction.
+Changes to this state are possible by the controls in hypermedia representations.</p>
+</blockquote>
+
+<p>Here’s how I see the process of changing the application state.</p>
+
+<blockquote>
+  <ol>
+    <li>User clicks a link/posts a form/etc.</li>
+    <li>The client performs a request to the server</li>
+    <li>Server returns a resource</li>
+    <li>Application state is changed (or not)</li>
+  </ol>
+</blockquote>
+
+<p>There a some very important implications of such approach. There is no notion of a route or path.
+At least it is not necessary for the client-server interaction. This means however that the
+requested address must be included in the hyperlink or form.</p>
+
+<p>Is it possible now? To some extent yes! Every hypermedia-aspiring media type, which
+includes links and operation definitions, like <a href="http://www.markus-lanthaler.com/hydra/">Hydra</a> but also even <a href="http://stateless.co/hal_specification.html">HAL</a>
+and <a href="https://github.com/kevinswiber/siren">SIREN</a> and others, empower to developers to build clients actually driven
+by that hypermedia. At least to some extent. Yet we still don’t!</p>
+
+<h2 id="linked-data-to-the-rescue">Linked Data to the rescue</h2>
+
+<p>In my eyes the root of the problem is refusal of using URIs as identifiers. I get the impression
+that URLs, even in RESTful services, are an afterthought. Or at least a derivative of some other
+identifier scheme, like database primary keys or user-supplied values. With such mindset it is
+natural that that <strong>true</strong> identifier would be used as part of a route, say <code>user/:id</code> only so
+that <code>user/10</code> it is later transformed into the <strong>secondary</strong> id (URL) like <code>http://example.com/users/10.json</code>
+or whatever.</p>
+
+<p>With Linked Data the URI is king. If you accept the fact that your resource is identified by the
+address <code>http://example.com/users/10</code>, there will be little incentive to unnecessarily transform it.
+Of course in real-life web application one would prefer <code>http://example.com/app/#!/users/10</code>
+over an ugly slug similar to <code>http://example.com/app/#!/http://example.com/users/10</code>. Still this is not only
+browser-specific and originally a solution for handling history in single-page applications but
+actually completely optional. A hypermedia-driven web app can happily work without any routing and
+browser history management. Granted it may be unfriendly and not bookmarkable beyond the entry point,
+but <strong>it will still work</strong>.</p>
+
+<h2 id="further-read">Further read</h2>
+
+<p>In a future post I’ll try to give some concrete examples of how I imagine implementing a browser
+client driven by a Linked Data API.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

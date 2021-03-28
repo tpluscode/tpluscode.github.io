@@ -1,0 +1,516 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Introducing heracles - Hydra Core hypermedia client - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="The first post showing the heracles hypermedia library for working with Hydra Core API">
+    
+        <meta name="keywords" content="dajsiepoznac, argolis, hydra core vocabulary, hypermedia">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/04/introducing-heracles/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Introducing Heracles - Hydra Core Hypermedia Client</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Lately I’ve been working on a library to consume <a href="http://hydra-cg.com/spec/latest/core/">Hydra Core</a> hypermedia-rich APIs. This is something I’ve been
+planning for a long time now and given that the <a href="https://github.com/wikibus/argolis">Argolis</a> server-side component pretty much works it was about
+time I started working on consuming the API Documentation.</p>
+
+<p>In this post I showcase the simplest usage of heracles and describe some design decisions. I guess I should write about
+Argolis too in the near future.</p>
+
+<!--more-->
+
+<p>The source code of heracles is <em>naturally</em> on <a href="https://github.com/wikibus/heracles">GitHub</a>. It is written in TypeScript and bundled as an AMD
+format package.</p>
+
+<p><a href="https://commons.wikimedia.org/wiki/File:Antonio_Pollaiuolo_002.jpg"><img src="/uploads/2016/04/427px-Antonio_Pollaiuolo_002.jpg" title="Heracles defeating the Hydra" /></a></p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<h3 id="installation">Installation</h3>
+
+<p>To start using heracles first download it using JSPM package manager.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">jspm install wikibus/heracles
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="basic-usage">Basic usage</h3>
+
+<p>Now you are ready to start using the library. It is as simple as importing and executing the static <code>load</code> function. It
+returns a promise of a resource.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">import</span> <span class="p">{</span><span class="nx">Hydra</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;wikibus/heracles&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">Hydra</span><span class="p">.</span><span class="nx">loadResource</span><span class="p">(</span><span class="s1">&#39;http://my.api/my/resource&#39;</span><span class="p">)</span>
+</span><span class="line">    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// do something with the resource</span>
+</span><span class="line">    <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The returned model will always be expanded although in the future I could consider adding an optional <code>@context</code> parameter.</p>
+
+<p>Every time a resource is loaded the <code>Link</code>ed Hydra API Documentation will be fetched as well to discover possible operations
+for the resource(s). Here’s an example of a documentation.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">        <span class="s2">&quot;http://www.w3.org/ns/hydra/context.jsonld&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="nt">&quot;vocab&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/vocab#&quot;</span><span class="p">,</span>
+</span><span class="line">            <span class="nt">&quot;foaf&quot;</span><span class="p">:</span> <span class="err">http</span><span class="p">:</span><span class="err">//xmlns.com/foaf/</span><span class="mf">0.1</span><span class="err">/</span><span class="s2">&quot;</span>
+</span><span class="line"><span class="s2">         }</span>
+</span><span class="line"><span class="s2">    ],</span>
+</span><span class="line"><span class="s2">    &quot;</span><span class="err">supportedClass</span><span class="s2">&quot;: [</span>
+</span><span class="line"><span class="s2">        {</span>
+</span><span class="line"><span class="s2">            &quot;</span><span class="err">@id</span><span class="s2">&quot;: &quot;</span><span class="err">vocab</span><span class="p">:</span><span class="err">Person</span><span class="s2">&quot;,</span>
+</span><span class="line"><span class="s2">            &quot;</span><span class="err">supportedOperation</span><span class="s2">&quot;: [</span>
+</span><span class="line"><span class="s2">                {</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">method</span><span class="s2">&quot;: &quot;</span><span class="err">GET</span><span class="s2">&quot;,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">expects</span><span class="s2">&quot;: &quot;</span><span class="err">owl</span><span class="p">:</span><span class="err">Nothing</span><span class="s2">&quot;,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">returns</span><span class="s2">&quot;: &quot;</span><span class="err">vocab</span><span class="p">:</span><span class="err">Person</span><span class="s2">&quot;</span>
+</span><span class="line"><span class="s2">                }</span>
+</span><span class="line"><span class="s2">            ],</span>
+</span><span class="line"><span class="s2">            &quot;</span><span class="err">supportedProperty</span><span class="s2">&quot;: [</span>
+</span><span class="line"><span class="s2">                {</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">readable</span><span class="s2">&quot;: true,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">writable</span><span class="s2">&quot;: false,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">required</span><span class="s2">&quot;: false,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">property</span><span class="s2">&quot;: {</span>
+</span><span class="line"><span class="s2">                        &quot;</span><span class="err">@id</span><span class="s2">&quot;: &quot;</span><span class="err">vocab</span><span class="p">:</span><span class="err">pets</span><span class="s2">&quot;</span>
+</span><span class="line"><span class="s2">                    },</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">supportedOperation</span><span class="s2">&quot;: [</span>
+</span><span class="line"><span class="s2">                        {</span>
+</span><span class="line"><span class="s2">                            &quot;</span><span class="err">method</span><span class="s2">&quot;: &quot;</span><span class="err">POST</span><span class="s2">&quot;,</span>
+</span><span class="line"><span class="s2">                            &quot;</span><span class="err">expects</span><span class="s2">&quot;: &quot;</span><span class="err">vocab</span><span class="p">:</span><span class="err">Pet</span><span class="s2">&quot;,</span>
+</span><span class="line"><span class="s2">                            &quot;</span><span class="err">returns</span><span class="s2">&quot;: &quot;</span><span class="err">owl</span><span class="p">:</span><span class="err">Nothing</span><span class="s2">&quot;</span>
+</span><span class="line"><span class="s2">                        }</span>
+</span><span class="line"><span class="s2">                    ]</span>
+</span><span class="line"><span class="s2">                }</span>
+</span><span class="line"><span class="s2">            ]</span>
+</span><span class="line"><span class="s2">        },</span>
+</span><span class="line"><span class="s2">        {</span>
+</span><span class="line"><span class="s2">            &quot;</span><span class="err">@id</span><span class="s2">&quot;: &quot;</span><span class="err">vocab</span><span class="p">:</span><span class="err">Pet</span><span class="s2">&quot;,</span>
+</span><span class="line"><span class="s2">            &quot;</span><span class="err">supportedProperty</span><span class="s2">&quot;: [</span>
+</span><span class="line"><span class="s2">                {</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">readable</span><span class="s2">&quot;: true,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">writable</span><span class="s2">&quot;: true,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">required</span><span class="s2">&quot;: true,</span>
+</span><span class="line"><span class="s2">                    &quot;</span><span class="err">property</span><span class="s2">&quot;: &quot;</span><span class="err">foaf</span><span class="p">:</span><span class="err">name&quot;</span>
+</span><span class="line">               <span class="p">}</span>
+</span><span class="line">           <span class="p">]</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="err">]</span>
+</span><span class="line"><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The above states a number of facts about the API:</p>
+
+<blockquote>
+  <p>The server is known to return resources of the type <code>vocab:Person</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p>A <code>GET</code> request is known to be supported for resources of types <code>vocab:Person</code></p>
+</blockquote>
+
+<blockquote>
+  <p>The <code>vocab:Person</code> class can be expected to include a <code>vocab:pets</code> link to another resource</p>
+</blockquote>
+
+<blockquote>
+  <p>That other, linked resource can be requested using <code>POST</code> with an instance of class <code>vocab:Pet</code></p>
+</blockquote>
+
+<blockquote>
+  <p>A valid instance of <code>vocab:Pet</code> must include the <code>foaf:name</code> property</p>
+</blockquote>
+
+<p>All this information can be accessed from resources loaded using the <code>Hydra.Resource.load</code> method above. Given a representation
+of the resource <code>http://my.api/Tomasz</code></p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;vocab&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/vocab#&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;foaf&quot;</span><span class="p">:</span> <span class="s2">&quot;http://xmlns.com/foaf/0.1/&quot;</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/Tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;vocab:Person&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;vocab:pets&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="err">http</span><span class="p">:</span><span class="err">//my.api/Tomasz/pets&quot;</span> <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It is possible to discover operations available for any of the instances</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// assume loaded earlier with Hydra.Resource.load(&#39;http://my.api/Tomasz&#39;)</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">resource</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">resource</span><span class="p">.</span><span class="nx">getOperations</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="nx">ops</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// will return the GET operation supported by the vocab:Person class</span>
+</span><span class="line"><span class="p">});</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">resource</span><span class="p">[</span><span class="s1">&#39;http://my.api/vocab#pets&#39;</span><span class="p">].</span><span class="nx">getOperations</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="nx">ops</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// will return the POST operation supported by the link type</span>
+</span><span class="line">    <span class="nx">expect</span><span class="p">(</span><span class="nx">ops</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">method</span><span class="p">)</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="important-bits-and-pieces">Important bits and pieces</h2>
+
+<p>There are some decisions I made, which may influence how the server and client must act. Most notably</p>
+
+<h3 id="resources-are-expanded">Resources are expanded</h3>
+
+<p>First of all, as I’ve stated above, the loaded resource representation is expanded by default. This is because otherwise
+it would be quite difficult to process them. This is true for example for inspecting the resource <code>@type</code>.</p>
+
+<h3 id="load-returns-object-with-matching-id"><code>load</code> returns object with matching <code>@id</code></h3>
+
+<p>If a resource representation is a larger graph of objects, the <code>load</code> function will always look for that identifier and
+return that object even if it was not the root of the JSON-LD document. For example, the current design of collections in
+Hydra is that each collection can be partitioned into views (for example for the purpose of paging). Requesting a resource
+<code>http://my.api/Tomasz/pets?page=2</code> could return something similar to:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/some/context&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/Tomasz/pets&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;hydra:Collection&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;hydra:member&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">]</span>
+</span><span class="line">    <span class="s2">&quot;hydra:view&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/Tomasz/pets?page=2&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;hydra:PartialCollectionView&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;hydra:previous&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/Tomasz/pets&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;hydra:next&quot;</span><span class="p">:</span> <span class="s2">&quot;http://my.api/Tomasz/pets?page=3&quot;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>As you see the requested resource is not the root of the representation tree. Still the <code>load</code> promise will resolve with
+that object and not <code>http://my.api/Tomasz/pets</code>. This may be counterintuitive in the case of simple JSON-LD documents but
+considering that the server could be returning <a href="https://www.w3.org/TR/json-ld-api/#expansion">expanded</a> or <a href="https://www.w3.org/TR/json-ld-api/#flattening">flattened</a> documents it seems the only logical
+way. Not to mention that other RDF media type could be requested by the client in which case, there would no obvious root
+object.</p>
+
+<p>Each common case from Hydra Core vocabulary like the <code>PartialCollectionView</code> (possible any object of the <code>hydra:view</code>
+property) will be enriched with a link to the parent collection. Otherwise it wouldn’t be possible to access it from the
+returned object.</p>
+
+<h3 id="hydra-documentation-objects-are-compacted">Hydra documentation objects are compacted</h3>
+
+<p>For convenience elements of the Hydra Core vocabulary are compacted with the default hydra <code>@context</code> so that on can write
+<code>op.method</code> instead of <code>op['https://www.w3.org/ns/hydra/core#method']</code>. If the object contained any non-standard content,
+such as <code>SHACL</code> constraints for a supported property, it is possible to recompact with a custom context:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">operation</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">myContext</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">compacted</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// access the properties as you see fit</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="going-further">Going further</h2>
+
+<p>A rich interaction with the loaded resource isn’t possible just yet. As you see above currently only the basic metadata
+about operations is available. I’ve also started work on accessing supported properties. In the future I plan a number
+of facilities to ease invoking operations, handling common Hydra objects in specific ways, easier extensions, improved
+error handling, etc.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/04/introducing-heracles/';
+        var disqus_url = 'http://t-code.pl/blog/2016/04/introducing-heracles/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1446 @@
+<blockquote>
+  <p><strong>Notice</strong></p>
+
+  <p>Development of es-dev-server continues under a new name: <a href="https://modern-web.dev/docs/dev-server/overview/">web dev server</a>. We recommend using it for new projects, and upgrading for existing projects.</p>
+
+  <p>We will continue to support fixing bugs for es-dev-server.</p>
+</blockquote>
+
+<h1 id="es-dev-server">es dev server</h1>
+
+<p>A web server for development without bundling.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">npx es-dev-server --node-resolve --watch
+</span></code></pre></td></tr></table></div></figure>
+
+<p><strong>Quick overview</strong></p>
+
+<ul>
+  <li>efficient browser caching for fast reloads</li>
+  <li><a href="#compatibility-mode">transform code on older browsers for compatibility</a></li>
+  <li><a href="#node-resolve">resolve bare module imports for use in the browser</a> (<code>--node-resolve</code>)</li>
+  <li>auto-reload on file changes with the (<code>--watch</code>)</li>
+  <li>history API fallback for SPA routing (<code>--app-index index.html</code>)</li>
+  <li><a href="#plugins">plugin API for extensions</a></li>
+</ul>
+
+<p><a href="#command-line-flags-and-configuration">See all commands</a></p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<p>We recommend <a href="https://dev.to/open-wc/developing-without-a-build-2-es-dev-server-1cf5">following this guide</a> for a step by step overview of different workflows with <code>es-dev-server</code>.</p>
+
+<h2 id="setup">Setup</h2>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">npm i --save-dev es-dev-server
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Add scripts to your <code>package.json</code>, modify the flags as needed:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;scripts&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;es-dev-server --app-index index.html --node-resolve --watch --open&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Run the server:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">npm run start
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="node-version">Node version</h2>
+
+<p>es-dev-server requires node v10 or higher</p>
+
+<h2 id="command-line-flags-and-configuration">Command-line flags and Configuration</h2>
+
+<h3 id="server-configuration">Server configuration</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>port</td>
+      <td>number</td>
+      <td>The port to use, uses a random free port if not set.</td>
+    </tr>
+    <tr>
+      <td>hostname</td>
+      <td>string</td>
+      <td>The hostname to use. Default: localhost</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>boolean/string</td>
+      <td>Opens the browser on app-index, root dir or a custom path</td>
+    </tr>
+    <tr>
+      <td>app-index</td>
+      <td>string</td>
+      <td>The app’s index.html file, sets up history API fallback for SPA routing</td>
+    </tr>
+    <tr>
+      <td>root-dir</td>
+      <td>string</td>
+      <td>The root directory to serve files from. Default: working directory</td>
+    </tr>
+    <tr>
+      <td>base-path</td>
+      <td>string</td>
+      <td>Base path the app is served on. Example: /my-app</td>
+    </tr>
+    <tr>
+      <td>config</td>
+      <td>string</td>
+      <td>The file to read configuration from (JS or JSON)</td>
+    </tr>
+    <tr>
+      <td>cors</td>
+      <td>boolean</td>
+      <td>Enable CORS</td>
+    </tr>
+    <tr>
+      <td>help</td>
+      <td>none</td>
+      <td>See all options</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="development-help">Development help</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>watch</td>
+      <td>boolean</td>
+      <td>Reload the browser when files are edited</td>
+    </tr>
+    <tr>
+      <td>http2</td>
+      <td>boolean</td>
+      <td>Serve files over HTTP2. Sets up HTTPS with self-signed certificates</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="code-transformation">Code transformation</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>compatibility</td>
+      <td>string</td>
+      <td>Compatibility mode for older browsers. Can be: <code>auto</code>, <code>always</code>, <code>min</code>, <code>max</code> or <code>none</code> Default <code>auto</code></td>
+    </tr>
+    <tr>
+      <td>node-resolve</td>
+      <td>boolean</td>
+      <td>Resolve bare import imports using node resolve</td>
+    </tr>
+    <tr>
+      <td>dedupe</td>
+      <td>boolean/array</td>
+      <td>Deduplicates all modules, or modules from specified packages if the value is an array</td>
+    </tr>
+    <tr>
+      <td>preserve-symlinks</td>
+      <td>boolean</td>
+      <td>Preserve symlinks when resolving modules. Set to true, if using tools that rely on symlinks, such as <code>npm link</code>. Default false.</td>
+    </tr>
+    <tr>
+      <td>module-dirs</td>
+      <td>string/array</td>
+      <td>Directories to resolve modules from. Used by node-resolve</td>
+    </tr>
+    <tr>
+      <td>babel</td>
+      <td>boolean</td>
+      <td>Transform served code through babel. Requires .babelrc</td>
+    </tr>
+    <tr>
+      <td>file-extensions</td>
+      <td>string/array</td>
+      <td>Extra file extensions to use when transforming code.</td>
+    </tr>
+    <tr>
+      <td>babel-exclude</td>
+      <td>number/array</td>
+      <td>Patterns of files to exclude from babel compilation.</td>
+    </tr>
+    <tr>
+      <td>babel-modern-exclude</td>
+      <td>number/array</td>
+      <td>Patterns of files to exclude from babel compilation on modern browsers.</td>
+    </tr>
+    <tr>
+      <td>babel-module-exclude</td>
+      <td>number/array</td>
+      <td>Patterns of files to exclude from babel compilation for modules only.</td>
+    </tr>
+    <tr>
+      <td>event-stream</td>
+      <td>boolean</td>
+      <td>Whether to inject event stream script. Defaults to true.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Most commands have an alias/shorthand. You can view them by using <code>--help</code>.</p>
+
+<h3 id="configuration-files">Configuration files</h3>
+
+<p>We pick up an <code>es-dev-server.config.js</code> file automatically if it is present in the current working directory. You can specify a custom config path using the <code>config</code> flag.</p>
+
+<p>Configuration options are the same as command line flags, using their camelCased names. Example:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">port</span><span class="o">:</span> <span class="mi">8080</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">watch</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">nodeResolve</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">appIndex</span><span class="o">:</span> <span class="s1">&#39;demo/index.html&#39;</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[],</span>
+</span><span class="line">  <span class="nx">moduleDirs</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;node_modules&#39;</span><span class="p">,</span> <span class="s1">&#39;web_modules&#39;</span><span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>In addition to the command-line flags, the configuration file accepts these additional options:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>middlewares</td>
+      <td>array</td>
+      <td>Koa middlewares to add to the server. (read more below)</td>
+    </tr>
+    <tr>
+      <td>plugins</td>
+      <td>array</td>
+      <td>Plugins to add to the server. (read more below)</td>
+    </tr>
+    <tr>
+      <td>babelConfig</td>
+      <td>object</td>
+      <td>Babel config to run with the server.</td>
+    </tr>
+    <tr>
+      <td>polyfillsLoader</td>
+      <td>object</td>
+      <td>Configuration for the polyfills loader. (read more below)</td>
+    </tr>
+    <tr>
+      <td>debug</td>
+      <td>boolean</td>
+      <td>Whether to turn on debug mode on the server.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="serving-files">Serving files</h2>
+
+<p>es-dev-server is a static web server. When a request is made from the browser for <code>/foo/bar.js</code> it will try and find this file from the root directory. It cannot serve any files outside of your root directory because the browser has no way to request them, and the path on the file system must always be reflected in the path of the browser.</p>
+
+<h3 id="indexhtml-in-the-root">index.html in the root</h3>
+
+<p>The simplest setup, making sure that all files are accessible, is to place your index.html at the root of your project</p>
+
+<details>
+  <summary>Read more</summary>
+
+Consider this example directory structure:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">node_modules</span><span class="o">/</span><span class="p">...</span>
+</span><span class="line"><span class="nx">src</span><span class="o">/</span><span class="p">...</span>
+</span><span class="line"><span class="nx">index</span><span class="p">.</span><span class="nx">html</span>
+</span></code></pre></td></tr></table></div></figure>
+
+If you run the `es-dev-server` command from the root of the project, you can access your app at `/` or `/index.html` in the browser.
+
+</details>
+
+<h3 id="indexhtml-in-a-folder">index.html in a folder</h3>
+
+<p>If you move your <code>index.html</code> outside the root of your project, you have some different options.</p>
+
+<details>
+  <summary>Read more</summary>
+
+Use the `--open` parameter for when you'd like to keep you index.html in a subfolder.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">node_modules</span><span class="o">/</span><span class="p">...</span>
+</span><span class="line"><span class="nx">src</span><span class="o">/</span><span class="p">...</span>
+</span><span class="line"><span class="nx">src</span><span class="o">/</span><span class="nx">index</span><span class="p">.</span><span class="nx">html</span>
+</span></code></pre></td></tr></table></div></figure>
+
+You can access your app in the browser at `/src/` or `/src/index.html`. You can tell es-dev-server to explicitly open at this path:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c"># with app-index flag</span>
+</span><span class="line">es-dev-server --app-index src/index.html --open
+</span><span class="line"><span class="c"># without app-index flag</span>
+</span><span class="line">es-dev-server --open src/
+</span></code></pre></td></tr></table></div></figure>
+
+You can also change the root directory of the dev server:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">es-dev-server --root-dir src --open
+</span></code></pre></td></tr></table></div></figure>
+
+Now your `index.html` is accessible at `/` or `/index.html`. However, the dev server cannot serve any files outside of the root directory. So if your app uses any node modules, they will no longer because accessible.
+
+If you want your index in a subfolder without this being visible in the browser URL, you can set up a file rewrite rule. [Read more here](#rewriting-request-urls)
+
+</details>
+
+<h3 id="monorepos">Monorepos</h3>
+
+<p>If you are using es-dev-server in a monorepo, your node modules are in two different locations. In a package’s folder and at the repository root. You need to make sure that es-dev-server can serve from both directories.</p>
+
+<details>
+  <summary>Read more</summary>
+
+For example, a typical monorepo setup looks like this:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">node_modules/...
+</span><span class="line">packages/my-package/node_modules/...
+</span><span class="line">packages/my-package/index.html
+</span></code></pre></td></tr></table></div></figure>
+
+You will need to make sure the root node_modules folder is accessible to the dev server.
+
+If your working directory is `packages/my-package` you can use this command:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c"># with app-index (for SPA)</span>
+</span><span class="line">es-dev-server --root-dir ../../ --app-index packages/my-package/index.html --open
+</span><span class="line"><span class="c"># without app-index</span>
+</span><span class="line">es-dev-server --root-dir ../../ --open packages/my-package/index.html
+</span></code></pre></td></tr></table></div></figure>
+
+If your working directory is the root of the repository you can use this command:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c"># with app index (for SPA)</span>
+</span><span class="line">es-dev-server --app-index packages/my-package/index.html --open
+</span><span class="line"><span class="c"># without app index</span>
+</span><span class="line">es-dev-server --open packages/my-package/index.html
+</span></code></pre></td></tr></table></div></figure>
+
+This is the same approach as serving an index.html in a subdirectory, so the section above applies here as well.
+
+</details>
+
+<h3 id="base-element">Base Element</h3>
+
+<details>
+  <summary>Read more</summary>
+
+If you are building a single page application with client-side routing, we recommend adding a base element to set the base URL of your document.
+
+The base URL of the document can be accessed through `document.baseURI` and is used by the browser to resolve relative paths (anchors, images, links, scripts, etc.). By default, it is set to the browser's URL.
+
+You can add `<base href="" />` element to modify how files are resolved relatively to your index.html. This can be very useful when your index.html is not at the root of your project.
+
+[Read more about this on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base)
+
+</details>
+
+<h2 id="node-resolve">Node resolve</h2>
+
+<p>“Bare imports” are imports which don’t specify a full path to a file:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">import</span> <span class="nx">foo</span> <span class="nx">from</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The browser doesn’t know where to find this file called <code>bar</code>. The <code>--node-resolve</code> flag resolves this bare import to the actual file path before serving it to the browser:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">import</span> <span class="nx">foo</span> <span class="nx">from</span> <span class="s1">&#39;./node_modules/bar/bar.js&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Because we use <a href="https://github.com/guybedford/es-module-lexer">es-module-lexer</a> for blazing fast analysis to find the imports in a file without booting up a full-blown parser like babel, we can do this without a noticeable impact on performance.</p>
+
+<p>For the actual resolve logic, we internally use <a href="https://github.com/rollup/plugins/tree/master/packages/node-resolve">@rollup/plugin-node-resolve</a> so that you can keep the resolve logic in sync between development and production. When using a config file, the <code>nodeResolve</code> can also be an object which accepts the same options as the rollup plugin. options.</p>
+
+<details>
+<summary>Example config</summary>
+
+See [the rollup docs](https://github.com/rollup/plugins/tree/master/packages/node-resolve) for all options and what they do.
+
+Some options like `dedupe`, `fileExtensions`, `preserveSymlinks` and `moduleDirs` are mapped to options for `nodeResolve` internally. You can overwrite them with your custom config.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">nodeResolve</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">jsnext</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">browser</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="c1">// set default to false because es-dev-server always</span>
+</span><span class="line">    <span class="c1">// runs in the browser</span>
+</span><span class="line">    <span class="nx">preferBuiltins</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="c1">// will overwrite es-dev-server&#39;s fileExtensions option</span>
+</span><span class="line">    <span class="nx">extensions</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;.mjs&#39;</span><span class="p">,</span> <span class="s1">&#39;.js&#39;</span><span class="p">],</span>
+</span><span class="line">    <span class="c1">// will overwrite es-dev-server&#39;s dedupe option</span>
+</span><span class="line">    <span class="nx">dedupe</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;lit-html&#39;</span><span class="p">],</span>
+</span><span class="line">    <span class="nx">customResolveOptions</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="c1">// will overwrite es-dev-server&#39;s moduleDirs option</span>
+</span><span class="line">      <span class="nx">moduleDirectory</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;node_modules&#39;</span><span class="p">],</span>
+</span><span class="line">      <span class="nx">preserveSymlinks</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<p>In the future, we are hoping that <a href="https://github.com/WICG/import-maps">import maps</a> will make this step unnecessary.</p>
+
+<h2 id="middleware">Middleware</h2>
+
+<p>You can add your own middleware to es-dev-server using the <code>middlewares</code> property. The middleware should be a standard koa middleware. <a href="https://koajs.com/">Read more about koa here.</a></p>
+
+<p>You can use middleware to modify respond to any request from the browser, for example to rewrite a URL or proxy to another server. For serving or manipulating files it’s recommended to use plugins.</p>
+
+<h3 id="proxying-requests">Proxying requests</h3>
+
+<details>
+  <summary>Read more</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">const</span> <span class="nx">proxy</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-proxies&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">middlewares</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="nx">proxy</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;http://localhost:9001&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="p">}),</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="rewriting-request-urls">Rewriting request urls</h3>
+
+<p>You can rewrite certain file requests using a simple middleware. This can be useful for example to serve your <code>index.html</code> from a different file location or to alias a module.</p>
+
+<details>
+  <summary>Read more</summary>
+
+Serve `/index.html` from `/src/index.html`:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">middlewares</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">rewriteIndex</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="s1">&#39;/&#39;</span> <span class="o">||</span> <span class="nx">context</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="s1">&#39;/index.html&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">context</span><span class="p">.</span><span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;/src/index.html&#39;</span><span class="p">;</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h2 id="plugins">Plugins</h2>
+
+<p>Plugins are objects with lifecycle hooks called by es-dev-server as it serves files to the browser. They can be used to serve virtual files, transform files, or resolve module imports.</p>
+
+<h3 id="adding-plugins">Adding plugins</h3>
+
+<p>A plugin is just an object that you add to the <code>plugins</code> array in your configuration file. You can add an object directly, or create one from a function somewhere:</p>
+
+<details>
+  <summary>Read more</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">awesomePlugin</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;awesome-plugin&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="c1">// use a plugin</span>
+</span><span class="line">    <span class="nx">awesomePlugin</span><span class="p">({</span> <span class="nx">someOption</span><span class="o">:</span> <span class="s1">&#39;someProperty&#39;</span> <span class="p">}),</span>
+</span><span class="line">    <span class="c1">// create an inline plugin</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">transform</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;html&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="nx">context</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;base href=&quot;.*&quot;&gt;/</span><span class="p">,</span> <span class="s1">&#39;&lt;base href=&quot;/foo/&quot;&gt;&#39;</span><span class="p">)</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<p>See the full type interface for all options:</p>
+
+<details>
+  <summary>Read more</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="ts"><span class="line"><span class="kr">import</span> <span class="nx">Koa</span><span class="p">,</span> <span class="p">{</span> <span class="nx">Context</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;koa&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">FSWatcher</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;chokidar&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">Server</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;net&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">ParsedConfig</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./config&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">type</span> <span class="nx">ServeResult</span> <span class="o">=</span> <span class="k">void</span> <span class="o">|</span> <span class="p">{</span> <span class="nx">body</span>: <span class="kt">string</span><span class="p">;</span> <span class="nx">type?</span>: <span class="kt">string</span><span class="p">;</span> <span class="nx">headers?</span>: <span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="o">&gt;</span> <span class="p">};</span>
+</span><span class="line"><span class="nx">type</span> <span class="nx">TransformResult</span> <span class="o">=</span> <span class="k">void</span> <span class="o">|</span> <span class="p">{</span> <span class="nx">body?</span>: <span class="kt">string</span><span class="p">;</span> <span class="nx">headers?</span>: <span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="o">&gt;</span> <span class="p">};</span>
+</span><span class="line"><span class="nx">type</span> <span class="nx">ResolveResult</span> <span class="o">=</span> <span class="k">void</span> <span class="o">|</span> <span class="kt">string</span> <span class="o">|</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="o">|</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">interface</span> <span class="nx">ServerArgs</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">config</span>: <span class="kt">ParsedConfig</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">app</span>: <span class="kt">Koa</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">server</span>: <span class="kt">Server</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">fileWatcher</span>: <span class="kt">FSWatcher</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">export</span> <span class="kr">interface</span> <span class="nx">Plugin</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">serverStart</span><span class="o">?</span><span class="p">(</span><span class="nx">args</span>: <span class="kt">ServerArgs</span><span class="p">)</span><span class="o">:</span> <span class="k">void</span> <span class="o">|</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">serve</span><span class="o">?</span><span class="p">(</span><span class="nx">context</span>: <span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="nx">ServeResult</span> <span class="o">|</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="nx">ServeResult</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">transform</span><span class="o">?</span><span class="p">(</span><span class="nx">context</span>: <span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="nx">TransformResult</span> <span class="o">|</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="nx">TransformResult</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">resolveImport</span><span class="o">?</span><span class="p">(</span><span class="nx">args</span><span class="o">:</span> <span class="p">{</span> <span class="nx">source</span>: <span class="kt">string</span><span class="p">;</span> <span class="nx">context</span>: <span class="kt">Context</span> <span class="p">})</span><span class="o">:</span> <span class="nx">ResolveResult</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">resolveMimeType</span><span class="o">?</span><span class="p">(</span><span class="nx">context</span>: <span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="kc">undefined</span> <span class="o">|</span> <span class="kt">string</span> <span class="o">|</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="kc">undefined</span> <span class="o">|</span> <span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="hook-serve">Hook: serve</h3>
+
+<p>The serve hook can be used to serve virtual files from the server. The first plugin to respond with a body is used. It can return a Promise.</p>
+
+<details>
+<summary>Read more</summary>
+
+Serve an auto generated `index.html`:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">indexHTML</span> <span class="o">=</span> <span class="nx">generateIndexHTML</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">serve</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/index.html&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="nx">indexHTML</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Serve a virtual module:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">indexHTML</span> <span class="o">=</span> <span class="nx">generateIndexHTML</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">serve</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/messages.js&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="s1">&#39;export default &quot;Hello world&quot;;&#39;</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+The file extension is used to infer the mime type to respond with. If you are using a non-standard file extension you can use the `type` property to set it explicitly:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">serve</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/foo.xyz&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="s1">&#39;console.log(&quot;foo bar&quot;);&#39;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;js&#39;</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="hook-resolvemimetype">Hook: resolveMimeType</h3>
+
+<p>Browsers don’t use file extensions to know how to interpret files. Instead, they use <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">media or MIME type</a> which is set using the <code>content-type</code> header.</p>
+
+<p>es-dev-server guesses the MIME type based on the file extension. When serving virtual files with non-standard file extensions, you can set the MIME type in the returned result (see the examples above). If you are transforming code from one format to another, you need to use the <code>resolveMimeType</code> hook.</p>
+
+<details>
+<summary>Read more</summary>
+
+The returned MIME type can be a file extension, this will be used to set the corresponding default MIME type. For example `js` resolves to `application/javascript` and `css` to `text/css`.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">resolveMimeType</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// change all MD files to HTML</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;md&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="s1">&#39;html&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">resolveMimeType</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// change all CSS files to JS, except for a specific file</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;css&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">!==</span> <span class="s1">&#39;/global.css&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="s1">&#39;js&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+It is also possible to set the full mime type directly:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">resolveMimeType</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">is</span><span class="p">(</span><span class="s1">&#39;md&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="s1">&#39;text/html&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="hook-transform">Hook: transform</h3>
+
+<p>The transform hook is called for each file and can be used to transform a file. Multiple plugins can transform a single file. It can return a Promise.</p>
+
+<p>This hook is useful for small modifications, such as injecting environment variables, or for compiling files to JS before serving them to the browser.</p>
+
+<p>If you are transforming non-standard file types, you may also need to include a <code>resolveMimeType</code> hook.</p>
+
+<details>
+  <summary>Read more</summary>
+
+Rewrite the base path of your application for local development;
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">transform</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/index.html&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="kr">const</span> <span class="nx">transformedBody</span> <span class="o">=</span> <span class="nx">context</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;base href=&quot;.*&quot;&gt;/</span><span class="p">,</span> <span class="s1">&#39;&lt;base href=&quot;/foo/&quot;&gt;&#39;</span><span class="p">);</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="nx">transformedBody</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Inject a script to set global variables during local development:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">transform</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/index.html&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="kr">const</span> <span class="nx">transformedBody</span> <span class="o">=</span> <span class="nx">context</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span>
+</span><span class="line">            <span class="s1">&#39;&lt;/head&gt;&#39;</span><span class="p">,</span>
+</span><span class="line">            <span class="s1">&#39;&lt;script&gt;window.process = { env: { NODE_ENV: &quot;development&quot; } }&lt;/script&gt;&lt;/head&gt;&#39;</span><span class="p">,</span>
+</span><span class="line">          <span class="p">);</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="nx">transformedBody</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Inject environment variables into a JS module:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">packageJson</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./package.json&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">transform</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/src/environment.js&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="err">`</span><span class="kr">export</span> <span class="kr">const</span> <span class="nx">version</span> <span class="o">=</span> <span class="s1">&#39;${packageJson.version}&#39;</span><span class="p">;</span><span class="err">`</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Transform markdown to HTML:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">markdownToHTML</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;markdown-to-html-library&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">resolveMimeType</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// this ensures the browser interprets .md files as .html</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">&#39;.md&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="s1">&#39;html&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">      <span class="nx">async</span> <span class="nx">transform</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// this will transform all MD files. if you only want to transform certain MD files</span>
+</span><span class="line">        <span class="c1">// you can check context.path</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">&#39;.md&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="kr">const</span> <span class="nx">html</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">markdownToHTML</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="nx">html</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Polyfill CSS modules in JS:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">resolveMimeType</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">&#39;.css&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">return</span> <span class="s1">&#39;js&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">      <span class="nx">async</span> <span class="nx">transform</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">&#39;.css&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="kr">const</span> <span class="nx">stylesheet</span> <span class="o">=</span> <span class="err">`</span>
+</span><span class="line">            <span class="kr">const</span> <span class="nx">stylesheet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSSStyleSheet</span><span class="p">();</span>
+</span><span class="line">            <span class="nx">stylesheet</span><span class="p">.</span><span class="nx">replaceSync</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">body</span><span class="p">)});</span>
+</span><span class="line">            <span class="kr">export</span> <span class="k">default</span> <span class="nx">stylesheet</span><span class="p">;</span>
+</span><span class="line">          <span class="err">`</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">          <span class="k">return</span> <span class="p">{</span> <span class="nx">body</span><span class="o">:</span> <span class="nx">stylesheet</span> <span class="p">};</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="hook-resolveimport">Hook: resolveImport</h3>
+
+<p>The <code>resolveImport</code> hook is called for each module import. It can be used to resolve module imports before they reach the browser.</p>
+
+<details>
+  <summary>Read more</summary>
+
+es-dev-server already resolves module imports when the `--node-resolve` flag is turned on. You can do the resolving yourself, or overwrite it for some files.
+
+The hook receives the import string and should return the string to replace it with. This should be a browser-compatible path, not a file path.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">async</span> <span class="nx">resolveImport</span><span class="p">({</span> <span class="nx">source</span><span class="p">,</span> <span class="nx">context</span> <span class="p">})</span> <span class="p">{</span>
+</span><span class="line">        <span class="kr">const</span> <span class="nx">resolvedImport</span> <span class="o">=</span> <span class="nx">fancyResolveLibrary</span><span class="p">(</span><span class="nx">source</span><span class="p">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">resolvedImport</span><span class="p">;</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="hook-serverstart">Hook: serverStart</h3>
+
+<p>The <code>serverStart</code> hook is called when the server starts. It is the ideal location to boot up other servers you will proxy to. It receives the server config, which you can use if plugins need access to general information such as the <code>rootDir</code> or <code>appIndex</code>. It also receives the HTTP server, Koa app, and <code>chokidar</code> file watcher instance. These can be used for more advanced plugins. This hook can be async, and it awaited before actually booting the server and opening the browser.</p>
+
+<details>
+<summary>Read more</summary>
+
+Accessing the serverStart parameters:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kd">function</span> <span class="nx">myFancyPlugin</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">let</span> <span class="nx">rootDir</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">return</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">serverStart</span><span class="p">({</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">app</span><span class="p">,</span> <span class="nx">server</span><span class="p">,</span> <span class="nx">fileWatcher</span> <span class="p">})</span> <span class="p">{</span>
+</span><span class="line">      <span class="c1">// take the rootDir to access it later</span>
+</span><span class="line">      <span class="nx">rootDir</span> <span class="o">=</span> <span class="nx">config</span><span class="p">.</span><span class="nx">rootDir</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">      <span class="c1">// register a koa middleware directly</span>
+</span><span class="line">      <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">((</span><span class="nx">context</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">path</span><span class="p">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
+</span><span class="line">      <span class="p">});</span>
+</span><span class="line">
+</span><span class="line">      <span class="c1">// register a file to be watched</span>
+</span><span class="line">      <span class="nx">fileWatcher</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;/foo.md&#39;</span><span class="p">);</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">};</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span><span class="nx">myFancyPlugin</span><span class="p">()],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Boot up another server for proxying in serverStart:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">proxy</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-proxies&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">async</span> <span class="nx">serverStart</span><span class="p">({</span> <span class="nx">app</span> <span class="p">})</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// set up a proxy for certain requests</span>
+</span><span class="line">        <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span>
+</span><span class="line">          <span class="nx">proxy</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;http://localhost:9001&#39;</span><span class="p">,</span>
+</span><span class="line">          <span class="p">}),</span>
+</span><span class="line">        <span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">// boot up the other server, because it is awaited es-dev-server will also wait for it</span>
+</span><span class="line">        <span class="nx">await</span> <span class="nx">startOtherServer</span><span class="p">({</span> <span class="nx">port</span><span class="o">:</span> <span class="mi">9001</span> <span class="p">});</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h3 id="koa-context">Koa Context</h3>
+
+<p>The plugin hooks simply receive the Koa <code>Context</code> object. This contains information about the server’s request and response. Check the <a href="https://koajs.com/">Koa documentation</a> to learn more about this.</p>
+
+<p>To transform specific kinds of files we don’t recommend relying on file extensions. Other plugins may be using non-standard file extensions. Instead, you should use the server’s MIME type or content-type header. You can easily check this using the <code>context.response.is()</code> function. This is used a lot in the examples above.</p>
+
+<p>Because files can be requested with query parameters and hashes, we recommend using <code>context.path</code> for reading the path segment of the URL only. If you do need to access search parameters, we recommend using <code>context.URL.searchParams.get('my-parameter')</code>.</p>
+
+<h2 id="order-of-execution">Order of execution</h2>
+
+<p>The order of execution for the es-dev-server when a file request is received:</p>
+
+<ol>
+  <li>User middleware: before “next”</li>
+  <li>Serve
+    <ul>
+      <li>Plugins: serve</li>
+      <li>es-dev-server: static file middleware (if no plugin match)</li>
+    </ul>
+  </li>
+  <li>Plugins: resolveMimeType</li>
+  <li>Plugins: transform</li>
+  <li>Resolve module imports
+    <ul>
+      <li>Plugins: resolveModuleImport</li>
+      <li>es-dev-server: node-resolve (if no plugin resolve)</li>
+    </ul>
+  </li>
+  <li>es-dev-server: babel + compatibility transforms</li>
+  <li>es-dev-server: response cache (caches all JS files served, including plugin transforms)</li>
+  <li>User middleware: after “next”</li>
+</ol>
+
+<h2 id="typescript-support">Typescript support</h2>
+
+<p>Because es-dev-server doesn’t do any bundling, it’s easy to integrate it with typescript and doesn’t require any extra tooling or plugins. Just run <code>tsc</code> on your code, and serve the compiled output with es-dev-server. You can run both <code>tsc</code> and es-dev-server in watch mode, changes will be picked up automatically.</p>
+
+<p>Make sure to configure <code>tsc</code> to output real ES modules.</p>
+
+<h2 id="compatibility-mode">Compatibility mode</h2>
+
+<p>Compatibility mode enables bundle-free development using modern browsers features on older browsers. Automatic compatibility mode is enabled by default.</p>
+
+<details>
+
+  <summary>Read more</summary>
+
+Compatibility mode can be configured using the `--compatibility` flag. The possible options are `auto`, `min`, `max`, and `none`. The default is mode is `auto`.
+
+**auto**
+`auto` compatibility looks at the current browser to determine the level of compatibility to enable. On the latest 2 versions of the major browsers, it doesn't do any work. This keeps the server as fast as possible in the general case.
+
+On older browsers, the server uses the browser's user agent and [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) to do a targeted transformation for that specific browser and version. `@babel/preset-env` only works with stage 4 javascript features, they should become an official standard before they can be used.
+
+If the browser does not support es module scripts, dynamic imports or `import.meta.url` es modules are transformed to [system-js](https://github.com/systemjs/systemjs).
+
+This works down to at least IE11. Depending on what browser features you are using, it might work with an earlier version too but this is not tested.
+
+**always**
+`always` compatibility is the same as `auto`, except that it doesn't skip compiling on the latest 2 versions of the major browsers. This makes it a bit slower on modern browsers but allows you to use new features before they are implemented in the browser.
+
+**min**
+`min` compatibility forces the same level of compatibility on all browsers. It makes code compatible with the latest two versions of the major browsers and does not transform es modules.
+
+**max**
+`max` compatibility forces the same level of compatibility on all browsers. It compiles everything to es5 and [system-js](https://github.com/systemjs/systemjs).
+
+**none**
+`none` disables compatibility mode entirely.
+
+</details>
+
+<h3 id="polyfills-loader">Polyfills loader</h3>
+
+<p>When compatibility mode is enabled, polyfills are loaded using <a href="https://github.com/open-wc/open-wc/tree/master/packages/polyfills-loader">polyfills-loader</a>.</p>
+
+<details>
+  <summary>Read more</summary>
+
+You can customize the polyfill loader configuration from your configuration file. Check the docs for the [polyfills-loader](https://github.com/open-wc/open-wc/tree/master/packages/polyfills-loader) for all possible options.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfillsLoader</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">polyfills</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">fetch</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">custom</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">          <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;my-feature-polyfill&#39;</span><span class="p">,</span>
+</span><span class="line">          <span class="nx">path</span><span class="o">:</span> <span class="nx">require</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;my-feature-polyfill&#39;</span><span class="p">),</span>
+</span><span class="line">          <span class="nx">test</span><span class="o">:</span> <span class="s2">&quot;!(&#39;myFeature&#39; in window)&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="p">},</span>
+</span><span class="line">      <span class="p">],</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+By default, es-dev-server wraps all scripts and are deferred until polyfills are loaded. Loading order of scripts are preserved, but this can create problems if you rely on a script being executed before HTML is parsed. You can configure `es-dev-server` to exclude certain types of scripts:
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfillsLoader</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">exclude</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">jsModules</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">inlineJsModules</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">jsScripts</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">inlineJsScripts</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h2 id="using-es-dev-server-programmatically">Using es-dev-server programmatically</h2>
+
+<p>You can use different components from <code>es-dev-server</code> as a library and integrate it with other tools:</p>
+
+<details>
+
+<summary>Read more</summary>
+
+### createConfig
+
+When using the server from javascript you are going to need a config object to tell the server what options to turn on and off. It's best to use `createConfig` for this as this converts the public API to an internal config structure and sets up default values.
+
+By default, all options besides static file serving are turned off, so it's easy to configure based on your requirements.
+
+The config structure is the same as the configuration explained in the [configuration files section](#configuration-files)
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">createConfig</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;es-dev-server&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">createConfig</span><span class="p">({</span>
+</span><span class="line">  <span class="nx">http2</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">babel</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="nx">open</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+### createMiddlewares
+
+`createMiddlewares` creates the dev server's middlewares based on your configuration. You can use this to hook them up to your koa server.
+
+Returns an array of koa middleware functions.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">import</span> <span class="nx">Koa</span> <span class="nx">from</span> <span class="s1">&#39;koa&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">createConfig</span><span class="p">,</span> <span class="nx">createMiddlewares</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;es-dev-server&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">createConfig</span><span class="p">({});</span>
+</span><span class="line"><span class="kr">const</span> <span class="nx">middlewares</span> <span class="o">=</span> <span class="nx">createMiddlewares</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Koa</span><span class="p">();</span>
+</span><span class="line"><span class="nx">middlewares</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">middleware</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">);</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+### createServer
+
+`createServer` creates an instance of the dev server including all middlewares, but without starting the server. This is useful if you want to be in control of starting the server yourself.
+
+Returns the koa app and a node http or http2 server.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">import</span> <span class="nx">Koa</span> <span class="nx">from</span> <span class="s1">&#39;koa&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">createConfig</span><span class="p">,</span> <span class="nx">createServer</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;es-dev-server&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">createConfig</span><span class="p">({</span> <span class="p">...</span> <span class="p">});</span>
+</span><span class="line"><span class="kr">const</span> <span class="p">{</span> <span class="nx">app</span><span class="p">,</span> <span class="nx">server</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">createServer</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+</span><span class="line"><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+### watch mode
+
+`createMiddlewares` and `createServer` requires a chokidar fileWatcher if watch mode is enabled. You need to pass this separately because the watcher nees-dev-server to be killed explicitly when the server closes.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">import</span> <span class="nx">Koa</span> <span class="nx">from</span> <span class="s1">&#39;koa&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="nx">chokidar</span> <span class="nx">from</span> <span class="s1">&#39;chokidar&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">createConfig</span><span class="p">,</span> <span class="nx">createMiddlewares</span><span class="p">,</span> <span class="nx">createServer</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;es-dev-server&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">createConfig</span><span class="p">({</span> <span class="p">...</span> <span class="p">});</span>
+</span><span class="line"><span class="kr">const</span> <span class="nx">fileWatcher</span> <span class="o">=</span> <span class="nx">chokidar</span><span class="p">.</span><span class="nx">watch</span><span class="p">([]);</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// if using createMiddlewares</span>
+</span><span class="line"><span class="nx">createMiddlewares</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span> <span class="nx">fileWatcher</span><span class="p">);</span>
+</span><span class="line"><span class="c1">// if using createServer</span>
+</span><span class="line"><span class="nx">createServer</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span> <span class="nx">fileWatcher</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// close filewatcher when no longer necessary</span>
+</span><span class="line"><span class="nx">fileWatcher</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+### startServer
+
+`startServer` asynchronously creates and starts the server, listening on the configured port. It opens the browser if configured and logs a startup message.
+
+Returns the koa app and a node http or http2 server.
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kr">import</span> <span class="nx">Koa</span> <span class="nx">from</span> <span class="s1">&#39;koa&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">createConfig</span><span class="p">,</span> <span class="nx">startServer</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;es-dev-server&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">createConfig</span><span class="p">({</span> <span class="p">...</span> <span class="p">});</span>
+</span><span class="line">  <span class="kr">const</span> <span class="p">{</span> <span class="nx">app</span><span class="p">,</span> <span class="nx">server</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">startServer</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span> <span class="nx">fileWatcher</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">main</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>

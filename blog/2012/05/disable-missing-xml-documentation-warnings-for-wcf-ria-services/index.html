@@ -1,0 +1,292 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Disable "Missing XML documentation" warnings for WCF RIA Services - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Disabling 'missing XML documentation' warnings in WCF RIA services generated files">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Disable "Missing XML Documentation" Warnings for WCF RIA Services</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Every project should be well documented and Visual Studio has the option to enforce XML code documentation by generating
+warnings when there is a comment missing, a parameter description missing and such. It can be enabled per project by
+enabling XML documentation file option on the Build tab.</p>
+
+<p>There are however cases, when it is not necessary for XML docs to be present.</p>
+
+<!--more-->
+
+<p>If so, C# has the #pragma keyword. In a single file you can use it as shown below:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="cp">#pragma warning disable 1591</span>
+</span><span class="line">  <span class="c1">// only ignore warning CS1591</span>
+</span><span class="line">
+</span><span class="line"><span class="cp">#pragma warning restore 1591</span>
+</span><span class="line">  <span class="c1">// all warnings restorer</span>
+</span><span class="line">
+</span><span class="line"><span class="cp">#pragma warning disable</span>
+</span><span class="line">  <span class="c1">// no warnings here</span>
+</span><span class="line">
+</span><span class="line"><span class="cp">#pragma warning restore</span>
+</span><span class="line">  <span class="c1">// warnings will be shown here</span>
+</span><span class="line">
+</span><span class="line"><span class="cp">#pragma warning disable</span>
+</span><span class="line">  <span class="c1">// no warnings until end of file</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>But what if the warning comes from a generated file? #pragma is not an option because the file is likely to be
+overwritten in the future (next build?). <a href="http://lvquoc.blogspot.com/2010/11/disable-xml-comment-warning-in-workflow.html">Quoc Lam has posted about this on his blog</a>. His method is working
+for auto-generated XAML files but what I needed was disabling warnings in files created by <a href="http://www.silverlight.net/learn/advanced-techniques/wcf-ria-services/get-started-with-wcf-ria-services">RIA Services</a>.
+Simmilarily to Quam’s method it is possible to add an MSBuild target to the project in question, which add
+<code>#pragma warning disable</code> line at the beginning of RIA generated files:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;CreateRiaClientFilesTaskDisableWarnings&quot;</span> <span class="na">AfterTargets=</span><span class="s">&quot;CreateRiaClientFiles&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;for %%f in (@(RiaClientGeneratedFiles)) do echo #pragma warning disable &gt; %%f.temp&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;for %%f in (@(RiaClientGeneratedFiles)) do type %%f &gt;&gt; %%f.temp&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;for %%f in (@(RiaClientGeneratedFiles)) do attrib -r %%f&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;for %%f in (@(RiaClientGeneratedFiles)) do move /y %%f.temp %%f&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;for %%f in (@(RiaClientGeneratedFiles)) do attrib +r %%f&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Message</span> <span class="na">Text=</span><span class="s">&quot;CreateRiaClientFilesTaskDisableWarnings: @(RiaClientGeneratedFiles)&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>For some reason RIA creates those files read-only, hence usage of the attrib tool</p>
+
+<p>Voila, no RIA-related warnings any more coming from the generated files.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/';
+        var disqus_url = 'http://t-code.pl/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

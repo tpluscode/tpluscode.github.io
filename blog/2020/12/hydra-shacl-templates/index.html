@@ -1,0 +1,424 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Hydra and SHACL - part 2 - IRI Templates - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="I propose patterns for using Hydra and SHACL together in order to create dynamic user interfaces according to Linked Data principles">
+    
+        <meta name="keywords" content="rdf, hypermedia apis, hydra, semantic web">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2020/12/hydra-shacl-templates/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Hydra and SHACL - Part 2 - IRI Templates</h1>
+	<div class="entry-content" itemprop="articleBody"><p>In the <a href="/blog/2020/12/hydra-shacl-interoperability">previous post</a> I presented the simplest functionality of loading remote form contents by having <a href="https://www.w3.org/TR/shacl/">SHACL</a> property shape reference a <a href="http://www.hydra-cg.com/spec/latest/core/">Hydra Core</a> collection.</p>
+
+<p>In the second part I will extend that example to create a form with multiple connected dropdowns, where each one is only populated when other(s) have been selected, which is a common scenario seen in (web) applications.</p>
+
+<!--more-->
+
+<h2 id="tldr-can-i-see-it-working">TL;DR; can I see it working?</h2>
+
+<p>The screenshot below links to Shaperone Playground which implements the ideas described in the subsequent paragraphs.</p>
+
+<p><a href="https://forms.hypermedia.app/playground?resource=%7B%0A++%22%40context%22%3A+%7B%0A++++%22rdf%22%3A+%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%2C%0A++++%22rdfs%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%22%2C%0A++++%22xsd%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%0A++++%22schema%22%3A+%22http%3A%2F%2Fschema.org%2F%22%2C%0A++++%22foaf%22%3A+%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%22%2C%0A++++%22vcard%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2006%2Fvcard%2Fns%23%22%0A++%7D%2C%0A++%22%40id%22%3A+%22http%3A%2F%2Fexample.com%2Fjohn-doe%22%2C%0A++%22%40type%22%3A+%22schema%3APerson%22%2C%0A++%22schema%3AaddressCountry%22%3A+%7B%0A++++%22%40id%22%3A+%22http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ39%22%0A++%7D%0A%7D&amp;selectedResource=http%3A%2F%2Fexample.com%2Fjohn-doe&amp;shapes=%40prefix+sh%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fshacl%23%3E+.%0A%40prefix+schema%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E+.%0A%40prefix+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E+.%0A%40prefix+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E+.%0A%40prefix+dash%3A+%3Chttp%3A%2F%2Fdatashapes.org%2Fdash%23%3E+.%0A%40prefix+hydra%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fhydra%2Fcore%23%3E+.%0A%40prefix+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E+.%0A%40prefix+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E+.%0A%0A%40prefix+ex%3A+%3Chttp%3A%2F%2Fexample.com%2F%3E+.%0A%0Aschema%3APerson%0A++a+rdfs%3AClass%2C+sh%3ANodeShape+%3B%0A++rdfs%3Alabel+%22Register%22+%3B%0A++sh%3Aproperty+ex%3ANameProperty+%2C+%0A%09%09++++++ex%3ACountryProperty+%2C+%0A%09%09%09++ex%3AStateProperty+%2C%0A++++++++++++++ex%3ASubStateProperty+%3B%0A.%0A%0Aex%3ANameProperty%0A++sh%3Apath+schema%3Aname+%3B%0A++sh%3Aname+%22Name%22+%3B%0A++sh%3Adatatype+xsd%3Astring+%3B%0A++dash%3AsingleLine+true+%3B%0A++sh%3AmaxCount+1+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3Aorder+10+%3B%0A.%0A%0Aex%3ACountryProperty%0A++sh%3Aname+%22Country%22+%3B%0A++sh%3Aclass+wd%3AQ6256+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++sh%3Apath+schema%3AaddressCountry+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++hydra%3Acollection+%3Chttps%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3Dprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcountry%2520.%250A%2520%2520%253Fcountry%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%250A%2520%2520%253Fcountry%2520wdt%253AP31%2520wd%253AQ6256%2520%253B%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%3E+%3B%0A++sh%3Aorder+20+%3B%0A.%0A%0A%0Aex%3AStateProperty%0A++sh%3Aname+%22State%22+%3B%0A++sh%3Apath+schema%3AaddressRegion+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++hydra%3Asearch+%5B%0A++++hydra%3Atemplate+%22https%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3DPREFIX%2520wd%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fentity%252F%253E%250APREFIX%2520wdt%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fprop%252Fdirect%252F%253E%250Aprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fdivision%2520.%250A%2520%2520%253Fdivision%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%2520%2520%250A%2520%2520%253C%7BCOUNTRY%7D%253E%2520wdt%253AP150%2520%253Fdivision%2520.%250A%2520%2520%253Fdivision%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%22+%3B%0A++++hydra%3Amapping+%5B%0A++++++hydra%3Aproperty+schema%3AaddressCountry+%3B%0A++++++hydra%3Avariable+%22COUNTRY%22+%3B%0A++++++hydra%3Arequired+true+%3B%0A++++%5D+%3B%0A++%5D+%3B%0A++sh%3Aorder+30+%3B%0A.%0A%0A%0Aex%3ASubStateProperty%0A++sh%3Aname+%22City%22+%3B%0A++sh%3Apath+schema%3AaddressLocality+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++hydra%3Asearch+%5B%0A++++hydra%3Atemplate+%22https%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3DPREFIX%2520wd%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fentity%252F%253E%250APREFIX%2520wdt%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fprop%252Fdirect%252F%253E%250Aprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcity%2520.%250A%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%2520%250A%2520%2520%257B%250A%2520%2520%2520%2520SELECT%2520%253Fcity%2520%253Flabel%2520WHERE%2520%257B%250A%2520%2520%2520%2520%2520%2520%253C%7BSTATE%7D%253E%2520wdt%253AP150%252B%2520%253Fcity%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520wdt%253AP31%2520%253FcityType%2520.%250A%2520%2520%2520%2520%2520%2520%253FcityType%2520wdt%253AP279%2520wd%253AQ515%2520.%250A%2520%2520%2520%2520%257D%250A%2520%2520%257D%250A%2520%2520UNION%250A%2520%2520%257B%250A%2520%2520%2520%2520SELECT%2520%253Fcity%2520%253Flabel%2520WHERE%2520%257B%2520%2520%2520%2520%250A%2520%2520%2520%2520%2520%2520%253C%7BSTATE%7D%253E%2520wdt%253AP150%252B%2520%253Fcity%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520wdt%253AP31%2520wd%253AQ515%2520.%250A%2520%2520%2520%2520%257D%250A%2520%2520%257D%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%22+%3B%0A++++hydra%3Amapping+%5B%0A++++++hydra%3Aproperty+schema%3AaddressRegion+%3B%0A++++++hydra%3Avariable+%22STATE%22+%3B%0A++++++hydra%3Arequired+true+%3B%0A++++%5D+%3B%0A++%5D+%3B%0A++sh%3Aorder+40+%3B%0A."><img src="/images/shaperone/hydra-search.png" alt="shaperone playground" /></a></p>
+
+<h2 id="filtering-collections-with-hydra">Filtering collections with Hydra</h2>
+
+<p>In addition to <code>hydra:collection</code>, the Hydra Core vocabulary comes with another general-purpose property <code>hydra:search</code>. Unlike most predicates which would link to another resource, identified by a concrete URI, its objects are instances of URI Templates, defined by <a href="https://tools.ietf.org/html/rfc6570">RFC6570</a>.</p>
+
+<p>For example, let’s have a “State collection” resource which returns country’s first-level administrative division. It would come with a search template so that clients can construct filtered URIs:</p>
+
+<rdf-snippet formats="text/turtle,application/n-quads" prefixes="schema,hydra">
+<script type="application/ld+json">
+{
+  "@context": {
+    "@vocab": "http://www.w3.org/ns/hydra/core#",
+    "schema": "http://schema.org/",
+    "property": { "@type": "@id" }
+  },
+  "@id": "/states",
+  "@type": "Collection",
+  "search": {
+    "@type": "IriTemplate",
+    "template": "/states?country={country}",
+    "mapping": [{
+      "variable": "country",
+      "property": "schema:addressCountry",
+      "required": true
+    }]
+  }
+}
+</script>
+</rdf-snippet>
+
+<p>The client must provide template values to a Hydra library which will return a URI fit for dereferencing. This is called <code>expansion</code> by the RFC6570. A Hydra client will take a graph node with values being attached to that node using the <code>hydra:property</code> as defined by the template and match those property/object pairs to the template variables.</p>
+
+<p>Here’s an example of such a template variable model, where JSON-LD <code>@context</code> has been constructed from the <code>hydra:mapping</code>, although the JSON keys may be irrelevant for the expansion if the implementation only relies on the actual graph data.</p>
+
+<rdf-snippet formats="text/turtle,application/n-quads" prefixes="schema,hydra">
+<script type="application/ld+json">
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "country": "schema:addressCountry"
+  },
+  "country": { "@id": "http://www.wikidata.org/entity/Q27" }
+}
+</script>
+</rdf-snippet>
+
+<p>Combine this with the template above to get</p>
+
+<blockquote>
+  <p><code>/states?country=http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ27</code></p>
+</blockquote>
+
+<p>Read more about Hydra’s template <a href="http://www.hydra-cg.com/spec/latest/core/#templated-links">here</a></p>
+
+<h2 id="connecting-form-fields">Connecting form fields</h2>
+
+<p>The idea is simple:</p>
+
+<ol>
+  <li>A SHACL Shape describes a graph structure</li>
+  <li>A form can be generated for agents (usu. humans) to create an instance of such a graph</li>
+  <li>Use the created graph to expand a template</li>
+</ol>
+
+<p>Now, a form in such a scenario could simply be used to filter a collection for display, but I propose to short-circuit it back into the form itself so that the filtered collection, when dereferenced, provides values for other fields.</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra,sh,dash">
+<script type="text/turtle">
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <http://schema.org/> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+@prefix ex: <http://example.com/> .
+
+schema:Person
+  a rdfs:Class, sh:NodeShape ;
+  rdfs:label "Register" ;
+  sh:property ex:CountryProperty , ex:StateProperty .
+
+ex:CountryProperty
+  sh:name "Country" ;
+  dash:editor dash:InstancesSelectEditor ;
+  sh:path schema:addressCountry ;
+  hydra:collection </countries> .
+
+ex:StateProperty
+  sh:name "State" ;
+  sh:path ex:state ;
+  dash:editor dash:InstancesSelectEditor ;
+  hydra:search [
+    hydra:template "/states?country={country}" ;
+    hydra:mapping [
+      hydra:property schema:addressCountry ;
+      hydra:variable "country" ;
+      hydra:required true ;
+    ] ;
+  ] .
+</script>
+</rdf-snippet>
+
+<p>The <code>Person</code> shape above has two properties. The first will generate a dropdown with a selection of countries as described in <a href="/blog/2020/12/hydra-shacl-interoperability">the first Hydra+SHACL post</a>. The second, while it’s also going to render a dropdown, will not be populated until a country is selected (<code>hydra:required true</code>).</p>
+
+<p>The glue here is matching property shared between <code>sh:path</code> of the upstream field and <code>hydra:property</code> of the downstream’s search template. In other words, when the form’s graph node receives the value for the <code>schema:addressCountry</code> predicate, the “states” will be loaded.</p>
+
+<h2 id="less-apis-more-web-standards">Less APIs, more Web Standards!</h2>
+
+<p>Again this time, the <a href="https://forms.hypermedia.app/playground?resource=%7B%0A++%22%40context%22%3A+%7B%0A++++%22rdf%22%3A+%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%2C%0A++++%22rdfs%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%22%2C%0A++++%22xsd%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%0A++++%22schema%22%3A+%22http%3A%2F%2Fschema.org%2F%22%2C%0A++++%22foaf%22%3A+%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%22%2C%0A++++%22vcard%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2006%2Fvcard%2Fns%23%22%0A++%7D%2C%0A++%22%40id%22%3A+%22http%3A%2F%2Fexample.com%2Fjohn-doe%22%2C%0A++%22%40type%22%3A+%22schema%3APerson%22%2C%0A++%22schema%3AaddressCountry%22%3A+%7B%0A++++%22%40id%22%3A+%22http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ39%22%0A++%7D%0A%7D&amp;selectedResource=http%3A%2F%2Fexample.com%2Fjohn-doe&amp;shapes=%40prefix+sh%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fshacl%23%3E+.%0A%40prefix+schema%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E+.%0A%40prefix+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E+.%0A%40prefix+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E+.%0A%40prefix+dash%3A+%3Chttp%3A%2F%2Fdatashapes.org%2Fdash%23%3E+.%0A%40prefix+hydra%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fhydra%2Fcore%23%3E+.%0A%40prefix+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E+.%0A%40prefix+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E+.%0A%0A%40prefix+ex%3A+%3Chttp%3A%2F%2Fexample.com%2F%3E+.%0A%0Aschema%3APerson%0A++a+rdfs%3AClass%2C+sh%3ANodeShape+%3B%0A++rdfs%3Alabel+%22Register%22+%3B%0A++sh%3Aproperty+ex%3ANameProperty+%2C+%0A%09%09++++++ex%3ACountryProperty+%2C+%0A%09%09%09++ex%3AStateProperty+%2C%0A++++++++++++++ex%3ASubStateProperty+%3B%0A.%0A%0Aex%3ANameProperty%0A++sh%3Apath+schema%3Aname+%3B%0A++sh%3Aname+%22Name%22+%3B%0A++sh%3Adatatype+xsd%3Astring+%3B%0A++dash%3AsingleLine+true+%3B%0A++sh%3AmaxCount+1+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3Aorder+10+%3B%0A.%0A%0Aex%3ACountryProperty%0A++sh%3Aname+%22Country%22+%3B%0A++sh%3Aclass+wd%3AQ6256+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++sh%3Apath+schema%3AaddressCountry+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++hydra%3Acollection+%3Chttps%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3Dprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcountry%2520.%250A%2520%2520%253Fcountry%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%250A%2520%2520%253Fcountry%2520wdt%253AP31%2520wd%253AQ6256%2520%253B%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%3E+%3B%0A++sh%3Aorder+20+%3B%0A.%0A%0A%0Aex%3AStateProperty%0A++sh%3Aname+%22State%22+%3B%0A++sh%3Apath+schema%3AaddressRegion+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++hydra%3Asearch+%5B%0A++++hydra%3Atemplate+%22https%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3DPREFIX%2520wd%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fentity%252F%253E%250APREFIX%2520wdt%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fprop%252Fdirect%252F%253E%250Aprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fdivision%2520.%250A%2520%2520%253Fdivision%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%2520%2520%250A%2520%2520%253C%7BCOUNTRY%7D%253E%2520wdt%253AP150%2520%253Fdivision%2520.%250A%2520%2520%253Fdivision%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%22+%3B%0A++++hydra%3Amapping+%5B%0A++++++hydra%3Aproperty+schema%3AaddressCountry+%3B%0A++++++hydra%3Avariable+%22COUNTRY%22+%3B%0A++++++hydra%3Arequired+true+%3B%0A++++%5D+%3B%0A++%5D+%3B%0A++sh%3Aorder+30+%3B%0A.%0A%0A%0Aex%3ASubStateProperty%0A++sh%3Aname+%22City%22+%3B%0A++sh%3Apath+schema%3AaddressLocality+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++hydra%3Asearch+%5B%0A++++hydra%3Atemplate+%22https%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3DPREFIX%2520wd%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fentity%252F%253E%250APREFIX%2520wdt%253A%2520%253Chttp%253A%252F%252Fwww.wikidata.org%252Fprop%252Fdirect%252F%253E%250Aprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcity%2520.%250A%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%2520%250A%2520%2520%257B%250A%2520%2520%2520%2520SELECT%2520%253Fcity%2520%253Flabel%2520WHERE%2520%257B%250A%2520%2520%2520%2520%2520%2520%253C%7BSTATE%7D%253E%2520wdt%253AP150%252B%2520%253Fcity%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520wdt%253AP31%2520%253FcityType%2520.%250A%2520%2520%2520%2520%2520%2520%253FcityType%2520wdt%253AP279%2520wd%253AQ515%2520.%250A%2520%2520%2520%2520%257D%250A%2520%2520%257D%250A%2520%2520UNION%250A%2520%2520%257B%250A%2520%2520%2520%2520SELECT%2520%253Fcity%2520%253Flabel%2520WHERE%2520%257B%2520%2520%2520%2520%250A%2520%2520%2520%2520%2520%2520%253C%7BSTATE%7D%253E%2520wdt%253AP150%252B%2520%253Fcity%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%2520%2520%2520%2520%2520%2520%253Fcity%2520wdt%253AP31%2520wd%253AQ515%2520.%250A%2520%2520%2520%2520%257D%250A%2520%2520%257D%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%22+%3B%0A++++hydra%3Amapping+%5B%0A++++++hydra%3Aproperty+schema%3AaddressRegion+%3B%0A++++++hydra%3Avariable+%22STATE%22+%3B%0A++++++hydra%3Arequired+true+%3B%0A++++%5D+%3B%0A++%5D+%3B%0A++sh%3Aorder+40+%3B%0A.">playground</a> example does not “talk” to an actual API but instead runs SPARQL queries encoded into query string parameters of Wikidata’s query endpoint. The trick is to replace a URI of the variable with a URI Template placeholder. <strong>Just gotta make sure that the braces are not percent-encoded</strong>.</p>
+
+<p>The query to load states is simple:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="sparql"><span class="line"><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.wikidata.org/entity/&gt;</span><span class="w"></span>
+</span><span class="line"><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.wikidata.org/prop/direct/&gt;</span><span class="w"></span>
+</span><span class="line"><span class="k">prefix</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.w3.org/ns/hydra/core#&gt;</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="k">CONSTRUCT</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="k">a</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">Collection</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">member</span><span class="w"> </span><span class="nv">?division</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?division</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="p">}</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="k">BIND</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nl">&lt;urn:contry:collection&gt;</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nv">?col</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="w">  </span><span class="nl">&lt;{COUNTRY}&gt;</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P150</span><span class="w"> </span><span class="nv">?division</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?division</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="k">filter</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">lang</span><span class="p">(</span><span class="nv">?label</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&#39;en&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;de&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;fr&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;pl&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;es&#39;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="p">}</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Loading cities is slightly more complicated, accounting for deeper graphs where a state is the root and also various types of cities recognised by Wikidata.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="sparql"><span class="line"><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.wikidata.org/entity/&gt;</span><span class="w"></span>
+</span><span class="line"><span class="k">PREFIX</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.wikidata.org/prop/direct/&gt;</span><span class="w"></span>
+</span><span class="line"><span class="k">prefix</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.w3.org/ns/hydra/core#&gt;</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="k">CONSTRUCT</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="k">a</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">Collection</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">member</span><span class="w"> </span><span class="nv">?city</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?city</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="p">}</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="k">BIND</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nl">&lt;urn:contry:collection&gt;</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nv">?col</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="w">  </span><span class="nl">&lt;STATE&gt;</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P150</span><span class="o">*</span><span class="w"> </span><span class="nv">?city</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?city</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?city</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P31</span><span class="w"> </span><span class="nv">?cityType</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?cityType</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P279</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="nt">Q515</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="w">  </span><span class="k">filter</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">lang</span><span class="p">(</span><span class="nv">?label</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&#39;en&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;de&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;fr&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;pl&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;es&#39;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="p">}</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Tried as I might, the cities query does not work for every country. United States, Germany and Poland are fine. On the other hand, for Colombia and Australia it finds no cities at all. Queries for Australian cities are also surprisingly slow…</p>
+
+<p>It is not important for the example, but I would be curious to learn from a Wikidata expert how it can be improved.</p>
+
+<script src="/components/rdf-snippet.js"></script>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2020/12/hydra-shacl-templates/';
+        var disqus_url = 'http://t-code.pl/blog/2020/12/hydra-shacl-templates/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

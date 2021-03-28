@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: .net | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/dot-net/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Versioning .NET git projects]]></title>
+    <link href="http://t-code.pl/blog/2014/08/versioning-git-projects/"/>
+    <updated>2014-08-29T13:18:23-04:00</updated>
+    <id>http://t-code.pl/blog/2014/08/versioning-git-projects</id>
+    <content type="html"><![CDATA[<p>I myself have always struggled with proper versioning of .NET software. I’m not alone:</p>
+
+<ul>
+  <li><a href="http://stackoverflow.com/questions/3768261/best-practices-guidance-for-maintaining-assembly-version-numbers">Best practices/guidance for maintaining assembly version numbers</a></li>
+  <li><a href="http://stackoverflow.com/questions/64602/what-are-differences-between-assemblyversion-assemblyfileversion-and-assemblyin">What are differences between AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion?</a></li>
+</ul>
+
+<p>A linked issue, which adds to the complexity is mixing .NET versioning with NuGet SemVer guidelines.
+This has been described for example in this <a href="http://ruthlesslyhelpful.net/2012/03/05/build-numbering-and-versioning/">blog post</a></p>
+
+<!--more-->
+
+<p>TL; DR; <a href="#solution">click here</a></p>
+
+<h2 id="setting-version-numbers-in-net-projects">Setting version numbers in .NET projects</h2>
+
+<p>Empty .NET projects come with a AssemblyInfo.cs file, which contains assembly attributes, most notably</p>
+
+<p><code>c#
+[assembly: AssemblyVersion("2.3")]
+[assembly: AssemblyFileVersion("2.3.4.1556")]
+</code></p>
+
+<p>The first line determines the version of the program or library. That’s the number you mean when you say that you add
+reference to library version 2.3. The second number is a more detailed number which can be incremented separately, for
+example to distinguish subsequent versions, which did not introduce any breaking changes. Although there is no such
+requirement, it’s probably sensible to keep the first two numbers aligned.</p>
+
+<h2 id="constructing-version-numbers">Constructing version numbers</h2>
+
+<h3 id="one-of-the-microsoft-ways">(One of) the Microsoft way(s)</h3>
+
+<p>Let’s take the assembly version number from above: <code>2.3.4.1556</code>. It is constructed from four integers
+separated by dots.</p>
+
+<ul>
+  <li>2 - major version</li>
+  <li>3 - minor version</li>
+  <li>4 - build version</li>
+  <li>1556 - revision</li>
+</ul>
+
+<p>I personally find these monikers quite misleading. Is build number an automatically incremented? Does it make sense
+actually? Exact same source code would yield a different number on a build server and each developer’s machine.</p>
+
+<p>And what about revision number? With centralized version control systems like SVN traditionally I would see the commit
+number be used here. So the above would mean that the code was built from revision 1556. This has a number of problems:</p>
+
+<ol>
+  <li><strong>each version segment cannot exceed 65535</strong> - a problem for large repositories, probably shared between multiple projects in an organization</li>
+  <li><strong>this will not work with git or mercurial</strong> - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters<br /></li>
+</ol>
+
+<h3 id="the-other-microsoft-way">The other microsoft way</h3>
+
+<p>Out of the box .NET projects offer another way of automatically numbering assemblies at each build. It is possible to
+declare the assembly version attribute as</p>
+
+<p><code>c#
+[assembly: AssemblyVersion("2.3.*")]
+</code></p>
+
+<p>It will produce a number like 2.3.5354.19262. The build number is calculated as number of days since January 1st 2000
+and the second is the number of 2 second intervals (rember the 65k limit) since midnight on a given day. Thus every time
+a project is built a different number will be calculated. However this is a very bad pattern IMO and should be
+discouraged. Most importantly there is no link between the number and the source code used. You could build you software
+and the build it again from outdated files and get a higher version number (sic!).</p>
+
+<h3 id="msbuild-community-tasks">MSBuild community tasks</h3>
+
+<p>There is a project on <a href="https://github.com/loresoft/msbuildtasks">GitHub</a> and <a href="https://nuget.org/packages/MSBuildTasks">NuGet</a>, 
+which contains various <a href="http://msdn.microsoft.com/en-us/library/ms171466.aspx">MSBuild tasks</a>, which can extend the build 
+process to include automated calculation of the assembly version number based on various algorithms called, ta dam, 
+<a href="https://github.com/loresoft/msbuildtasks/blob/master/Source/MSBuild.Community.Tasks/Version.cs">Version</a>. It offers a 
+number of options to better manage the version number such as storing and updating a version number text file and
+automatically incrementing build/revision numbers. Simple as it may be, it’s still poorly documented and requires manual 
+fitting into your build process by modifying the msbuild targets.</p>
+
+<p>The version file as another down side if you want to use a build server, because in some cases you would have to alter 
+the build process to commit the changed version file.</p>
+
+<h3 id="and-what-about-major-and-minor">And what about major and minor</h3>
+
+<p>Another obstacle is actually managing the major and minor numbers. You can keep it in the AssemblyInfo.cs, version file 
+or MSBuild task declaration. When you want to increment the version you have to remember to modify the wherever it is 
+stored. If you want to create a tag for each version you have to also remember!</p>
+
+<h2 id="a-namesolutionsimple-better-waya"><a name="solution">Simple, better way</a></h2>
+<p>I’ve just recently come across a simple solution for projects that use git as their version control. Here’s how it works:</p>
+
+<ol>
+  <li>You create a tag in your repository to set the major and minor version, for example <strong>v2.3</strong>.</li>
+  <li>You apply some more changes in <strong>13</strong> commits.</li>
+  <li>You build your project</li>
+  <li>The version is calculated as <strong>2.3.13</strong>, which means that the program was built from source code <strong>13</strong> commits ahead of tag <strong>v2.3</strong>.</li>
+</ol>
+
+<p><img src="/uploads/2014/08/git-ver.png" alt="git-ver" /></p>
+
+<p>The project is called Zoltu.Versioning and is <a href="https://www.nuget.org/packages/Zoltu.Versioning/">available from NuGet</a>.
+The great thing is that it requires almost no preparations whatsoever. Just remove the existing version attributes from
+AssemblyInfo.cs and install the nuget package. Now whenever you create a new tag in git, your version number will always
+be up to date and aligned with changes in your repository. Also when some other developer (or build server) clones your
+code and checks out some previous revision, the version will be always in line with the point in your source code history.</p>
+
+<h3 id="limitations">Limitations</h3>
+
+<p>The only requirement is that the .git folder is present (ie. code must be a clone). Git however is not required, because
+the package uses <a href="https://www.nuget.org/packages/LibGit2Sharp">LibGit2Sharp</a> internally to find tags and process commit
+history. This could be an obstacle for some build servers. With TeamCity for example it is necessary that the source
+<a href="http://stackoverflow.com/questions/17555931/how-do-i-get-teamcity-to-create-the-git-directory-when-cloning-a-repo-for-build">code is checked out on agent and not on server</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Disable "Missing XML documentation" warnings for WCF RIA Services]]></title>
+    <link href="http://t-code.pl/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services/"/>
+    <updated>2012-05-09T11:38:24-04:00</updated>
+    <id>http://t-code.pl/blog/2012/05/disable-missing-xml-documentation-warnings-for-wcf-ria-services</id>
+    <content type="html"><![CDATA[<p>Every project should be well documented and Visual Studio has the option to enforce XML code documentation by generating
+warnings when there is a comment missing, a parameter description missing and such. It can be enabled per project by
+enabling XML documentation file option on the Build tab.</p>
+
+<p>There are however cases, when it is not necessary for XML docs to be present.</p>
+
+<!--more-->
+
+<p>If so, C# has the #pragma keyword. In a single file you can use it as shown below:</p>
+
+<p>``` c#
+#pragma warning disable 1591
+  // only ignore warning CS1591</p>
+
+<h1 id="pragma-warning-restore-1591">pragma warning restore 1591</h1>
+<p>// all warnings restorer</p>
+
+<h1 id="pragma-warning-disable">pragma warning disable</h1>
+<p>// no warnings here</p>
+
+<h1 id="pragma-warning-restore">pragma warning restore</h1>
+<p>// warnings will be shown here</p>
+
+<h1 id="pragma-warning-disable-1">pragma warning disable</h1>
+<p>// no warnings until end of file
+```</p>
+
+<p>But what if the warning comes from a generated file? #pragma is not an option because the file is likely to be
+overwritten in the future (next build?). <a href="http://lvquoc.blogspot.com/2010/11/disable-xml-comment-warning-in-workflow.html">Quoc Lam has posted about this on his blog</a>. His method is working
+for auto-generated XAML files but what I needed was disabling warnings in files created by <a href="http://www.silverlight.net/learn/advanced-techniques/wcf-ria-services/get-started-with-wcf-ria-services">RIA Services</a>.
+Simmilarily to Quam’s method it is possible to add an MSBuild target to the project in question, which add
+<code>#pragma warning disable</code> line at the beginning of RIA generated files:</p>
+
+<p>``` xml</p>
+<Target Name="CreateRiaClientFilesTaskDisableWarnings" AfterTargets="CreateRiaClientFiles">
+  <Exec Command="for %%f in (@(RiaClientGeneratedFiles)) do echo #pragma warning disable &gt; %%f.temp" />
+  <Exec Command="for %%f in (@(RiaClientGeneratedFiles)) do type %%f &gt;&gt; %%f.temp" />
+  <Exec Command="for %%f in (@(RiaClientGeneratedFiles)) do attrib -r %%f" />
+  <Exec Command="for %%f in (@(RiaClientGeneratedFiles)) do move /y %%f.temp %%f" />
+  <Exec Command="for %%f in (@(RiaClientGeneratedFiles)) do attrib +r %%f" />
+  <Message Text="CreateRiaClientFilesTaskDisableWarnings: @(RiaClientGeneratedFiles)" />
+</Target>
+<p>```</p>
+
+<p>For some reason RIA creates those files read-only, hence usage of the attrib tool</p>
+
+<p>Voila, no RIA-related warnings any more coming from the generated files.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[The data source '...&rsquo; does not support sorting with IEnumerable data]]></title>
+    <link href="http://t-code.pl/blog/2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data/"/>
+    <updated>2011-11-21T10:01:57-05:00</updated>
+    <id>http://t-code.pl/blog/2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data</id>
+    <content type="html"><![CDATA[<p>We are currently refactoring a web application, which uses ObjectDataSources extensively. There are places in our app, 
+where they are used for sorting grids, but there is a problem. We switched from DataTables to collections and now an 
+exception occurs:</p>
+
+<p><code>
+The data source &amp;lsquo;ods_DataSource&amp;rsquo; does not support sorting with IEnumerable data.
+Automatic sorting is only supported with DataView, DataTable, and DataSet.
+</code></p>
+
+<!--more-->
+
+<p>As Pradeem wrote on his <a href="http://technoesis.wordpress.com/2008/03/03/solution-to-error-the-data-source-ods_datasource-does-not-support-sorting-with-ienumerable-data-automatic-sorting-is-only-supported-with-dataview-datatable-and-dataset/">blog</a> there are two solutions to the above issue:</p>
+
+<ol>
+  <li>Implement custom sorting</li>
+  <li>Change IEnumerable datatype into one of these datatypes.</li>
+</ol>
+
+<p>Eventually we would implement the former, but for the time being Pradeem gives a solution. There is however something 
+wrong with his code so below I give you his snippet slightly modified to be an Extension method.</p>
+
+<p><code>c#
+public static class Util
+{
+   public static DataTable ToDataTable&lt;T&gt;(this IEnumerable&lt;T&gt; varlist)
+   {
+      DataTable dtReturn = new DataTable();
+      // column names
+      PropertyInfo[] oProps = null;
+      // Could add a check to verify that there is an element 0
+      foreach (T rec in varlist)
+      {
+         // Use reflection to get property names, to create table,
+         // Only first time, others will follow
+         if (oProps == null)
+         {
+            oProps = ((Type)rec.GetType()).GetProperties();
+            foreach (PropertyInfo pi in oProps)
+            {
+               // Note that we must check a nullable type
+               // else method will throw and error
+               Type colType = pi.PropertyType;
+               if ((colType.IsGenericType) &amp;amp;&amp;amp;
+                   (colType.GetGenericTypeDefinition() == typeof(Nullable)))
+               {
+                  // Since all the elements have same type
+                  // you can just take the first element and get type
+                  colType = colType.GetGenericArguments()[0];
+               }
+               dtReturn.Columns.Add(new DataColumn(pi.Name, colType));
+            }
+         }
+         DataRow dr = dtReturn.NewRow();
+         // Iterate through each property in PropertyInfo
+         foreach (PropertyInfo pi in oProps)
+         {
+            // Handle null values accordingly
+            dr[pi.Name] = pi.GetValue(rec, null) == null
+                          ? DBNull.Value
+                          : pi.GetValue(rec, null);
+         }
+         dtReturn.Rows.Add(dr);
+      }
+      return (dtReturn);
+   }
+}
+</code></p>
+
+<p>So now instead of having a data source method</p>
+
+<p><code>c#
+public IList&lt;Model&gt; GetData()
+{
+   return DAL.GetData();
+}
+</code></p>
+
+<p>You would have:</p>
+
+<p><code>c#
+public DataTable GetData()
+{
+   return DAL.GetData().ToDataTable();
+}
+</code></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Logging Linq to SQL]]></title>
+    <link href="http://t-code.pl/blog/2011/11/logging-linq-to-sql/"/>
+    <updated>2011-11-02T10:54:34-04:00</updated>
+    <id>http://t-code.pl/blog/2011/11/logging-linq-to-sql</id>
+    <content type="html"><![CDATA[<p>There are times when you need a quick way to debug Linq to SQL. Inspired by this <a href="http://stackoverflow.com/questions/86685/debugging-linq-to-sql-submitchanges/90025#90025">answer to a StackOverflow question</a> 
+I easily combined log4net and Linq to SQL. This way I avoided the console, which is not an option in the case of a web application.</p>
+
+<!--more-->
+
+<p>It is possible to set the Log property of your DataContext. Log is a TextWriter, so I created a simple TextWriter 
+implementation. Not sure which methods L2S uses, I overrided Write and WriteLine where they take string and object 
+parameters. Each implementation simply logs to log4net but, naturally, it could use any logging library.</p>
+
+<p>``` c#
+public partial class YourDataContext
+{
+   partial void OnCreated()
+   {
+      #if DEBUG
+         this.Log = new LogWriter();
+      #endif
+   }</p>
+
+<pre><code>class LogWriter : TextWriter
+{
+    public override Encoding Encoding
+    {
+        get { return Encoding.UTF8; }
+    }
+
+    public override void Write(string format, object arg0)
+    {
+        // logging goes here
+    }
+
+    public override void Write(object value)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string format, object arg0, object arg1)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string format, object arg0, object arg1, object arg2)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string format, params object[] arg)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string value)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string format, object arg0)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(object value)
+    {
+       // logging goes here
+    }
+
+    public override void WriteLine(string format, object arg0, object arg1)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string format, object arg0, object arg1, object arg2)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string format, params object[] arg)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string value)
+    {
+        // logging goes here
+    }
+} } ```
+</code></pre>
+
+<p>In my case I used log4net and here is my configuration, which logs to a file:</p>
+
+<p>``` xml</p>
+<log4net>
+   <appender name="LinqFile" type="log4net.Appender.FileAppender">
+      <file value="Logs/Linq2Sql.txt" />
+      <appendToFile value="true" />
+      <layout type="log4net.Layout.PatternLayout">
+         <conversionPattern value="%message%newline" />
+      </layout>
+    </appender>
+
+  <logger name="YourDataContext">
+      <level value="ALL" />
+      <appender-ref ref="LinqFile" />
+    </logger>
+</log4net>
+<p>```</p>
+
+<p>This is just enough to have Linq 2 SQL output saved in a text file. Just change level to OFF in XML config to
+disable L2S logging altogether.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CompareValidator bug: remember to call Page.IsValid?]]></title>
+    <link href="http://t-code.pl/blog/2011/10/comparevalidator-bug-remember-to-call-page-isvalid/"/>
+    <updated>2011-10-25T10:08:06-04:00</updated>
+    <id>http://t-code.pl/blog/2011/10/comparevalidator-bug-remember-to-call-page-isvalid</id>
+    <content type="html"><![CDATA[<p>One of the common mistakes developers make when working with Web Forms pages is using client-side validation, while not 
+checking the validation result on server-side postback.</p>
+
+<p>This mistake is easily noticeable with CustomValidator as it only works on the server’s side. Also when Javascript is 
+disabled you would quickly run into trouble when trying to rely solely on client-side validation.</p>
+
+<!--more-->
+
+<p>Now, in other cases you should be fine right? Not really, no. I’ve just found a little bug in CompareValidator. Let’s 
+try this:</p>
+
+<p>``` xml</p>
+<asp:CompareValidator Type="Date" Operator="DataTypeCheck" runat="server" ControlToValidate="SomeTB" Display="Dynamic">
+   Message
+</asp:CompareValidator>
+<p>```</p>
+
+<p>And on the server side:</p>
+
+<p><code>c#
+protected void HandleEvent(object sender, EventArgs e)
+{
+   DateTime.Parse(SomeTB.Text);
+}
+</code></p>
+
+<p>There is an obvious problem. Page.IsValid is not checked to ensure the submitted form is valid. With built-in validators
+and JS enabled this shouldn’t be a problem.</p>
+
+<p>However the ComapreValidator is a bit picky. It works fine for input like 2000-10-10, or 2000-00-00. Also writing for
+example 20-10-10 validates correctly and parsing it would not be a problem.</p>
+
+<p>Surprisingly though date 25-25-25, which is not valid causes the JS validation to fail inside ScripResource.axd with an
+exception and postback is not stopped even though the form is not valid. So what happens then? Event handler throws an
+exception where it tries to parse the input. For that reason always remember to write your handlers like</p>
+
+<p><code>c#
+protected void HandleEvent(object sender, EventArgs e)
+{
+   if(IsValid)
+   {
+      DateTime.Parse(SomeTB.Text);
+   }
+}
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

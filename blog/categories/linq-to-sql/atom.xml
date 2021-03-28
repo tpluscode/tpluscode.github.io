@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: linq to sql | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/linq-to-sql/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Logging Linq to SQL]]></title>
+    <link href="http://t-code.pl/blog/2011/11/logging-linq-to-sql/"/>
+    <updated>2011-11-02T10:54:34-04:00</updated>
+    <id>http://t-code.pl/blog/2011/11/logging-linq-to-sql</id>
+    <content type="html"><![CDATA[<p>There are times when you need a quick way to debug Linq to SQL. Inspired by this <a href="http://stackoverflow.com/questions/86685/debugging-linq-to-sql-submitchanges/90025#90025">answer to a StackOverflow question</a> 
+I easily combined log4net and Linq to SQL. This way I avoided the console, which is not an option in the case of a web application.</p>
+
+<!--more-->
+
+<p>It is possible to set the Log property of your DataContext. Log is a TextWriter, so I created a simple TextWriter 
+implementation. Not sure which methods L2S uses, I overrided Write and WriteLine where they take string and object 
+parameters. Each implementation simply logs to log4net but, naturally, it could use any logging library.</p>
+
+<p>``` c#
+public partial class YourDataContext
+{
+   partial void OnCreated()
+   {
+      #if DEBUG
+         this.Log = new LogWriter();
+      #endif
+   }</p>
+
+<pre><code>class LogWriter : TextWriter
+{
+    public override Encoding Encoding
+    {
+        get { return Encoding.UTF8; }
+    }
+
+    public override void Write(string format, object arg0)
+    {
+        // logging goes here
+    }
+
+    public override void Write(object value)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string format, object arg0, object arg1)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string format, object arg0, object arg1, object arg2)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string format, params object[] arg)
+    {
+        // logging goes here
+    }
+
+    public override void Write(string value)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string format, object arg0)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(object value)
+    {
+       // logging goes here
+    }
+
+    public override void WriteLine(string format, object arg0, object arg1)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string format, object arg0, object arg1, object arg2)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string format, params object[] arg)
+    {
+        // logging goes here
+    }
+
+    public override void WriteLine(string value)
+    {
+        // logging goes here
+    }
+} } ```
+</code></pre>
+
+<p>In my case I used log4net and here is my configuration, which logs to a file:</p>
+
+<p>``` xml</p>
+<log4net>
+   <appender name="LinqFile" type="log4net.Appender.FileAppender">
+      <file value="Logs/Linq2Sql.txt" />
+      <appendToFile value="true" />
+      <layout type="log4net.Layout.PatternLayout">
+         <conversionPattern value="%message%newline" />
+      </layout>
+    </appender>
+
+  <logger name="YourDataContext">
+      <level value="ALL" />
+      <appender-ref ref="LinqFile" />
+    </logger>
+</log4net>
+<p>```</p>
+
+<p>This is just enough to have Linq 2 SQL output saved in a text file. Just change level to OFF in XML config to
+disable L2S logging altogether.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

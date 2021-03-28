@@ -1,0 +1,491 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Nancy Registrations class gotchas - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Nancy has a great extensibility model but unfortunately it is not yet bulletproof. Here are some problem you might encounter">
+    
+        <meta name="keywords" content="dajsiepoznac, nancy, dependency injection, inversion of control">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/04/nancy-registration-gotchas/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Nancy Registrations Class Gotchas</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I <a href="/blog/2016/03/strategy-pattern-nancy/">recently wrote</a> about the <code>Registrations</code> class of NancyFx. It is a great tool
+for implementing reusable Nancy packages, which define all their DI requirements and does that with no dependency on any
+concrete DI container.</p>
+
+<p>Unfortunately every rose has its thorns and there are some limitations and the exact behaviour slightly differs between
+containers. Read on to see what are the problems you can face when using the <code>Registrations</code> class for setting up your 
+application.</p>
+
+<!--more-->
+
+<h2 id="the-tests">The tests</h2>
+
+<p>I tried out numerous bootstrappers for Nancy and I was surprised that I observed different behaviour for different scenarios.
+I decided to compile those scenarios as test cases and run them for all available Nancy bootstrapper packages. Each test
+uses the <code>Browser</code> class from <a href="http://www.marcusoft.net/2013/01/NancyTesting1.html">Nancy.Testing</a> set up with the tested 
+<code>Bootstrapper</code>. Then I perform a request to a test <code>NancyModule</code> check whether it was injected with correct dependencies.
+Unfortunately the tests load all available registrations so they are not exactly independent. To achieve that I should
+somehow choose only the relevant type somehow or partition the tests into separate assemblies but I’m not sure it would
+be worth the trouble.</p>
+
+<p>The tests are listed in <a href="https://github.com/tpluscode/Nancy.Boostrapper.Experiments/#the-tests">my repository’s readme</a>
+so I’m not going to repeat them here. Below I will elaborate on how each of the bootstrappers did.</p>
+
+<p>There are three general categories:</p>
+
+<ol>
+  <li>Autofac, Ninject, StructureMap and Windsor work in all tested scenarios</li>
+  <li>TinyIoc, DryIoc, LightInject, MEF2 and Unity have some issues</li>
+  <li>Grace and MEF are outdated and don’t work with latest Nancy at all</li>
+</ol>
+
+<h3 id="tinyioc-resolves-per-request-twice-when-autoregistration-is-on">TinyIoC resolves per-request twice when autoregistration is on</h3>
+
+<p>The default bootstrapper scans available assemblies and registers all found types. This doesn’t play nice with explicit
+registration of all implementations of a type.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">TestRegistrations</span> <span class="p">:</span> <span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">RegisterAll</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;(</span><span class="n">Lifetime</span><span class="p">.</span><span class="n">PerRequest</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">TestModule</span> <span class="p">:</span> <span class="n">NancyModule</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">TestModule</span><span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;</span> <span class="n">instances</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">// instances will have each implementation twice</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Interestingly this only happens if there is more than one implementation of the injected type.</p>
+
+<h3 id="tinyioc-is-explicit-about-registering-and-resolving-collections-of-type">TinyIoC is explicit about registering and resolving collections of type</h3>
+
+<p>On the other side of the spectrum for TinyIoC is registering multiple implementations on-by-one. I imagine that it could
+be the case where there are multiple implementations of a dependency spread out among multiple libraries. Each lib could
+have its own <code>Registrations</code> class and register a chosen implementation. It will not be possible to inject them all at
+once to another type.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">TestRegistrations</span> <span class="p">:</span> <span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">SmthImpl1</span><span class="p">));</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">SmthImpl2</span><span class="p">));</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">TestModule</span> <span class="p">:</span> <span class="n">NancyModule</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">TestModule</span><span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;</span> <span class="n">instances</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">// instances will be empty</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This by design according to the author of TinyIoC and to make this happen <code>RegisterAll&lt;T&gt;(IEnumerable&lt;Type&gt;)</code> should be
+used instead. When called multiple times it would do the trick.</p>
+
+<p>Curiously this test case passes when autoregistration is on and fails when it is off. That is obviously because they are
+found during assembly scanning. TBH it’s a good reason to disable autoregistration altogether by default…</p>
+
+<h3 id="dryioc-fails-to-inject-per-request-component-into-irequeststartup">DryIoc fails to inject per-request component into <code>IRequestStartup</code></h3>
+
+<p><strong>UPDATE</strong>: DryIoc works fine in version 2.4. See <a href="https://github.com/lcssk8board/Nancy.Bootstrappers.DryIoc/issues/2">this issue</a></p>
+
+<strike>Nancy comes with a handy pair of interfaces `IApplicationStartup` and `IRequestStartup` which when the application boots
+up and at each request respectively. Think an alternative to `Global.asax` or WebActivator on steroids.</strike>
+
+<strike>DryIoc currently fails to inject a per-request component into a request startup.</strike>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">RequestStartupRegistrations</span> <span class="p">:</span> <span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">RequestStartupRegistrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">InjectedIntoRequestStartup</span><span class="p">&gt;(</span><span class="n">Lifetime</span><span class="p">.</span><span class="n">PerRequest</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">RequestStartupWithPerRequestInjection</span> <span class="p">:</span> <span class="n">IRequestStartup</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">RequestStartupWithPerRequestInjection</span><span class="p">(</span><span class="n">InjectedIntoRequestStartup</span> <span class="n">injected</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">// this will not work at all - DryIoc throws an exception when resolving</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">void</span> <span class="nf">Initialize</span><span class="p">(</span><span class="n">IPipelines</span> <span class="n">pipelines</span><span class="p">,</span> <span class="n">NancyContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<strike>Big up to the author of DryIoc who already works on a solution!</strike>
+
+<h3 id="mef2-seems-to-be-lacking-functionality">MEF2 seems to be lacking functionality</h3>
+
+<p>I’m surprised by this bootstrapper. It turns out that <code>RegisterAll&lt;T&gt;()</code> has no effect on the registrations and request
+startup classes are never even instantiated. I could also check <code>IApplicationStartup</code>.</p>
+
+<h3 id="windsor-and-lightinject-are-different-with-per-request-resolutions">Windsor and LightInject are different with per-request resolutions</h3>
+
+<p>This is not a bug or anything but something to be aware of. (All?) other bootstrapper create a child container for every
+request and append additional per-request registrations each time. Windsor and LightInject on the other hand use scopes
+and any registrations done directly on the container must be performed in the overridden <code>ConfigureApplicationContainer</code>
+method.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">LightInjectBootstrapper</span> <span class="p">:</span> <span class="n">LightInjectNancyBootstrapper</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">ConfigureApplicationContainer</span><span class="p">(</span><span class="n">IServiceContainer</span> <span class="n">existingContainer</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">existingContainer</span><span class="p">.</span><span class="n">Register</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">,</span> <span class="n">SmthImpl</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">PerScopeLifetime</span><span class="p">());</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">WindsorBootstrapper</span> <span class="p">:</span> <span class="n">WindsorNancyBootstrapper</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">ConfigureApplicationContainer</span><span class="p">(</span><span class="n">IWindsorContainer</span> <span class="n">existingContainer</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">existingContainer</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="n">For</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;().</span><span class="n">ImplementedBy</span><span class="p">&lt;</span><span class="n">SmthImpl</span><span class="p">&gt;().</span><span class="n">LifestyleTransient</span><span class="p">());</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This is very important, because although neither has the companion <code>ConfigureRequestContainer</code> method it’s easy to make
+the mistake of registering dependencies in the <code>RequestStartup</code> method instead which will not work. I was ready to blame
+Windsor bootstrapper until I read the instructions on the bootstrapper’s GitHub readme.</p>
+
+<h3 id="lightinject-and-unity-dont-like-multiple-calls-to-registert">LightInject and Unity don’t like multiple calls to <code>Register&lt;T&gt;()</code></h3>
+
+<p>Liking may have little to do with anything but the fact is that attempting to registerer a type multiple times will only
+actually register one implementation. Interestingly it’s <strong>first wins</strong> with LightInject and <strong>last wins</strong> with Unity.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">TestRegistrations</span> <span class="p">:</span> <span class="n">Registrations</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">SmthImpl1</span><span class="p">));</span>
+</span><span class="line">        <span class="n">Register</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">SmthImpl2</span><span class="p">));</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">TestModule</span> <span class="p">:</span> <span class="n">NancyModule</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">public</span> <span class="nf">TestModule</span><span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">ISmth</span><span class="p">&gt;</span> <span class="n">instances</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">// instances will only contain one element</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Although this is by design in both containers this behaviour differs from other bootstrapper. The workaround is to used
+named registrations (see <a href="http://stackoverflow.com/a/16921451/1103498">here</a> and <a href="http://stackoverflow.com/a/31655143/1103498">here</a>)
+directly in the bootstrapper.</p>
+
+<h3 id="lightinject-and-unity-have-additional-version-requirements">LightInject and Unity have additional version requirements</h3>
+
+<p>Didn’t know how to phrase that <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" />.</p>
+
+<p>For Unity the problem is the dependency on the actual container package. The bootstrapper works with version 2.* and 3.*
+but won’t with the latest 4.* release.</p>
+
+<p>The latest LightInject bootstrapper is built for .NET 4.5.1 so if you target .NET &lt;= 4.5 you are out of luck.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>That’s it. I hope someone will find this post helpful when struggling with their Nancy bootstrap. Good luck.</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/04/nancy-registration-gotchas/';
+        var disqus_url = 'http://t-code.pl/blog/2016/04/nancy-registration-gotchas/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Technology side of wikibus.org - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="I'm sharing more details about wikibus.org technology stack and my plans">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/03/wikibus-real-technology-details/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Technology Side of wikibus.org</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I just noticed that I forgot to change the permalink of my <a href="/blog/2016/03/wikibus-technology-details/">last post</a>. I intended to write about tech, but ended up writing
+about buses only. Too bad, but I’m not going to change that now. I this post I will write a little bit more about what
+I’m actually implementing for wikibus.org</p>
+
+<!--more-->
+
+<p>Implementing all of it may be a daunting task. Because I want to build an entire website and API I’m aiming for the 
+full-stack. On top of that I want to actually do something cool <img class="emoji" title=":sunglasses:" alt=":sunglasses:" src="https://assets.github.com/images/icons/emoji/unicode/1f60e.png" height="20" width="20" align="absmiddle" />, which for developers mean using a really
+cutting-edge technology or publishing a reusable package.</p>
+
+<p>And so my goals here are quite ambitious. I am</p>
+
+<ul>
+  <li>using RDF for as my data structures,</li>
+  <li>want to implement the domain CQRS-style as event-sourced async models,</li>
+  <li>use Nancy to serve data from the server because Web API sucks balls,</li>
+  <li>hope to create a <strong><em>real</em></strong> REST API with the help of <a href="http://hydra-cg.com">Hydra</a>,</li>
+  <li>intend to use Web Components and Polymer in the browser to consume my API.</li>
+</ul>
+
+<h2 id="divide-and-conquer">Divide and conquer</h2>
+
+<p>Because there’s a lot of pieces to this bus-lovers’ puzzle, I created a <a href="http://github.com/wikibus">wikibus organization</a>, where I keep
+separate repositories for each element. Except the dedicated front and back end I intend to keep the other libraries as
+independent as possible so that they can be reused in other projects. I for one will be publishing my reusable code on
+<a href="http://nuget.org">NuGet</a>.</p>
+
+<p>I will be gradually mentioning all of the below in future blog posts.</p>
+
+<h3 id="wikibus-backendback"><a href="http://github.com/wikibus/wikibus-backend">wikibus backend</a></h3>
+
+<p>This is the main API and server side, where all the Nancy code and data-access will live. I will need a number of components 
+to make it happen. Not all of it is available as open-source packages just yet, so I’m left with no choice but to implement
+some <img class="emoji" title=":shit:" alt=":shit:" src="https://assets.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle" /> myself.</p>
+
+<p>Currently I’ve just hit a 0.1 mark with an updated a deployable database of brochures. In a short future I will publish
+a post where I share some details about how I convert my data from SQL Server to RDF and test the results.</p>
+
+<p>The main interest of wikibus.org will of course be the <a href="/2016/03/wikibus-technology-details/">knowledge about public transport</a>. Because of the complexity 
+I probably will use a form of CQRS with eventually consistent RDF models. This will hopefully buy me flexibility in adapting to
+changes in how I want to process raw data. We’ll see.</p>
+
+<h3 id="jsonldentitiesjsonldentities"><a href="http://github.com/wikibus/JsonLD.Entities">JsonLD.Entities</a></h3>
+
+<p><img src="https://raw.githubusercontent.com/wikibus/JsonLD.Entities/master/assets/icon.png" alt="json-ld entities logo" /></p>
+
+<p>First component I’ve built as a reusable library is a simple serializer, which can convert POCO object to <a href="http://json-ld.org">JSON-LD</a>
+and vice versa. It is basically an extension of the immensely popular <a href="http://json.net">Newtonsoft.Json</a> package. I wanted
+too keep JsonLD.Entities as simple as possible and so most of it works by convention.</p>
+
+<p>There are some <a href="https://github.com/wikibus/JsonLD.Entities/tree/master/src/Documentation">examples</a> and this package is
+the first wikibus library already available on <a href="https://www.nuget.org/packages/JsonLd.Entities/">nuget</a>.</p>
+
+<h3 id="nancyrdfnancy-rdf"><a href="http://github.com/wikibus/nancy.rdf">Nancy.Rdf</a></h3>
+
+<p><img src="https://raw.githubusercontent.com/wikibus/Nancy.Rdf/master/assets/icon_21532.png" alt="nancy.rdf icon" /></p>
+
+<p>Second part that I find missing for a .NET REST API, which would serve RDF data are serializers of RDF media types. I love
+Nancy and so I wrap it is my weapon of choice for building a RESTful web service. On top of Nancy I am building a set of
+response processors, which will be able to serve POCO classes serialized to RDF formats. Unsurprisingly I’m using the
+library I introduced above combined with <a href="http://dotnetrdf.org">dotNetRDF</a> so that I can return not only JSON-LD but also
+most other RDF formats: RDF/XML, Turtle, n-triples and more.</p>
+
+<p>Once the code stabilizes, first step will be to add some documentation. Then I may consider breaking concrete dependency
+on dotNetRDF and offer a <a href="https://rdfsharp.codeplex.com/">RDFSharp</a> alternative package. Finally I shall add support for low-level RDF objects,
+that is raw graphs, datasets and SPARQL results.</p>
+
+<h3 id="argolisargolis"><a href="http://github.com/wikibus/Argolis">Argolis</a></h3>
+
+<p><img src="https://raw.githubusercontent.com/HydraCG/hydra-cg.com/master/img/logo.png" width="100" title="hydra logo" /></p>
+
+<p>The newest member of the wikibus.org crowd is called Argolis, which further extends Nancy.Rdf above to add support for
+<a href="http://hydra-cg.com">Hydra</a>, which is a vocabulary for hypermedia-driven applications. It means that hydra is the means to describe
+the API in a way where the client is actually driven by hypermedia</p>
+
+<p>I named it after the <a href="https://en.wikipedia.org/wiki/Regions_of_ancient_Greece#Argolis">mythical</a> (and <a href="https://en.wikipedia.org/wiki/Argolis">modern</a>) part of Greece. I chose that name, because it
+is where the mythical beast Hydra originates from.</p>
+
+<p><img src="/uploads/2016/03/hydra.gif" alt="Hydra drawing by Andrew Jian" /></p>
+
+<p>Hydra drawing by <a href="https://www.flickr.com/photos/andrew_jian/">Andrew Jian</a>.</p>
+
+<p>Similarly as with Nancy.Rdf, this is very new stuff.The goal for both Argolis and Nancy.Rdf is to provide a 
+<a href="https://github.com/NancyFx/Nancy/wiki/Introduction#the-super-duper-happy-path">supper-duper-happy-path</a> so that the usage is as simple as possible. I’m still ironing out some details and as soon 
+as I’m happy with the API and features I will add some documentation and publish a NuGet package.</p>
+
+<h3 id="wwwwikibusorgwwwwikibusorg"><a href="http://github.com/wikibus/www.wikibus.org">www.wikibus.org</a></h3>
+
+<p>Lastly here’s the main front-end library. I’ve purchased a bootstrap template ages ago and started some work on that ages
+ago but there is a lot I want to accomplish in this space too:</p>
+
+<ul>
+  <li>use Polymer (styling will be tricky with Shadow DOM)</li>
+  <li>consume <a href="http://hydra-cg.com">Hydra</a> - I hope to use an existing library; maybe <a href="https://github.com/n-fuse/hyjax">hyjax</a></li>
+  <li>end result: be really RESTful (thanks to <a href="http://hydra-cg.com">Hydra</a>)</li>
+</ul>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/03/wikibus-real-technology-details/';
+        var disqus_url = 'http://t-code.pl/blog/2016/03/wikibus-real-technology-details/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

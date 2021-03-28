@@ -1,0 +1,520 @@
+<h1 id="polyfills-loader">Polyfills loader</h1>
+
+<p>The polyfills loader makes it easy to manage loading polyfills and/or serving different versions of your application based on browser support. It generates a script that loads the necessary polyfills and the appropriate version of the application through on runtime feature detection.</p>
+
+<blockquote>
+  <p>Part of <a href="https://github.com/open-wc/open-wc/">Open Web Components</a>: guides, tools and libraries for modern web development and web components</p>
+</blockquote>
+
+<p><a href="https://circleci.com/gh/open-wc/open-wc"><img src="https://circleci.com/gh/open-wc/open-wc.svg?style=shield" alt="CircleCI" /></a>
+<a href="https://www.browserstack.com/automate/public-build/M2UrSFVRang2OWNuZXlWSlhVc3FUVlJtTDkxMnp6eGFDb2pNakl4bGxnbz0tLUE5RjhCU0NUT1ZWa0NuQ3MySFFWWnc9PQ==--86f7fac07cdbd01dd2b26ae84dc6c8ca49e45b50"><img src="https://www.browserstack.com/automate/badge.svg?badge_key=M2UrSFVRang2OWNuZXlWSlhVc3FUVlJtTDkxMnp6eGFDb2pNakl4bGxnbz0tLUE5RjhCU0NUT1ZWa0NuQ3MySFFWWnc9PQ==--86f7fac07cdbd01dd2b26ae84dc6c8ca49e45b50" alt="BrowserStack Status" /></a>
+<a href="https://renovatebot.com/"><img src="https://img.shields.io/badge/renovate-enabled-brightgreen.svg" alt="Renovate enabled" /></a></p>
+
+<p>A simplified version of the loader:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="c1">// detect support for various browser features, load a polyfill if necessary</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">polyfills</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class="line"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;fetch&#39;</span> <span class="k">in</span> <span class="nb">window</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line"> <span class="nx">polyfills</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">loadScript</span><span class="p">(</span><span class="s1">&#39;./polyfills/fetch.js&#39;</span><span class="p">));</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;IntersectionObserver&#39;</span> <span class="k">in</span> <span class="nb">window</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line"> <span class="nx">polyfills</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">loadScript</span><span class="p">(</span><span class="s1">&#39;./polyfills/intersection-observer.js&#39;</span><span class="p">));</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// wait for polyfills to load</span>
+</span><span class="line"><span class="nx">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">polyfills</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line"> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="s1">&#39;noModule&#39;</span> <span class="k">in</span> <span class="nx">HTMLScriptElement</span><span class="p">.</span><span class="nx">prototype</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line"> <span class="c1">// browser doesn&#39;t support es modules, load a SystemJS build with es5</span>
+</span><span class="line"> <span class="nx">System</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;./legacy/app.js&#39;</span><span class="p">);</span>
+</span><span class="line"> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line"> <span class="c1">// browser supports modules, import a modern build</span>
+</span><span class="line"> <span class="kr">import</span><span class="p">(</span><span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="nx">app</span><span class="p">.</span><span class="nx">js</span><span class="p">);</span>
+</span><span class="line"> <span class="p">}</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="performance">Performance</h2>
+
+<p>The primary reason for this project is to make it easier to build performant web apps. The web ecosystem is evolving fast, it’s easy to end up with many unnecessary polyfills in your application because all supported browsers already implement the feature you are using.</p>
+
+<p>By loading polyfills conditionally, you make sure you only load what’s necessary and you don’t need to include them in your main bundle. Polyfills are hashed based on content, so they can be cached indefinitely by a web server or service worker.</p>
+
+<p>Serving different versions of your application means you don’t need to serve the lowest common denominator to all of your users. This is often achieved used <code>&lt;script type="module"&gt;</code> and <code>&lt;script nomodule&gt;</code>. The polyfills loader uses a variation of this, where the feature detection happens in javascript because we need to ensure polyfills are loaded before any of your application code is run.</p>
+
+<h2 id="preloading">Preloading</h2>
+
+<p>Browser optimize loading webpages by scanning ahead for script tags and fetching them right away. Because the polyfills loader moves the loading of scripts into javascript, we lose out on this optimization. For the polyfills, this is intentional, because we don’t want to load them all the time and since they will be cached this optimization does not do much anyway.</p>
+
+<p>For your application code, we recommend using <code>preload</code> (or <code>modulepreload</code> when it is widely supported) links to ensure your application’s modern build is fetched from the start.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;head&gt;</span>
+</span><span class="line">  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;preload&quot;</span> <span class="na">href=</span><span class="s">&quot;./app.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">  <span class="c">&lt;!-- for module scripts, add a corrs attribute --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;preload&quot;</span> <span class="na">href=</span><span class="s">&quot;./app.js&quot;</span> <span class="na">crossorigin=</span><span class="s">&quot;anonymous&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;/head&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>You will most likely use the polyfills loader as part of another tool, but it can be used directly as well.</p>
+
+<h3 id="example-configuration">Example configuration</h3>
+
+<p>A typical web app which loads as modules on modern browsers, and system js on older browsers:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">modern</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">files</span><span class="o">:</span> <span class="p">[{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;module&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;app.js&#39;</span> <span class="p">}],</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="nx">legacy</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">test</span><span class="o">:</span> <span class="s2">&quot;!(&#39;noModule&#39; in HTMLScriptElement.prototype)&quot;</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">files</span><span class="o">:</span> <span class="p">[{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;systemjs&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;app.js&#39;</span> <span class="p">}],</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line">  <span class="nx">polyfills</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">hash</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">coreJs</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">fetch</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">abortController</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">regeneratorRuntime</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">dynamicImport</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">webcomponents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">intersectionObserver</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">resizeObserver</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="nx">minify</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="configuration-options">Configuration options</h3>
+
+<h4 id="modern">modern</h4>
+
+<p>The files to load on modern browsers. Loaded if no legacy entry points match for the current browser, or if none are configured. Each file specifies how it should be loaded.</p>
+
+<details>
+ <summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">modern</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">      <span class="c1">// filetype can be: &#39;module&#39;, &#39;script&#39; or &#39;systemjs</span>
+</span><span class="line">      <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;file-a.js&#39;</span> <span class="p">},</span>
+</span><span class="line">      <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;module&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;file-b.js&#39;</span> <span class="p">},</span>
+</span><span class="line">    <span class="p">],</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="legacy">legacy</h4>
+
+<p>Sets of files to load on legacy browsers, and the runtime feature detection to execute to determine whether it should be loaded.</p>
+
+<details>
+ <summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">legacy</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">test</span><span class="o">:</span> <span class="s2">&quot;!(&#39;noModule&#39; in HTMLScriptElement.prototype)&quot;</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">        <span class="c1">// filetype can be: &#39;module&#39;, &#39;script&#39; or &#39;systemjs</span>
+</span><span class="line">        <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;systemjs&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;file-a.js&#39;</span> <span class="p">},</span>
+</span><span class="line">        <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;systemjs&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;file-b.js&#39;</span> <span class="p">},</span>
+</span><span class="line">      <span class="p">],</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nx">test</span><span class="o">:</span> <span class="s2">&quot;!(&#39;foo&#39; in window)&quot;</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">        <span class="c1">// filetype can be: &#39;module&#39;, &#39;script&#39; or &#39;systemjs</span>
+</span><span class="line">        <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;file-a.js&#39;</span> <span class="p">},</span>
+</span><span class="line">        <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;file-b.js&#39;</span> <span class="p">},</span>
+</span><span class="line">      <span class="p">],</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="polyfills">polyfills</h4>
+
+<p>The polyfills config controls which polyills are injected onto the page. These are the possible polyfills:</p>
+
+<ul>
+  <li><a href="https://github.com/zloirock/core-js">coreJs</a></li>
+  <li><a href="https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime">regeneratorRuntime</a></li>
+  <li><a href="https://github.com/webcomponents/webcomponentsjs">webcomponents</a></li>
+  <li><a href="https://github.com/github/fetch">fetch</a></li>
+  <li><a href="https://github.com/github/fetch">abortController</a></li>
+  <li><a href="https://github.com/mo/abortcontroller-polyfill">intersectionObserver</a></li>
+  <li><a href="https://github.com/que-etc/resize-observer-polyfill">resizeObserver</a></li>
+  <li><a href="https://github.com/systemjs/systemjs">systemjs</a> (also injected when one of the files is systemjs)</li>
+  <li><a href="https://github.com/GoogleChromeLabs/dynamic-import-polyfill">dynamicImport</a></li>
+  <li><a href="https://github.com/guybedford/es-module-shims">esModuleShims</a></li>
+  <li><a href="https://github.com/webcomponents/polyfills/blob/master/packages/shadycss/custom-style-interface.html">shadyCssCustomStyle</a> (you must also include webcomponents)</li>
+</ul>
+
+<p>They can be turned on using booleans. When using the polyfills loader directly, these are default false. Other tools may turn on different defaults.</p>
+
+<details>
+<summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfills</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">coreJs</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">fetch</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">webcomponents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="shady-css-custom-style">Shady css custom style</h4>
+
+<p>In order to define css variables outside of a web component in IE11, you need to wrap the <code>&lt;style&gt;</code> tag inside of a <code>&lt;shady-css-scoped&gt;</code> tag. This tag is provided by the shady-css-scoped-element package, and will be included if you use both the webcomponents and shadyCssCustomStyle polyfills.</p>
+
+<details>
+<summary>View example</summary>
+
+index.html
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;shady-css-scoped&gt;</span>
+</span><span class="line">  <span class="nt">&lt;style&gt;</span>
+</span><span class="line">    <span class="nt">html</span> <span class="p">{</span>
+</span><span class="line">      <span class="o">--</span><span class="n">my</span><span class="o">-</span><span class="n">button</span><span class="o">-</span><span class="k">color</span><span class="o">:</span> <span class="nb">pink</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="nt">&lt;/style&gt;</span>
+</span><span class="line"><span class="nt">&lt;/shady-css-scoped&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+config.js
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfills</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">webcomponents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">shadyCssCustomStyle</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="hashing">hashing</h4>
+
+<p>With the <code>hash</code> option, polyfill filenames can be hashed based on their content, this allows them to be cached indefinitely.</p>
+
+<details>
+<summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfills</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">hash</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">coreJs</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">fetch</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">webcomponents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="custom-polyfills">custom polyfills</h4>
+
+<p>If you need a polyfill that isn’t available in the default list, you can add a custom polyfill. These consist of at least a unique name, a path where to find the polyfill and a bit of javascript executed at runtime to test whether the polyfill should be loaded.</p>
+
+<details>
+<summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfills</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">hash</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">fetch</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">custom</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="line">      <span class="p">{</span>
+</span><span class="line">        <span class="c1">// the name, must be unique</span>
+</span><span class="line">        <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;my-feature-polyfill&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="c1">// path to the polyfill fle</span>
+</span><span class="line">        <span class="nx">path</span><span class="o">:</span> <span class="nx">require</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;my-feature-polyfill&#39;</span><span class="p">),</span>
+</span><span class="line">        <span class="c1">// a test that determines when this polyfill should be loaded</span>
+</span><span class="line">        <span class="c1">// often this is done by checking whether some property of a</span>
+</span><span class="line">        <span class="c1">// feature exists in the window</span>
+</span><span class="line">        <span class="nx">test</span><span class="o">:</span> <span class="s2">&quot;!(&#39;myFeature&#39; in window)&quot;</span><span class="p">,</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">// optional advanced features:</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">// if your polyfill is not yet minified, it can be minified by</span>
+</span><span class="line">        <span class="c1">// the polyfills loaded if you set it to true</span>
+</span><span class="line">        <span class="nx">minify</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">        <span class="c1">// whether your polyfill should be loaded as an es module</span>
+</span><span class="line">        <span class="nx">module</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">        <span class="c1">// some polyfills need to be explicitly initialized</span>
+</span><span class="line">        <span class="c1">// this can be done with the initializer</span>
+</span><span class="line">        <span class="nx">initializer</span><span class="o">:</span> <span class="s1">&#39;window.myFeaturePolyfills.initialize()&#39;</span><span class="p">,</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">    <span class="p">],</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="exclude">exclude</h4>
+
+<p>The polyfills loader delays loading any scripts until polyfills are loaded. This can create problems when you rely on specific loading behavior. You can exclude certain scripts with the <code>exclude</code> option.</p>
+
+<details>
+<summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">exclude</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">jsScripts</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">jsModules</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">inlineJsScripts</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">inlineJsModules</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="polyfillsdir">polyfillsDir</h4>
+
+<p>Which directory to load polyfills from. By default, this is <code>./polyfills</code></p>
+
+<details>
+<summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">polyfillsDir</span><span class="o">:</span> <span class="s1">&#39;./generated-files&#39;</span><span class="p">,</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h4 id="minify">minify</h4>
+
+<p>Whether the code output should be minified.</p>
+
+<details>
+<summary>View example</summary>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">minify</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</details>
+
+<h2 id="usage">Usage</h2>
+
+<h3 id="createpolyfillsloader">createPolyfillsLoader</h3>
+
+<p>The <code>createPolyfillsLoader</code> function takes configuration and returns the javascript code for the polyfills loader. It also returns information about the generated polyfill files, these will need to be made available at runtime so that they can be imported by the loader code.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="p">{</span> <span class="nx">createPolyfillsLoader</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;polyfills-loader&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">createPolyfillsLoader</span><span class="p">({</span>
+</span><span class="line">  <span class="c1">// see configuration above</span>
+</span><span class="line"><span class="p">});</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">code</span><span class="p">);</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">polyfillFiles</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="injectpolyfillsloader">injectPolyfillsLoader</h3>
+
+<p>The <code>injectPolyfillsLoader</code> function injects a polyfills loader into an existing HTML page. It also injects polyfills for any import maps it finds.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="p">{</span> <span class="nx">injectPolyfillsLoader</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;polyfills-loader&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">html</span> <span class="o">=</span> <span class="err">`</span>
+</span><span class="line"><span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+</span><span class="line"> <span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;&lt;</span><span class="err">/head&gt;</span>
+</span><span class="line"> <span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;&lt;</span><span class="err">/body&gt;</span>
+</span><span class="line"><span class="o">&lt;</span><span class="err">/html&gt;</span>
+</span><span class="line"><span class="err">`</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">injectPolyfillsLoader</span><span class="p">(</span><span class="nx">html</span><span class="p">,</span> <span class="p">{</span>
+</span><span class="line">  <span class="c1">// see configuration above</span>
+</span><span class="line"><span class="p">});</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">htmlString</span><span class="p">);</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">polyfillFiles</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: unit tests | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/unit-tests/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Fight TypeScript with TypeScript]]></title>
+    <link href="http://t-code.pl/blog/2016/04/test-typescript-with-typescript/"/>
+    <updated>2016-04-11T09:35:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/04/test-typescript-with-typescript</id>
+    <content type="html"><![CDATA[<p>Given that I’m fairly satisfied with the state of my server-side <a href="http://hydra-cg.org">Hydra</a> library for <a href="http://github.com/nancyfx/nancy">NancyFx</a> called
+<strong>Argolis</strong> it is now time to write some client-side library to consume it. I did some spiking in another small project
+and it was now time to do it properly. I’ve already had some experience with TypeScript and JSPM so I decided to give
+these two a go.</p>
+
+<p>Unfortunately getting the project setup right was harder than I’d hoped. Here’s how I managed to get my first test to pass.</p>
+
+<!--more-->
+
+<h2 id="test-first">Test first</h2>
+
+<p>I want to proceed with a TDD approach but unlike before this time I want to write both my code and modules in TypeScript.</p>
+
+<p><img src="/uploads/2016/04/FightFireWith_Fire.png" alt="fight fire with fire" /></p>
+
+<p>Here’s my first test. I will place all tests in <code>tests</code> folder and my modules in the <code>src</code> folder as you can see in the
+import in line 2.</p>
+
+<p>As you see I’m using ES6/TypeScript syntax here with module imports and arrow functions.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">sinon</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">sinon</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">heracles</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">heracles</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">describe</span><span class="p">(</span><span class="err">‘</span><span class="nx">Hydra</span> <span class="nx">resource</span><span class="err">’</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">it</span><span class="p">(</span><span class="err">‘</span><span class="nx">should</span> <span class="nx">load</span> <span class="nx">resource</span> <span class="kd">with</span> <span class="nx">RDF</span> <span class="nx">accept</span> <span class="nx">header</span><span class="err">’</span><span class="p">,</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">sinon</span><span class="p">.</span><span class="nx">stub</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span> <span class="err">‘</span><span class="nx">fetch</span><span class="err">’</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>    <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">returns</span><span class="p">(</span><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="k">new</span> <span class="nx">Response</span><span class="p">()));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">heracles</span><span class="p">.</span><span class="nx">Hydra</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;http://example.com/resource&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">expect</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">calledWithMatch</span><span class="p">(</span><span class="s1">&#39;http://example.com/resource&#39;</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">})</span>
+</span><span class='line'>        <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">done</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">afterEach</span><span class="p">(()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span><span class='line'><span class="p">});</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>In my first test I want to check that <code>window.fetch</code> is called with the expected URL. To do that I’m using <a href="http://sinonjs.org/">sinon</a>
+stub to set up a call (line 8) and verify correct parameters (line 12). To make it work sinon must be installed from jspm.
+Browser other that Chrome and Opera would also need the whatwg-fetch package or similar</p>
+
+<p><code>bash
+jspm install npm:sinon npm:whatwg-fetch
+</code></p>
+
+<h3 id="lets-run-it">Let’s run it</h3>
+
+<p>With the first test in place I wanted to run it so that it becomes <a href="http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html"><strong><span style="color: red">red</span></strong></a>.</p>
+
+<p>I’ve recently found the <a href="https://github.com/testem/testem">Test’em</a> and it looked very promising with the super-easy CI integration and convenient
+command line UI. Unfortunately it turns out that it <a href="https://github.com/testem/testem/issues/784">doesn’t like system.js</a>.
+I’ve tried other solutions and eventually Karma worked.</p>
+
+<h4 id="setting-up-karma">Setting up karma</h4>
+
+<p>First, install karma, local npm packages and initialize karma</p>
+
+<p><code>bash
+npm install -g karma karma-jasmine jasmine-core
+npm install -g karma-chrome-launcher 
+npm install -g karma-systemjs systemjs
+karma init
+</code></p>
+
+<p>Second, set up systemjs so that karma can load TypeScript tests directly. This is possible thanks to the <a href="https://github.com/rolaveric/karma-systemjs">karma-systemjs</a>.
+To set it up add it as the <strong><em>first</em></strong> framework in karma and add systemjs configuration:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">config</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">frameworks</span><span class="o">:</span> <span class="p">[</span><span class="err">‘</span><span class="nx">systemjs</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="nx">jasmine</span><span class="err">’</span><span class="p">],</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>  <span class="s1">&#39;tests/*-spec.ts&#39;</span>
+</span><span class='line'><span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">systemjs</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">configFile</span><span class="o">:</span> <span class="s1">&#39;config.js&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">serveFiles</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s1">&#39;src/**/*.ts&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;jspm_packages/**/*&#39;</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>   <span class="p">})</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>The <code>systemjs</code> section reuses jspm configuration and sets up paths served by karma server.</p>
+
+<p>The <code>config.js</code> file should look similar to the one below. 
+Mind the <code>packages</code> and <code>transpiler</code> settings which make systemjs load selected typescript modules directly without upfront
+transpilation.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">System</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">baseURL</span><span class="o">:</span> <span class="err">“</span><span class="o">/</span><span class="err">”</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">defaultJSExtensions</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">transpiler</span><span class="o">:</span> <span class="err">“</span><span class="nx">typescript</span><span class="err">”</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">github</span><span class="o">:&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">jspm_packages</span><span class="o">/</span><span class="nx">github</span><span class="o">/&lt;</span><span class="err">/em&gt;”,</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">npm</span><span class="o">:&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">jspm_packages</span><span class="o">/</span><span class="nx">npm</span><span class="o">/&lt;</span><span class="err">/em&gt;”</span>
+</span><span class='line'>  <span class="p">},</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">packages</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">src</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="err">“</span><span class="nx">defaultExtension</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">ts</span><span class="err">”</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">tests</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="err">“</span><span class="nx">defaultExtension</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">ts</span><span class="err">”</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">map</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h4 id="lets-run-it-for-real-now">Let’s run it for real now</h4>
+
+<p>If followed the above instructions you should be able to run karma server and have it start Chrome</p>
+
+<p><code>bash
+karma start
+</code></p>
+
+<p>This should execute the first test and fail on missing implementation</p>
+
+<p><code>text
+Chrome 49.0.2623 (Windows 8.1 0.0.0) ERROR
+  Error: Error: XHR error (404 Not Found) loading E:/experiments/karma-ts/src/heracles.ts
+        Error loading E:/experiments/karma-ts/src/heracles.ts as "../src/heracles" from E:/experiments/karma-ts/tests/heracles-spec.ts
+</code></p>
+
+<h2 id="add-some-code">Add some code</h2>
+
+<p>Let’s fix the test by actually adding the first piece of code</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">Hydra</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">static</span> <span class="nx">load</span><span class="p">(</span><span class="nx">uri</span><span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">(</span><span class="nx">uri</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>If you haven’t stopped the karma server it will notice the new file being added and rerun the test. The result should be 
+similar to</p>
+
+<p><code>text
+INFO [watcher]: Added file "E:/experiments/karma-ts/src/heracles.ts".
+Chrome 49.0.2623 (Windows 8.1 0.0.0): Executed 1 of 1 SUCCESS (0.009 secs / 0.005 secs)
+</code></p>
+
+<h2 id="summary">Summary</h2>
+
+<p><em>Et voilà</em>, this was pleasantly simple. There are no build/cleanup steps required to execute the test, because systemjs
+does the transpilation on the fly. Karma may not have the cool little terminal control panel and test summary but it is
+an established testing tool and integrates well with many IDEs</p>
+
+<h2 id="bonus---typings">Bonus - typings</h2>
+
+<p>Speaking of IDE, Webstorm coloured a lot of my code red, because it doesn’t recognize sinon and jasmin and fetch. To remedy
+that there are <a href="https://github.com/typings/typings">typings</a>.</p>
+
+<p><code>bash
+npm install -g typings
+</code></p>
+
+<p>Sinon and jasmine have an <em>official</em> typings package. There is also a repository with typings for <code>window.fetch</code>. They
+are not all installed the same way though:</p>
+
+<p><code>bash
+typings install sinon --save
+typings install jasmine --save --ambient
+typings install github:ryan-codingintrigue/typescript-fetch/fetch.js.d.ts --save --ambient 
+</code></p>
+
+<p>As you see jasmine and fetch typings are installed as <em>ambient</em>. This is because they populate the global scope (or window).
+Otherwise typings would wrap them in a named module. After all modules can be installed under an alias.</p>
+
+<p>Finally add a typings reference to you source and test files like</p>
+
+<p><code>js
+/// &lt;reference path="../typings/main.d.ts" /&gt;
+</code></p>
+
+<p>There you go, no there are far less source code errors and also some additional context help from the editor. And remember
+not to commit the <code>typings</code> folder. Instead commit the <code>typings.json</code> file and run <code>typings install</code> to restore them.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Living documentation with Literate Programming]]></title>
+    <link href="http://t-code.pl/blog/2014/12/literate-documentation/"/>
+    <updated>2014-12-05T20:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2014/12/literate-documentation</id>
+    <content type="html"><![CDATA[<p>Two months ago, at the <a href="http://wrocnet.github.io/2014/09/16/69-spotkanie-wroclawskiej-grupy-net.html">Wrocław .NET User Group</a>, <a href="http://lucabolognese.wordpress.com/">Luca Bolognese</a> talked about Literate Programming.</p>
+
+<p>For those who don’t know, Luca Bolognese is best known for being the father of Microsoft’s functional language <strong>F#</strong>.
+He currently works for Credit Suisse - the Swiss-American investment bank where he implements uber-geek algorithms for
+counting a lot of money :).</p>
+
+<!--more-->
+
+<p><strong>EDIT</strong>: I’ve update the <code>.csproj</code> snippet, because previous code put all markdowns into project root. See <a href="https://github.com/tpluscode/tpluscode.github.io/commits/source/source/_posts/2014-11-28-literate-documentation.markdown">diff here</a></p>
+
+<h2 id="literate-programming">Literate programming</h2>
+
+<p>Describe in early 80’s by Donald Knuth, <em>Literate Programing</em> where the program itself is mixed with it’s description in
+natural language. The idea is that a program is written like a book, where descriptions and code are subsequent chapters,
+so to speak:</p>
+
+<ol>
+  <li>Write some thoughts about code about to be written</li>
+  <li>Write the aforementioned code</li>
+  <li>Go to 1</li>
+</ol>
+
+<p>This must not be confused, as <a href="http://en.wikipedia.org/wiki/Literate_programming#Contrast_with_documentation_generation">wikipedia explains</a>, with documentation generated from code annotations such as
+Java Doc od XML doc. Where documentation usually describes the API (and also usually quite poorly), literate programming
+means that code descriptions, the natural language parts, describe not only the implementation but also the writer’s
+thoughts, which led to the given implementations. Typical XML doc in C# could look like this:</p>
+
+<p><code>c#
+/// &lt;summary&gt;
+/// This method adds two numbers
+/// &lt;/summary&gt;
+/// &lt;returns&gt;the result&lt;/returns&gt;
+public decimal Add(int x, int y)
+{
+   return x + y;
+}
+</code></p>
+
+<p>Basically this is redundant repetition of what can already be inferred from the method’s signature and bear little extra
+information. Instead on could write:</p>
+
+<p>``` c#
+/**
+I needed a method to add two integer numbers.
+It may seem weird that I return decimal but I’ve noticed
+that colleagues find me smart if I do
+**/</p>
+
+<p>public decimal Add(int x, int y)
+{
+   return x + y;
+}
+```</p>
+
+<p>This way the developer’s thoughts are transferred into the source code. Usually this kind of information is lost and
+shared only verbally as <em>tribal knowledge</em>. And more often than not such knowledge is completely lost, especially in
+teams which often change.</p>
+
+<h3 id="literate-programming-meet-real-life">Literate programming, meet real life</h3>
+
+<p>I’ve not exactly wrapped my head around literate programming an entire .NET application. For once real-life code consists
+of multiple source code file, which are not ordered in any particular way. I guess it would be possible to somehow
+organize namespaces into “chapters” and compose them of sections for each class/interface or maybe source code file.
+There are however additional obstacles such as various refactoring techniques. For example a method could be extracted.
+It could be necessary to “refactor” the prose part of the source file. A non-trivial task, especially if the description
+was written by another person.</p>
+
+<p>And of course there is a complete lack of tooling to accomplish a task of generating sensible “book” from a large project.</p>
+
+<h2 id="literate-documentation">Literate documentation</h2>
+
+<p>It may be not so simple to implement an entire program with literate programming but I personally find it very useful
+for creating living documentation. Usually code samples exist in one of two forms. Either as sample project, which shows
+how a library/program is used through examples. Even if documented with code comments, such samples are hardly reader-friendly.
+Very often (more often?) code samples are distributed as HTML or other documents with embedded code blocks, such as in
+this blog posting. However unlike blog postings, documentation should be kept up-to-dat, which rarely the case. Once
+created, static documentation is never updated in the future and quickly becomes outdated both in terms of the descriptions
+and code snippets.</p>
+
+<p>Alas, meticulously updated documentation suffers from an opposite problem, where users of older versions of a library
+only get the latest documentation available on a project wiki. Even if such wiki is source controlled, such as with
+GitHub or BitBucket, it’s not immediately possible to reach an appropriate historical revision.</p>
+
+<p>This is where literate programming comes handy but is not overwhelming. It takes the good from both approaches: you
+create runnable code, which demonstrate the usage of a given feature. This ensures that any API changes force the code
+to be update. With natural language description of the code, formatted in some kind of markup, stuffed between code
+pieces it is possible to automatically generate beautiful markup documents, which are always up to date. It should be
+even possible to convert them to PDF or RTF thanks to tools like <a href="http://johnmacfarlane.net/pandoc/">pandoc</a>.</p>
+
+<h3 id="can-do-that-in-net">Can do that in .NET?</h3>
+
+<p>I’ve created living documentation for two of my latest projects: <a href="https://github.com/MakoLab/RomanticWeb.Sample">Romantic Web</a> and <a href="https://github.com/wikibus/JsonLD.Entities/">JSON-LD Entities</a>.</p>
+
+<p>The first is a sample program, which uses the Romantic Web library. It is a standalone solution slash project, which
+builds to a Windows executable file.</p>
+
+<p>In the second project, a small serialization library, I took an alternate approach. I created a separate project in the
+solution for documentation. In that project I add literate unit tests. This allows me not only to keep my documentation
+updated, but also boost code coverage. The code can be downloaded an debugged but learners just the same</p>
+
+<p>In both cases I can continuously integrate. I can tag the repository to align the code sample with changes in the
+library and so users of different version don’t get confused when they are using an older incarnation of the code.</p>
+
+<h3 id="so-how-do-you-do-it">So how do you do it?</h3>
+
+<p>Luca Bolognese create a small tool, called LLite, which processes a single code file in C#, F#, C or Java and simply
+turns the code “inside out” by unwrapping literate comment blocks and wrapping code in specified markers os simply indenting,
+thus creating a markdown or similar document. The tool’s code is <a href="http://github.com/lucabol/LLite">available on GitHub</a>. No binary is readily
+available so if you have trouble building (it’s F#), go ahead and grab the exe from the repositories mentioned above.
+And of course LLite is itself written in the literate programming style!</p>
+
+<p>Here’s what I do to convert a file to markdown with C# code blocks</p>
+
+<p><code>
+llite.exe Program.cs -co "</code> c#” -cc “<code>" -o readme.md
+</code></p>
+
+<p>Simple as that you can put it in your build pipeline to produce a markdown doc for each code file in your project. Here’s
+my documentation target in MSBuild</p>
+
+<p>``` xml</p>
+<ItemGroup>
+  <Compile Include="Readme.cs" />
+</ItemGroup>
+<Target Name="Generate Doc" AfterTargets="Build">
+  <Exec Command="$(path)\llite.exe %(Compile.FullPath) -l csharp -co &quot;``` c#&quot; -cc ```" WorkingDirectory="%(Compile.RelativeDir)" />
+</Target>
+<p>```</p>
+
+<p>This way each source code file added to the <code>.csproj</code> is processed. It could be then committed into the library or
+automatically extracted and pushed to a wiki repository.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

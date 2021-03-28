@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: uri | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/uri/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Towards server-side routing with URI Templates (RFC 6570)]]></title>
+    <link href="http://t-code.pl/blog/2016/11/Towards-server-side-routing-with-URI-Templates/"/>
+    <updated>2016-11-13T23:15:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/11/Towards-server-side-routing-with-URI-Templates</id>
+    <content type="html"><![CDATA[<p>There are many MVC frameworks out there and all of them share a common feature - routing. Most libraries use a form of
+URI patterns to match incoming requests. On top of powerful features like limiting allowed values to certain types or
+by using regular expressions, they all share a common flaw - great simplification of the <a href="https://tools.ietf.org/html/rfc3986">URI</a>.</p>
+
+<p>There is however a similar <a href="https://en.wikipedia.org/wiki/Internet_Standard#Proposed_Standard">proposed standard</a> described by <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a> and appropriately called <strong>URI Template</strong>
+As the name implies, it defines URI patterns which can be then expanded to actual URIs by substituting variables and work
+the opposite way by extracting variables from a given URI. This makes it a viable option for matching request URIs on the
+server to determine what code to execute, if any.</p>
+
+<!--more-->
+
+<h2 id="so-what-is-wrong-with-typical-routing">So what is wrong with typical routing?</h2>
+
+<p>In most libraries I have seen routing is declared simply by defining variables as URI segments:</p>
+
+<ul>
+  <li><a href="https://docs.djangoproject.com/en/1.10/topics/http/urls/">Django</a> is all about regex:
+    <ul>
+      <li><code>r'^blog/page(?P&lt;num&gt;[0-9]+)/$'</code></li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/NancyFx/Nancy/wiki/Defining-routes">Nancy</a>, <a href="https://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-in-aspnet-web-api">ASP.NET Web API</a>, <a href="https://github.com/ServiceStack/ServiceStack/wiki/Routing">Service Stack</a> or <a href="http://www.baeldung.com/spring-requestmapping">Spring</a> support a form of simplified URI Templates but extended with optional constraints:
+    <ul>
+      <li><code>/content/{Version*}/literal/{Slug*}</code> - greedy segments (All)</li>
+      <li><code>/ex/bars/{numericId:[\\d]+}</code> - number-only segment (Spring)</li>
+      <li><code>users/{id:int}</code> number-only segment (Nancy, Web API)</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/NancyFx/Nancy/wiki/Defining-routes">Nancy</a> also does regular expressions:
+    <ul>
+      <li><code>/(?&lt;age&gt;[\d]{1,2})</code></li>
+    </ul>
+  </li>
+  <li><a href="https://metacpan.org/pod/Dancer2::Manual#Route-Handlers">Dancer</a> and <a href="http://expressjs.com/en/guide/routing.html">Express</a> use a similar syntax and also support regular expressions:
+    <ul>
+      <li><code>/users/:userId/books/:bookId</code> (Both)</li>
+      <li><code>/team/:team/**</code> (Dancer)</li>
+      <li><code>/ab(cd)?e</code> (Express)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The features to constrain segments to specific values using regular expression or some custom feature certainly is a
+powerful one but there is much more to URL than just segments (not to mention URI in general). The general syntax of an
+URL is as follows:</p>
+
+<p><code>
+scheme:[//[user:password@]host[:port]][/]path[?query][#fragment]
+</code></p>
+
+<p>In a web application the scheme will usually be HTTP(S). Let’s also ignore the user/password and host/port which aren’t
+usually the concern of a REST server accepting requests. That leaves us with the <a href="https://tools.ietf.org/html/rfc3986#section-3.3">path</a>, <a href="https://tools.ietf.org/html/rfc3986#section-3.4">query</a> 
+and <a href="https://tools.ietf.org/html/rfc3986#section-3.5">fragment</a>.</p>
+
+<blockquote>
+  <p>Do you notice already how typical routing completely neglects query and fragment?</p>
+</blockquote>
+
+<p>In my opinion they should be part of it. Why, you ask? Read on!</p>
+
+<h2 id="using-identifiers-like-you-probably-should">Using identifiers like you probably should</h2>
+
+<h3 id="query-string-is-part-of-the-identifier">Query string is part of the identifier</h3>
+
+<p>In a RESTful API the identifier is the complete URL. If the client does a request like</p>
+
+<p><code>http
+GET /user?id=123 HTTP/1.1 
+</code></p>
+
+<p>Why shouldn’t it be possible to include the query string parameter as part of the route? It is after all an integral part
+of the identifier. Yet all libraries that I’ve worked with require manual work to extract the value of <code>id</code> in user code.</p>
+
+<h3 id="segments-are-so-much-more-powerful">Segments are so much more powerful</h3>
+
+<p>The URI path is a series of zero or more segments delimited by the slash <code>/</code> character. And so an absolute path like
+<code>/users/tomasz/articles/uri-template</code> has four segments:</p>
+
+<ul>
+  <li>users</li>
+  <li>tomasz</li>
+  <li>articles</li>
+  <li>uri-template</li>
+</ul>
+
+<p>But segments are not necessarily just text. And they certainly don’t have to represent hierarchy of file system folders.</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">A friendly <a href="https://twitter.com/hashtag/RESTful?src=hash">#RESTful</a> reminder - URL path does not represent file-system hierarchy. Heck, it doesn&#39;t have to be a hierarchy at all <a href="https://twitter.com/hashtag/hypermedia?src=hash">#hypermedia</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/797895110306369536">November 13, 2016</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>A little known feature, which I’ve only just discovered very recently, are parametrized path segments. They work similarly
+to query strings:</p>
+
+<p><code>
+/segment1;param1=val1;param2=val2,val3/segment2
+</code></p>
+
+<p>See how <code>segment1</code> has extra bits attached. As JSON these parameters would be represented as</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“param1”:</span> <span class="err">“val1”,</span>
+</span><span class='line'>  <span class="err">“param2”:</span> <span class="err">[</span>
+</span><span class='line'>    <span class="err">“val2”,</span>
+</span><span class='line'>    <span class="err">“val3”</span>
+</span><span class='line'>  <span class="err">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>And here’s a practical example. A hypothetical API could serve a resource representing a collection of, say, books:
+<code>http://example.rest/books</code>. Another resource could be used to retrieve covers of those books: <code>http://example.rest/books/gallery</code>.
+Usually any manipulation of such resource is handed over ot query strings.</p>
+
+<p>So, what if the resource owner wanted to offer a gallery of books cover but only books by Oscar Wilde and only covers in
+PNG format. Because why not?</p>
+
+<p>The URL would probably look like <code>http://example.rest/books/gallery?author=Oscar%20Wilde&amp;format=png</code>. Do you also see the
+<a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">SRP</a> rule being validated? Why not instead use the URL like</p>
+
+<p><code>
+http://example.rest/books;author=Oscar%20Wilde/gallery;format=png
+</code></p>
+
+<p>And hey! Now it’s possible to just drop the last segment and leave</p>
+
+<p><code>
+http://example.rest/books;author=Oscar%20Wilde
+</code></p>
+
+<p>That looks like a resource containing books by Oscar Wilde. Despite the tweet quoted above, people do love URL hierarchies
+right? They probably <em>are</em> quite useful in the end.</p>
+
+<p>And it’s not just about <a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">single responsibility</a> of path segments (there probably isn’t such a thing). I don’t have
+empirical proof, but I would guess that parametrizing segments could lead to better controller/module/handler design.</p>
+
+<h2 id="so-how-do-i-implement-that">So how do I implement that?</h2>
+
+<p>Most languages probably have a library out there that implements the URI Template standard. So just go ahead a try to
+replace the routing in your favourite Web framework so that it works with RFC6570 instead. The books covers resource route
+shown above would become:</p>
+
+<p><code>
+/books{;author}/gallery{;format}
+</code></p>
+
+<p>Isn’t that nice? No query strings lurking in the implementation. Everything clear up front.</p>
+
+<h3 id="my-nancy-experiment">My Nancy experiment</h3>
+
+<p>I did precisely that and created a proof of concept in <a href="https://github.com/NancyFx/Nancy">Nancy</a>. It’s available on GitHub under 
+<a href="https://github.com/tpluscode/nancy.routing.uritemplates">https://github.com/tpluscode/nancy.routing.uritemplates</a> and
+hopefully I will make it into a useful library (there are still some issues to sort out).</p>
+
+<p>In the current shape the usage is akin to implementing a typical Nancy application. Instead of <code>NancyModule</code> you implement
+<code>UriTemplateModule</code> and replace the RouteResolver with <code>UriTemplateRouteResolver</code>. The actual route definition is just the
+same:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">TestModule</span> <span class="p">:</span> <span class="n">UriTemplateModule</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">TestModule</span><span class="p">()</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="err">“</span><span class="p">/</span><span class="n">books</span><span class="err">”</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Get</span><span class="p">(</span><span class="err">“</span><span class="p">{;</span><span class="n">author</span><span class="p">}/</span><span class="n">gallery</span><span class="p">{;</span><span class="n">format</span><span class="p">}</span><span class="err">”</span><span class="p">,</span> <span class="n">GetCoverGallery</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Such route will match <code>/books/gallery</code>, <code>/books;author=Shakespeare/gallery</code> and <code>/books/gallery;format=square</code>.</p>
+
+<h2 id="possible-issues">Possible issues?</h2>
+
+<p>Have you made that far? Great. Now it’s time to learn about the thorns that this rose has.</p>
+
+<h3 id="route-variable-constrains">Route variable constrains</h3>
+
+<p>In the beginning of this post I show how routing in existing libraries allow constraining captured variables using
+custom syntax or regular expressions. The URI Templates specification has no such notion neither any extensibility mechanism.</p>
+
+<p>This is not a great deal as far as I’m concerned. It should be possible to replicate the constraining functionality of
+Nancy or Spring by extending variable template expressions. The standard does reserve some characters for future use and
+they could serve as a separator between the variable name and the constraining expression. For example, to only allow
+the page variable of a collection to be an integer the template could be</p>
+
+<p><code>
+/collection{/page|int}
+</code></p>
+
+<p>The pipe character is reserved and as such cannot be a legal part of the expression. As a consequence, a web framework
+could reliably separate the <code>page</code> variable from the <code>int</code> constrain.</p>
+
+<h3 id="route-prioritization">Route prioritization</h3>
+
+<p>This is something I haven’t figured out yet. Nancy, and likely other libraries have the ability to work with multiple
+routes matching a given URL. For example routes <code>/page/{title}/{sub}</code> and <code>/page/about/{sub}</code> would both match a
+request for <code>/page/about/cats</code>. But because the <code>about</code> segment is an exact literal match in the latter route, that route
+would actually be executed. It’s potentially a deal-breaker and I’m eager to find a solution to that problem.</p>
+
+<h2 id="closing-words">Closing words</h2>
+
+<p>I’m looking forward to your comments here or at the <a href="https://github.com/tpluscode/nancy.routing.uritemplates">Nancy.Routing.UriTemplates</a>
+repository.</p>
+
+<p>I’m quite convinced that URI Templates should have been used for routing from get-go. To me it seems quite obvious now
+that hypermedia is becoming more and more recognized as an important design pattern and URI Templates are an important
+part of driving the clients between application states. 
+Being able to reuse the same technology on both client and server side should be very beneficial to visibility and maintainability
+of hypermedia-driven APIs.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

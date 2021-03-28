@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: nhibernate | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/nhibernate/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mapping System.Net.IPAddress as nvarchar with NHibernate]]></title>
+    <link href="http://t-code.pl/blog/2011/07/ipaddress-nvarchar-nhibernate-custom-mapping/"/>
+    <updated>2011-07-18T20:11:56-04:00</updated>
+    <id>http://t-code.pl/blog/2011/07/ipaddress-nvarchar-nhibernate-custom-mapping</id>
+    <content type="html"><![CDATA[<!--more-->
+
+<p>Without further ado, here’s an implementation of <a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-types-custom">IUserType</a>, which allows writing and reading instances of 
+<a href="http://msdn.microsoft.com/en-us/library/system.net.ipaddress.aspx">IPAddress</a> from a nvarchar column.</p>
+
+<p>The class inherits from the abstract UserType class described in my <a href="/2011/07/enum-int-custom-mapping-nhibernate/">previous post</a></p>
+
+<p>``` c#
+public class IpAddressAsString : UserType
+{
+  #region Overrides of UserType</p>
+
+<p>public override object NullSafeGet(IDataReader rs, string[] names, object owner)
+  {
+    object obj = NHibernateUtil.String.NullSafeGet(rs, names);
+    if (obj == null)
+    {
+      return null;
+    }
+    return IPAddress.Parse(obj.ToString());
+  }</p>
+
+<p>public override void NullSafeSet(IDbCommand cmd, object value, int index)
+  {
+    Check.Require(cmd != null);
+    if (value == null)
+    {
+      ((IDataParameter)cmd.Parameters[index]).Value = DBNull.Value;
+    }
+    else
+    {
+      ((IDataParameter)cmd.Parameters[index]).Value = value.ToString();
+    }
+  }</p>
+
+<p>public override SqlType[] SqlTypes
+  {
+    get { return new SqlType[] { SqlTypeFactory.GetString(15) }; }
+  }</p>
+
+<p>public override Type ReturnedType
+  {
+    get { return typeof(IPAddress); }
+  }</p>
+
+<p>#endregion
+}
+```</p>
+
+<p>I’d recently used this class to stored failed and successful logon attempts. Again it’s just too simple but I’m happy to share.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mapping Enum to int with NHibernate]]></title>
+    <link href="http://t-code.pl/blog/2011/07/enum-int-custom-mapping-nhibernate/"/>
+    <updated>2011-07-17T23:21:41-04:00</updated>
+    <id>http://t-code.pl/blog/2011/07/enum-int-custom-mapping-nhibernate</id>
+    <content type="html"><![CDATA[<p>I am pretty sure this subject has been raised numerous times already, but a quick google didn’t really give that many 
+results, hence this post.</p>
+
+<h2 id="is-there-a-problem-officer">Is there a problem officer?</h2>
+
+<p>Some time ago, while still newbie with <a href="http://www.nhforge.org">NHibernate</a> I struggled with the default way Enum 
+properties are mapped to database columns.</p>
+
+<!--more-->
+
+<p>The problem with NHibernate is that by default it maps enums as nvarchar columns. In my beginnings with NH this caused 
+me some data type mismatch related exceptions and to some extent minor frustration.</p>
+
+<p>Personally I wanted enum values mapped as integer, my rationale being space requirements and better performance, 
+especially if an index is applied over the column in question. As an example I will be using the minimalist mapping below:</p>
+
+<p>``` xml</p>
+<property name="UserType" type="Example.UserTypeEnum" />
+
+<p>```</p>
+
+<p>Now, as I metioned earlier, the above does not satisfy my expectations. In order to have the UserType property mapped to 
+an int column I implemented a custom <a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-types-custom">IUserType</a>.</p>
+
+<h2 id="the-solution-custom-value-type">The solution: Custom Value Type</h2>
+
+<p>The idea of a custom type is simple. Developers can get NHibernate to persist your property’s value to columns of types 
+not supported by the default persisters. It could even be used to persist a property to multiple columns, somewhat like 
+<a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-declaration-component">components</a></p>
+
+<p>My solution is simpler than that though. Implementation consists of three classes:</p>
+
+<ol>
+  <li>abstract UserType class, extending IUserType interface,</li>
+  <li>generic EnumAsInt32 class,</li>
+  <li>finally, implementation of the above.</li>
+</ol>
+
+<p>The first class exists to simplify further implementations. The IUserType contains definitions for many more method than 
+are actually required to tackle the issue at hand.</p>
+
+<p>``` c#
+public abstract class UserType : IUserType
+{
+    #region Implementation of IUserType</p>
+
+<pre><code>bool IUserType.Equals(object x, object y)
+{
+    return Equals(x, y);
+}
+
+public int GetHashCode(object x)
+{
+    return x == null ? 0 : x.GetHashCode();
+}
+
+public abstract object NullSafeGet(IDataReader rs, string[] names, object owner);
+
+public abstract void NullSafeSet(IDbCommand cmd, object value, int index);
+
+public virtual object DeepCopy(object value)
+{
+    return value;
+}
+
+public virtual object Replace(object original, object target, object owner)
+{
+    return original;
+}
+
+public virtual object Assemble(object cached, object owner)
+{
+    return cached;
+}
+
+public virtual object Disassemble(object value)
+{
+    return value;
+}
+
+/// &lt;summary&gt;
+/// The SQL types for the columns mapped by this type.
+/// &lt;/summary&gt;
+public abstract SqlType[] SqlTypes{ get;}
+
+/// &lt;summary&gt;
+/// The type returned by &lt;c&gt;NullSafeGet()&lt;/c&gt;
+/// &lt;/summary&gt;
+public abstract Type ReturnedType { get; }
+
+public bool IsMutable
+{
+    get { return false; }
+}
+#endregion } ``` The EnumAsInt32 class overrides the abstract methods of UserType and requires one generic argument - the type of mapped Enum type.
+</code></pre>
+
+<p>``` c#
+public class EnumAsInt32<T> : UserType
+{
+    #region Overrides of UserType</T></p>
+
+<pre><code>public override object NullSafeGet(IDataReader rs, string[] names, object owner)
+{
+    object obj = NHibernateUtil.String.NullSafeGet(rs, names);
+    if (obj == null)
+    {
+        return null;
+    }
+    return Enum.Parse(typeof(T), obj.ToString());
+}
+
+public override void NullSafeSet(IDbCommand cmd, object value, int index)
+{
+    Debug.Assert(cmd != null);
+    if (value == null)
+    {
+        ((IDataParameter)cmd.Parameters[index]).Value = DBNull.Value;
+    }
+    else
+    {
+        ((IDataParameter)cmd.Parameters[index]).Value = (int)value;
+    }
+}
+
+public override SqlType[] SqlTypes
+{
+    get { return new[] { SqlTypeFactory.Int32 }; }
+}
+
+public override Type ReturnedType
+{
+    get { return typeof(T); }
+}
+
+#endregion } ```
+</code></pre>
+
+<p>Implementation could end here, but with XML mappings, using generic types is pretty cumbersome. Personally I can never
+get the syntax right. For that reason it is easier to further extend EnumAsInt32.</p>
+
+<p><code>c#
+public class UserTypeEnumAsInt32
+    : EnumAsInt32&lt;Example.UserTypeEnum&gt;
+{
+}
+</code></p>
+
+<p>Simple as that. Too simple even, but the result is cleaner XML mapping:</p>
+
+<p>``` xml</p>
+<property name="UserType" type="UserTypeEnumAsInt32" />
+
+<p>```</p>
+
+<p>Of course the example lack namespaces, but otherwise it’s a fully functional code.</p>
+
+<p>Have fun coding! :)</p>
+]]></content>
+  </entry>
+  
+</feed>

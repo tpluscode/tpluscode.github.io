@@ -1,0 +1,680 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Publishing Polymer elements written in TypeScript (with dependencies) - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="A subjective guide to authoring and publishing custom elements written in Polymer with TypeScript">
+    
+        <meta name="keywords" content="polymer, typescript, bundling, publishing, modules">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/08/publishing-polymerts-elements/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Publishing Polymer Elements Written in TypeScript (With Dependencies)</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I love consuming <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements">custom elements</a> but writing them in <a href="http://polymer-project.org">Polymer</a> with ES5 is far from ideal. ES6 (<a href="http://benmccormick.org/2015/09/14/es5-es6-es2016-es-next-whats-going-on-with-javascript-versioning/">or
+more correctly ES2015</a>) could offer some improvement but it is still not officially supported by the Polymer
+team and their toolset.</p>
+
+<p>Thankfully, there is <a href="https://github.com/nippur72/PolymerTS">PolymerTS</a> which offers a vastly improved Polymer API, mainly thanks to decorators. It 
+also let’s developers take advantage of ES6 modules but there is one problem: how do you publish elements with dependencies
+both on JSPM packages and other elements from Bower?</p>
+
+<!--more-->
+
+<h2 id="tldr">TL;DR;</h2>
+
+<p>Here are some highlights from this post:</p>
+
+<ol>
+  <li>Don’t reference bower dependencies directly to avoid vulcanizing <code>polymer.html</code>
+  * reference them in package manager-specific entrypoint instead</li>
+  <li>Use <code>jspm build-sfx</code> to publish for Bower</li>
+  <li>Use <code>jspm bundle</code> to publish for JSPM</li>
+</ol>
+
+<h3 id="show-me-the-code-already">Show me the code already</h3>
+
+<p>I’ve created two example repositories:</p>
+
+<ol>
+  <li><a href="https://github.com/tpluscode/md-ed"><code>md-ed</code> - a component written in PolymerTS</a></li>
+  <li>its sample usage with <a href="https://github.com/tpluscode/md-ed-sample/tree/bower">Bower</a> and <a href="https://github.com/tpluscode/md-ed-sample/tree/jspm">JSPM</a></li>
+</ol>
+
+<h2 id="repo-setup">Repo setup</h2>
+
+<p>Inspired by the <a href="http://blog.charto.net/typescript/Taming-Polymer-with-SystemJS-and-TypeScript-part-1/">Taming Polymer post</a> by Juha Järvi, the initial setup involves preparing JSPM, SystemJS and 
+TypeScript. The original post however, discusses creating apps. Here I will show how to create, publish and consume a
+reusable element.</p>
+
+<p><strong>First</strong>, bootstrap JSPM by running <code>jspm init</code>. All question can be left with default answers except choosing TypeScript 
+as the transpiler.</p>
+
+<p><strong>Second</strong>, instruct SystemJS to assume <code>ts</code> as the default extension when loading your code. I usually place it in the 
+<code>src</code> folder and so update <code>config.js</code> file accordingly by adding the <code>packages</code> property for the sources folder.</p>
+
+<figure class="code"><figcaption><span>config.js</span><a href="https://github.com/tpluscode/md-ed/blob/master/config.js#L10">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">System</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">packages</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="s2">&quot;src&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">      <span class="s2">&quot;defaultExtension&quot;</span><span class="o">:</span> <span class="s2">&quot;ts&quot;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p><strong>Lastly</strong>, you will need PolymerTS itself and SystemJS plugin for loading HTML files using the ES6 <code>import</code> syntax. They
+are installed by running:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="sh"><span class="line">bower init
+</span><span class="line">bower i nippur72/PolymerTS --save
+</span><span class="line">jspm i <span class="nv">html</span><span class="o">=</span>github:Hypercubed/systemjs-plugin-html
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Note that unlike Juha Järvi, I install systemjs-plugin-html from jspm and not bower. It is also crucial that you explicitly
+set the name for the plugin by installing with <code>html=</code> prefix. Otherwise bundling, which I explain later in this post, will
+not work.</p>
+
+<h2 id="creating-elements">Creating elements</h2>
+
+<h3 id="internal-dependencies-and-html-templates">Internal dependencies and HTML templates</h3>
+
+<p>Because I’m using SystemJS with a transpiler, each element will be split into separate html and ts files. The HTML will 
+contain the <code>&lt;dom-module&gt;</code> element but no script. Instead, each of the elements’ code will import the template using the
+import syntax via the systemjs-plugin-html plugin. Note the <code>.html!</code> suffix. This is the outline of my <code>&lt;md-ed&gt;</code> element.</p>
+
+<figure class="code"><figcaption><span>md-ed.ts</span><a href="https://github.com/tpluscode/md-ed/blob/master/src/md-ed.ts">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ts"><span class="line"><span class="kr">import</span> <span class="s1">&#39;./md-ed.html!&#39;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span><span class="nx">DefaultMdBehavior</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;DefaultMdBehavior&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="err">@</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;md-ed&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="err">@</span><span class="nx">behavior</span><span class="p">(</span><span class="nx">DefaultMdBehavior</span><span class="p">)</span>
+</span><span class="line"><span class="kr">class</span> <span class="nx">MdEd</span> <span class="kr">extends</span> <span class="nx">polymer</span><span class="p">.</span><span class="nx">Base</span> <span class="p">{</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">MdEd</span><span class="p">.</span><span class="nx">register</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Similarly, any shared module or other local elements can be referenced using modules. Above you can see the second line
+which imports a behavior.</p>
+
+<h3 id="external-library-dependencies">External library dependencies</h3>
+
+<p>With the help of JSPM and SystemJS, your elements written in TypeScript (or ES6 I imagine) can reference virtually any
+external library. They can be packaged as AMD or CommonJS modules or as globals. JSPM unifies the module definitions so
+that most libraries simply work in the browser.</p>
+
+<p>The example component uses the <a href="https://github.com/chjj/marked">marked</a> library to parse markdown. It is an npm module
+which I install with JSPM as usual.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="sh"><span class="line">jspm i npm:marked
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now, it’s possible to import the library and use its functionality in the custom element:</p>
+
+<figure class="code"><figcaption><span>md-ed.ts</span><a href="https://github.com/tpluscode/md-ed/blob/master/src/md-ed.ts">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">import</span> <span class="s1">&#39;marked&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">class</span> <span class="nx">MdEd</span> <span class="kr">extends</span> <span class="nx">polymer</span><span class="p">.</span><span class="nx">Base</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="err">@</span><span class="nx">property</span><span class="p">({</span> <span class="nx">notify</span><span class="o">:</span> <span class="kc">true</span> <span class="p">})</span>
+</span><span class="line">    <span class="nx">markdown</span><span class="o">:</span><span class="nb">String</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="err">@</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">_markdownChanged</span><span class="p">(</span><span class="nx">md</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="nx">marked</span><span class="p">(</span><span class="nx">md</span><span class="p">);</span>
+</span><span class="line">        <span class="c1">// do something with parsed markdown</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="external-web-component-dependencies">External web component dependencies</h3>
+
+<p>Most web components are currently installed with bower. This is true for Google’s elements from <a href="https://elements.polymer-project.org">elements.polymer-project.org</a>
+and most I’ve seen on <a href="https://customelements.io">customelements.io</a>. Bower is used because it creates a flat directory structure which allows
+for predictable import links. Unfortunately, there is no built-in way for importing such dependencies. Also bundling won’t
+work for elements which explicitly import polymer.html. There is currently no way to exclude certain imports from the bundle
+which causes multiple Polymers. Needless to say, it is bad.</p>
+
+<p>So, if you need to reference a third party component like some Iron or Paper Elements simply install them from bower but
+don’t import them in any of your source files. Instead they will all be imported in an entrypoint - separate for Bower and
+JSPM.</p>
+
+<h2 id="publishing-for-bower">Publishing for Bower</h2>
+
+<p>Follow the instructions below if you want to publish you element to be consumed from Bower.</p>
+
+<h3 id="bundling">Bundling</h3>
+
+<p>Bundling is done by running the JSPM CLI which has a number of options. For Bower, I’ve found the <code>bundle-sfx</code>
+command works best, because it allows creating packages which require neither any specific module loader
+nor JSPM/SystemJS. Elements bundled this way will be possible to consume using bower just like any other element.</p>
+
+<p>I usually add the bundling command to NPM scripts:</p>
+
+<figure class="code"><figcaption><span>package.json</span><a href="https://github.com/tpluscode/md-ed/blob/master/package.json#L4">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="s2">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="s2">&quot;build-bower&quot;</span><span class="o">:</span> <span class="s2">&quot;jspm bundle-sfx src/md-ed - marked dist/bower/build.js --format global --globals \&quot;{&#39;marked&#39;: &#39;marked&#39;}\&quot;&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p><code>src/md-ed - marked dist/build/build.js</code> means that the root <code>src/md-ed.ts</code> file and it’s dependent modules will be bundled 
+into <code>dist/bower/build.js</code> but will not include the marked library. The marked library will be added later as a bower
+dependency.</p>
+
+<p><code>--format global</code> creates a bundle without any module loaders. This is enough for bower and web components.</p>
+
+<p>Finally, the <code>--globals "{'marked': 'marked'}"</code> switch is required for some excluded modules when bundling. It tells
+JSPM what global variable to use when injecting dependencies into your bundled modules.</p>
+
+<p>I’m intentionally not minifying the contents. The consumer will do so when bundling his or her actual application.</p>
+
+<p>Now, running <code>npm run build-bower</code> will create a <code>bower/dist/build.js</code> with transpiled and bundled scripts and <code>bower/dist/build.html</code>
+with <a href="https://github.com/Polymer/vulcanize">vulcanized</a> files. Interestingly, the html must exist beforehand, which looks like a bug in the SystemJS html
+plugin. Simply create one before running the npm script:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="sh"><span class="line">mkdir dist
+</span><span class="line">touch build.html
+</span><span class="line">npm run build-bower
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Oh, and don’t exclude the <code>dist</code> folder from git. You’ll want to push the bundled files with everything else.</p>
+
+<h3 id="packaging">Packaging</h3>
+
+<p>Most components published with Bower include a html file named same as the repository (and element). My element is called
+<code>md-ed</code> and so I created a <code>md-ed.html</code> file in the root of my repository. This will be the main entrypoint for consumers
+to import. Here’s the complete file:</p>
+
+<figure class="code"><figcaption><span>md-ed.html</span><a href="https://github.com/tpluscode/md-ed/blob/master/md-ed.html">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="c">&lt;!-- imports of bower dependencies --&gt;</span>
+</span><span class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../polymer-ts/polymer-ts.min.html&quot;</span><span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../paper-input/paper-textarea.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../paper-tabs/paper-tabs.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../iron-pages/iron-pages.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;../marked/lib/marked.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- import of bundled HTML files --&gt;</span>
+</span><span class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;dist/bower/build.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- this is required due to a bug in HTML loader for SystemJS --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">System</span> <span class="o">=</span> <span class="nx">System</span> <span class="o">||</span> <span class="p">{};</span>
+</span><span class="line">    <span class="nx">System</span><span class="p">.</span><span class="nx">register</span> <span class="o">=</span> <span class="nx">System</span><span class="p">.</span><span class="nx">register</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(){};</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- referencing the bundled, transpiled code of the element --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;dist/bower/build.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>At the top I added bower dependencies. It’s important that the paths don’t include <code>bower_components</code>. On the consumer 
+side, the elements will already live alongside other bower dependencies. I include all component dependencies and marked,
+which I excluded from the bundle. Shall you choose not to exclude some dependency, you would then keep it out of your
+bower entrypoint.</p>
+
+<p>Below the bundled files are referenced. There is some additional boilerplate here. The extra script is a remedy for another 
+shortcoming of the systemjs-plugin-html. It doesn’t play nice with the <code>bundle-sfx</code> command and leaves some references to
+SystemJS. This is simply to avoid <code>System is undefined</code> or similar errors.</p>
+
+<p>Finally, you may also want to add the file to you bower.json as <code>"main": "md-ed.html"</code>.</p>
+
+<figure class="code"><figcaption><span>bower.json</span><a href="https://github.com/tpluscode/md-ed/blob/master/bower.json#L4">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;md-ed&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;main&quot;</span><span class="p">:</span> <span class="s2">&quot;md-ed.html&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="consuming">Consuming</h3>
+
+<p>Consuming with Bower is as easy as it gets. Simply install the element:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="sh"><span class="line">bower install --save tpluscode/md-ed
+</span></code></pre></td></tr></table></div></figure>
+
+<p>add an import <code>&lt;link&gt;</code> and use the element on you page:</p>
+
+<figure class="code"><figcaption><span>https://github.com/tpluscode/md-ed-sample/blob/bower/index.html </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="cp">&lt;!doctype html&gt;</span>
+</span><span class="line"><span class="nt">&lt;html&gt;</span>
+</span><span class="line"><span class="nt">&lt;head&gt;</span>
+</span><span class="line">    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/webcomponentsjs/webcomponents.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line">    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;bower_components/md-ed/md-ed.html&quot;</span><span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;/head&gt;</span>
+</span><span class="line"><span class="nt">&lt;body&gt;</span>
+</span><span class="line">    <span class="nt">&lt;md-ed&gt;&lt;/md-ed&gt;</span>
+</span><span class="line"><span class="nt">&lt;/body&gt;</span>
+</span><span class="line"><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="publishing-for-jspm">Publishing for JSPM</h2>
+
+<p>Follow the instructions below if you want to publish you element to be consumed from JSPM.</p>
+
+<h3 id="bundling-1">Bundling</h3>
+
+<p>Unfortunately, the same bundling command doesn’t work for both Bower and JSPM. I’ve found that for JSPM it is best to
+use the <code>jspm bundle</code> command which produces a similar output but for use exclusively with SystemJS and no other module
+loaders. The npm script is similar but simpler than the command used for Bower:</p>
+
+<figure class="code"><figcaption><span>package.json</span><a href="https://github.com/tpluscode/md-ed/blob/master/package.json#L5">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="s2">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="s2">&quot;build-jspm&quot;</span><span class="o">:</span> <span class="s2">&quot;jspm bundle src/md-ed - marked dist/jspm/bundle.js&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It produces a similar output - combined scripts in <code>dist/jspm/bundle.js</code> file and vulcanized <code>dist/jspm/bundle.html</code>. Here
+the marked library is also excluded from the bundle.</p>
+
+<h3 id="packaging-1">Packaging</h3>
+
+<p>For consumers to be able to use your JSPM package it is also necessary to create a main entrypoint. For that purpose I 
+created an <code>md-ed.js</code> file in the root of the repository.</p>
+
+<figure class="code"><figcaption><span>md-ed.js</span><a href="https://github.com/tpluscode/md-ed/blob/master/md-ed.js">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ts"><span class="line"><span class="kr">import</span> <span class="s2">&quot;bower_components/polymer-ts/polymer-ts.min.html!&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="s2">&quot;bower_components/paper-input/paper-textarea.html!&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="s2">&quot;bower_components/paper-tabs/paper-tabs.html!&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="kr">import</span> <span class="s2">&quot;bower_components/iron-pages/iron-pages.html!&quot;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">import</span> <span class="s1">&#39;./dist/jspm/bundle.html!&#39;</span>
+</span><span class="line"><span class="kr">import</span> <span class="s1">&#39;./dist/jspm/bundle&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">System</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;src/md-ed.ts&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The outline is very similar to Bower’s entrypoint:</p>
+
+<ol>
+  <li>Import bower dependencies with HTML plugin</li>
+  <li>Import the bundled HTML and scripts</li>
+  <li>Load the element from the bundle</li>
+</ol>
+
+<p>The last step is necessary because JSPM bundles don’t immediately load any modules. They are just used to combine multiple
+modules in one script.</p>
+
+<p>For the element’s package to be installed correctly, the configuration file must include the main file, similarly to that
+of bower.</p>
+
+<p>A perceptive reader will also notice that I’m using ES6 module syntax above. SystemJS can handle this just fine provided the
+format option is set in <code>package.json</code>. Here’s mine, with both entrypoint script and the format set.</p>
+
+<figure class="code"><figcaption><span>package.json</span><a href="https://github.com/tpluscode/md-ed/blob/master/package.json#L8">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;jspm&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;main&quot;</span><span class="p">:</span> <span class="s2">&quot;md-ed.js&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;es6&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Publishing a package in ES6 syntax will also enable rescursive bundling of the element’s dependencies. Otherwise JSPM
+would not be able to bundle direct usages of <code>System.import</code>. In other words some dependencies would remain unbundled.</p>
+
+<h3 id="consuming-1">Consuming</h3>
+
+<p>Consumers, in order to us the element, must install it using JSPM but also install the necessary bower packages. The
+easiest seems to be installing the same element from both JSPM <strong>and</strong> bower. This way, albeit cumbersome when updating,
+will ensure that all necessary dependencies are pulled as well. To install the sample element one would eun the two 
+commands</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="sh"><span class="line">bower i tpluscode/md-ed --save
+</span><span class="line">jspm i github:tpluscode/md-ed
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Typically there would be single application module, like <a href="https://github.com/tpluscode/md-ed-sample/blob/jspm/app.js"><code>app.js</code></a>, which references all it’s dependencies. For our jspm
+component the import would be a simple <code>import 'tpluscode/md-ed'</code></p>
+
+<p>At runtime, it will pull all necessary files from bower and jspm components. The main <code>index.html</code> file will then reference
+the <code>app.js</code> script and uses SystemJS to load the add.</p>
+
+<figure class="code"><figcaption><span>https://github.com/tpluscode/md-ed-sample/blob/jspm/index.html </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="cp">&lt;!doctype html&gt;</span>
+</span><span class="line">        <span class="nt">&lt;html&gt;</span>
+</span><span class="line"><span class="nt">&lt;head&gt;</span>
+</span><span class="line">    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jspm_packages/system.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line">    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;config.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line">    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/webcomponentsjs/webcomponents.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;/head&gt;</span>
+</span><span class="line"><span class="nt">&lt;body&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="nt">&lt;md-ed&gt;&lt;/md-ed&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line">    <span class="nx">System</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;/body&gt;</span>
+</span><span class="line"><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I realize that the presented ideas are far from ideal. The web stack is not yet consistent enough, with its multiple
+package managers etc, to support the modern ideas around web components. Until it matures I hope that someone out there
+will find my ideas helpful.</p>
+
+<p>And please, if you think my bundling routine can be simplified, do leave me a note in the comments.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/08/publishing-polymerts-elements/';
+        var disqus_url = 'http://t-code.pl/blog/2016/08/publishing-polymerts-elements/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

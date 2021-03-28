@@ -1,0 +1,479 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>REST misconceptions part 1 - The URI confusion - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="In this post I discuss the misunderstanding and common abuse of identifiers in REST APIs">
+    
+        <meta name="keywords" content="hypermedia, rest, rest mistakes">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/02/rest-misconceptions-1/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">REST Misconceptions Part 1 - the URI Confusion</h1>
+	<div class="entry-content" itemprop="articleBody"><p>This is the second post in a series about REST, where I intend to debunk some commonly repeated mistakes and bad advice
+for practitioners of RESTful services. The central, and agreeably most important element of any API, is the resource. 
+On the Web resources are identified and addressed by URLs. REST defines some clear rules about these identifiers, yet we
+so commonly break them. Let’s see how this happens and what are the consequences.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><strong>Misuse of URIs</strong></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-2">Not linked enough</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">More than links</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-4">Resources are application state</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-6">Versioning</a></li>
+</ol>
+
+<h2 id="what-are-restful-identifiers">What are RESTful identifiers?</h2>
+
+<p>Are the URLs below RESTful?</p>
+
+<ul>
+  <li>http://events.beer/event/oktoberfest-2016/join</li>
+  <li>http://book.store/book/45</li>
+  <li>http://api.guru/a575c95c-da01-412c-b05e-7ea0c09a5c6a</li>
+  <li>http://space.travel/destination/nyc/delete?id=10</li>
+</ul>
+
+<p>Okay it was a trick question, because there is no such thing. If you haven’t, you should definitely watch <a href="https://youtu.be/pspy1H6A3FM?t=17m4s">this talk</a>,
+in which <a href="http://twitter.com/stilkov">Stefan Tilkov</a> discusses various REST mistakes including the misguided notion of RESTful URIs. 
+The misunderstanding of the <strong>identifier</strong> in Representational State Transfer is important and very often repeated. 
+Here’s what Roy Fielding writes about identifiers in <a href="http://presentations.t-code.pl/hateoas/fielding_dissertation.pdf#page=132">section <strong>6.2.4</strong> of his dissertation</a> (emphasis 
+mine).</p>
+
+<blockquote>
+  <p>Semantics are a by-product of the act of assigning resource identifiers and populating
+those resources with representations. <strong>At no time whatsoever do the server or client
+software need to know or understand the meaning of a URI</strong> — they merely act as a conduit
+through which the creator of a resource (a human naming authority) can associate
+representations with the semantics identified by the URI.</p>
+</blockquote>
+
+<p>In other words, the identifier is just a pointer used to access resource representations and has no meaning itself. It is
+a string and all resource semantics are included in the representation. Neither clients nor servers should have to parse
+and derive any meaning from the identifier. Nor should they have to construct identifiers from pieces.</p>
+
+<h2 id="uri-abuse">URI abuse</h2>
+
+<p>There are many ways the identifier is misunderstood by REST practitioners. In this post I will focus on the design of the
+URI itself but I will be raising this subject in subsequent posts because it appears to me that it’s the root cause of 
+most of the confusion surrounding REST.</p>
+
+<p>There are a multitude of <a href="http://stackoverflow.com/q/6845772/1103498">discussions</a>, <a href="http://www.restapitutorial.com/lessons/restfulresourcenaming.html">articles</a> and <a href="http://blog.2partsmagic.com/restful-uri-design/">blog posts</a>, which promote the idea
+that it is possible to state that <strong>one URI is better that another</strong>. Outside of REST this may be true. This may also
+be true if combined with some aspects of the HTTP protocol but otherwise it is false.</p>
+
+<blockquote>
+  <p>All URIs are made equal</p>
+</blockquote>
+
+<p>Otherwise it is just like saying the one number is better than another judging by face value alone. Here are some of the
+common arguments.</p>
+
+<h3 id="hacking-uris">Hacking URIs</h3>
+
+<p>I’ve seen this one a lot. <em>URI should be hackable, readable, meaningful, predictable</em> and whatnot. Sure there is no harm
+in hackable URI as long as it is not actually being hacked. There are very good articles on this by <a href="http://blog.ploeh.dk/2013/05/01/rest-lesson-learned-avoid-hackable-urls/">Mark Seeman</a>
+and <a href="http://www.ben-morris.com/hackable-uris-may-look-nice-but-they-dont-have-much-to-do-with-rest-and-hateoas/">Ben Morris</a>.</p>
+
+<p>The problem arises when clients actually start hacking URIs to construct server requests. Libraries have even appeared to
+help developers manually build identifiers. Here’s an example of <a href="https://github.com/mgonto/restangular">Restangular</a>, which its authors describe as
+<strong>AngularJS service to handle Rest API Restful Resources properly and easily</strong>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// Chain methods together to easily build complex requests</span>
+</span><span class="line"><span class="nx">$scope</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">one</span><span class="p">(</span><span class="s1">&#39;messages&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">).</span><span class="nx">one</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">).</span><span class="nx">getList</span><span class="p">(</span><span class="s1">&#39;unread&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="c1">// GET: /users/123/messages/123/from/123/unread</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Sure, it may be easy, but it’s definitely not a proper handling of a REST API. Such practice introduces coupling between
+the client and a specific URL scheme. First and foremost it violates the self-descriptiveness of a REST resource, because
+knowledge outside the representation is required. What is worse, such design is brittle, because the client will break
+whenever the URL structure changes.</p>
+
+<p>Hackable and readable identifier has only superficial value to the developer and should have no value to the client.</p>
+
+<h3 id="plural-or-singular">‘Plural or singular’</h3>
+
+<p>Some of my colleagues were surprised, but this <a href="http://stackoverflow.com/q/6845772/1103498">really is a thing</a>. There are heated discussions on the web on
+whether collections URI should be plural, but what about collection members. If there is a collections of book under
+<code>/books</code> resource. I could add a book by executing the POST method on the collection resource.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">POST</span> <span class="nn">/books</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line"><span class="na">Host</span><span class="o">:</span> <span class="l">http://book.store</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>In response I would return status code <code>201 Created</code> and a <code>Location</code> header. But what should be the header’s value?</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+</span><span class="line"><span class="na">Location</span><span class="o">:</span> <span class="l">?</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Should it be <code>/books/Hamlet</code> or <code>/book/Hamlet</code>? The answer is, it doesn’t matter. <strong>The client should follow links not
+mint URLs</strong>.</p>
+
+<h3 id="hierarchical-uris">Hierarchical URIs</h3>
+
+<p>There are proponents of URI schemes, where related resources are assigned a hierarchy of predictable set of identifiers. 
+Actually the above example is a good start and such design is quite intuitive. This after all how directory tree of a 
+filesystem works for example. One could expand the bookstore address space to include book chapters etc:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">http://book.store/books
+</span><span class="line">http://book.store/books/Hamlet
+</span><span class="line">http://book.store/books/Hamlet/chapters
+</span><span class="line">http://book.store/books/Hamlet/acts/
+</span><span class="line">http://book.store/books/Hamlet/acts/1
+</span><span class="line">http://book.store/books/Hamlet/acts/1/scenes
+</span><span class="line">http://book.store/books/Hamlet/acts/1/scenes/1</span></code></pre></td></tr></table></div></figure>
+
+<p>It encourages hacking URIs, which I brought up as my first example of URI abuse. Is that good design? Maybe it’s easier 
+to assign such identifiers when they are created. But this structure should not matter further on. That is because 
+<strong>the client should follow links not mint URLs</strong>.</p>
+
+<h3 id="nouns-not-verbs">Nouns not verbs</h3>
+
+<p>There is a rumor, which states that an URL must not contain verbs. Of course identifier such as 
+<code>http://book.store/books/Hamlet/reserve</code> may be an indication of bad design, which tries to imitate na RPC style API.
+But that is only true if HTTP verbs are not used correctly. For example</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">PUT</span> <span class="nn">/books/Hamlet/reserve</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">   &quot;for&quot;: &quot;/user/tpluskiewicz&quot;
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This is a bad idea, because <code>PUT</code> must be idempotent. The client should be safe to try again without risk. But replace it
+with <code>POST</code> and you’re fine. Also in most cases it’s possible to change the verb to noun and be done with it. There’s a
+<a href="https://looselyconnected.wordpress.com/2011/02/01/a-proposal-for-rest-and-verbs/">nice post</a> on that subject. To make the identifier more <em>RESTful</em> the URI can be changed to 
+<code>http://book.store/books/Hamlet/reservation</code> and used just the same way:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">POST</span> <span class="nn">/books/Hamlet/reservation</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">   &quot;for&quot;: &quot;/user/tpluskiewicz&quot;
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>But is the identifier more <em>RESTful</em>? No, again, because there is no such thing. <strong>It’s how the resource is used that 
+determines good API design, not the URI</strong>.</p>
+
+<h3 id="content-negotiation-is-not-the-uri">Content negotiation is not the URI</h3>
+
+<p>I don’t even know how to name this. How many times have you seen na API, which requires the client to include the format
+in the URI:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">http://book.store/books/Hamlet.json
+</span><span class="line">http://book.store/books/Hamlet.xml</span></code></pre></td></tr></table></div></figure>
+
+<p>Or worse yet</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">http://book.store/json/books/Hamlet
+</span><span class="line">http://book.store/xml/books/Hamlet</span></code></pre></td></tr></table></div></figure>
+
+<p>Do these pair identify two separate resources? Of course not, they both identify the book <em>The Tragedy of Hamlet, Prince
+of Denmark</em>. One could argue of course that they identify documents about the <code>/books/Hamlet</code> resource and that’s true.
+But these documents are two completely different resources. And trying to update the book by requesting</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">PUT</span> <span class="nn">/xml/books/Hamlet</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;
+</span><span class="line">&lt;book&gt;
+</span><span class="line">   &lt;title&gt;The Tragedy of Hamlet, Prince of Denmark&lt;/title&gt;
+</span><span class="line">&lt;/book&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Should change only the title for the XML document, if anything. To update the book itself the actual id <code>/books/Hamlet</code>
+should be used. And to request a specific format there is content negotiation. The server may then redirect to the document
+or add the <code>Content-Location</code> header but that is a different matter entirely. The <a href="https://www.w3.org/TR/cooluris/">distinction between resource</a> 
+and its document has been described by no one else but sir Tim Berners Lee himself.</p>
+
+<h3 id="query-string-parameters">Query string parameters</h3>
+
+<p>Okay, I do understand so of the arguments for the RESTful URI, but I’m totally stumped about this one. Here’s what I read</p>
+
+<blockquote>
+  <p>Query args (everything after the ?) are used on querying/searching resources (exclusively)</p>
+</blockquote>
+
+<p>Where did that come from? How is <code>/books?id=1234</code> worse than <code>/books/1234</code>? Please scroll back up and see again what Roy
+Fielding wrote about URIs. It’s the mapping from identifier to resource representation that matters and not whether the 
+URI has query parameter instead of a segment. If the server assigned it that way, so be it.</p>
+
+<p>Another point is whether a filtered collection resource is another resource? Foe example let’s search the <code>/books</code> resource 
+for other books by Shakespeare:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">GET</span> <span class="nn">/books?author=Shakespeare</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Does it mean that <code>/books?author=Shakespeare</code> is not a resource? It’s probably a matter of semantics and personal taste,
+but if someone chose to treat is as a separate <em>(derived)</em> resource then clearly the query string parameter is part of 
+the identifier. Deal with it.</p>
+
+<p>By the way, there a very interesting little book called <a href="http://www.amazon.com/Resource-Oriented-Architecture-Patterns-Synthesis-Lectures/dp/1608459500/">Resource Oriented Architecture Patterns</a>, which I call
+the <a href="http://c2.com/cgi/wiki?DesignPatternsBook">Gang of Four patterns</a> for designing resources.</p>
+
+<h2 id="good-uri-design">Good URI design</h2>
+
+<p>A RESTful URI doesn’t exist but this doesn’t mean that there aren’t good and bad ways to design identifiers. Let’s just
+accept the fact that it usually is not directly related to REST style anyway. And alone never makes an API better or 
+worse in that regard.</p>
+
+<h2 id="proper-use-of-uris">Proper use of URIs</h2>
+
+<p>What really matters is how a URI is used. I’ve already touched that subject when I mentioned the use of verbs. Also
+content negotiation qualifies as misuse of URIs. But worst of all, particularly in terms of REST APIs, is that representations
+are not linked. Without links no wonder clients have to hack and mint URIs all the time. This simple yet rarely employed
+practice will be the topic of my next post.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/02/rest-misconceptions-1/';
+        var disqus_url = 'http://t-code.pl/blog/2016/02/rest-misconceptions-1/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

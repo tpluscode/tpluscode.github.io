@@ -1,0 +1,445 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>REST misconceptions part 3 - More than links - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Plain links between resources are not enough to implement a rich REST client. The server must supply the clients with a comprehensive metadata about &hellip;">
+    
+        <meta name="keywords" content="hypermedia, rest">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/03/rest-misconceptions-3/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">REST Misconceptions Part 3 - More Than Links</h1>
+	<div class="entry-content" itemprop="articleBody"><p>In the fourth part of my REST series I will expand the idea of links. Links are just a stepping stone no matter how important.
+Simple links aren’t enough for the client to interact with the server. After all how is it going to know when to <code>POST</code>
+and when to <code>PUT</code> or what are the required parameters and request bodies. This is where affordances come into play. It
+means that the server should include all information the client needs. Just as defined by the <strong>self-descriptive</strong> constraint.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-2">Not linked enough</a></li>
+  <li><strong>More than links</strong></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-4">Resources are application state</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-6">Versioning</a></li>
+</ol>
+
+<h2 id="affordances">Affordances</h2>
+
+<p>The word <em>affordances</em> is derived from the verb <em>to afford</em> and simply means what a person (or client) can and cannot do. 
+Affordances are a very important aspect of a REST API, because they are precisely what sets it apart from RPC-style APIs.
+In an RPC style architecture, the client must know up-front what the interface allows. That information can be provided in
+the form of SOAP’s WSDL documents, CORBA’s IDLs or exposed via a RMI Registry. It is then used by the client to generate 
+programming objects used to access the remote API as if it was local.</p>
+
+<p>Problems arise when the API evolves, because old clients are at risk of breaking until they are updated to work with a new
+version of the API. This is not how the Web works. Human-browsable HTML document encapsulate all possible interactions
+in the form of links (<code>&lt;a&gt;</code>) and forms (<code>&lt;form&gt;</code>). When the <em>API</em> of any given web page changes, it’s not necessary to 
+perform any action. For example when a new parameter is required to perform an action, the <code>&lt;form&gt;</code> contained within the
+page simply displays an additional <code>&lt;input&gt;</code> or similar field.</p>
+
+<h2 id="affordances-and-rest">Affordances and REST</h2>
+
+<p>The web browser example above is very common among the proponents of REST. The web can work this way thanks to the <em>Hypertext
+Markup Language</em> or HTML. More precisely, it works because disparate parties agreed upon the crucial technical details so
+that any client understanding HTML document could operate in a similar manner. There may have been weird, non-standard
+quirks like the infamous <code>&lt;marquee&gt;</code> element, vast differences in Javascript and <a href="http://meowni.ca/posts/a-story-about-input/">ongoing trouble with the behaviour and
+appearance of <code>&lt;input&gt;</code> and friends</a>. The forms and links however have been consistent <em>(I think?)</em>, which
+means that a web page from 1998 will likely look old and too colorful and maybe very ugly <img class="emoji" title=":poop:" alt=":poop:" src="https://assets.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle" />, but it will still work just
+fine in terms of what you can click to go to other places.</p>
+
+<p>REST aspires to bring such timeless goodness to the way developers and users (with the help of clients) use their APIs.
+The human-facing Web works because there is the <code>text/html</code> <strong>media type</strong>. To work in similar fashion a REST API needs
+a media type rich enough so that servers can provide the client with all the information they need to make requests. Here’s
+what Roy T. Fielding wrote on <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">his blog</a>.</p>
+
+<blockquote>
+  <p><strong>A REST API should spend almost all of its descriptive effort in defining the media type(s) used for representing 
+resources and driving application state</strong>, or in defining extended relation names and/or hypertext-enabled mark-up for 
+existing standard media types. <strong>Any effort spent describing what methods to use on what URIs of interest should be 
+entirely defined within the scope of the processing rules for a media type</strong> (and, in most cases, already defined by 
+existing media types). <em>[Failure here implies that out-of-band information is driving interaction instead of hypertext.]</em></p>
+</blockquote>
+
+<p>It means that a response must contain all information about how the client interacts with the server. This includes the 
+shared understanding of the structure and meaning of the media type.</p>
+
+<h2 id="why-do-i-need-hypermedia">Why do I need hypermedia?</h2>
+
+<p>As with <a href="/blog/2016/02/rest-misconceptions-2">links, which decouple client’s from URI structures</a>, rich hypermedia 
+description makes it possible to decouple the client from the server thus insulating the client against changes in the
+server’s responses and input requirements. How many time have you written JavaScript code, which checks the state of an
+object, before calling the server? For example a blogging platform could disallow deleting of posts in certain conditions:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">function</span> <span class="nx">deleteMovie</span><span class="p">(</span><span class="nx">blogPost</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">blogPost</span><span class="p">.</span><span class="nx">isLocked</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">$</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">blogPost</span><span class="p">.</span><span class="nx">_links</span><span class="p">.</span><span class="nx">self</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Or what about creating and updating resources? Updating is simple, usually it would be a <code>PUT</code></p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">PUT</span> <span class="nn">/blog/2016/03/rest-misconceptions-3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Creating on the other hand can be modelled in a number of ways. It can be a <code>POST</code> to a collection</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">POST</span> <span class="nn">/blog</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;title&quot;: &quot;REST misconceptions part 3 - More than link&quot;,
+</span><span class="line">  &quot;permalink&quot;: &quot;/2016/03/rest-misconceptions-3&quot;
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>But it could just as well be a <code>PUT</code> to a identifier prepared by the server. Or maybe the client should be allowed to mint 
+a URI somehow and <code>PUT</code> the representation there?</p>
+
+<p>If you ever find yourself implementing the client in a way that it has to <em>know</em> such details about the server’s requirements,
+it means that you are violating the hypermedia constraint.</p>
+
+<h2 id="diy-hypermedia">DIY hypermedia</h2>
+
+<p>As we’ve established, to be fully RESTful a media type must be used, which allows for a rich description of the possible
+actions. That description is called <em>hypermedia controls</em>. Instead of implementing clients against specific URI structures
+or conventions, client should expect named actions.</p>
+
+<p>For example the Twitter API could attach a <code>retweet</code> relation to a single tweet. Such relations are similar to links. 
+Just as the client can expect a specific link it wants to follow, it could also expect an action or operation relation.
+The difference is that links are simple URI (or templates), whereas actions require additional details. There are a number
+of aspects, which a media type can describe about a an action. From a pragmatic standpoint, it is possible to just incrementally 
+extend resource representations as to remove the out-of-band <em>knowledge</em> the client requires.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">GET</span> <span class="nn">http://movies.sample/movie/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span class="line"><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/vnd.warpdrive+json</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;actions&quot;: [{
+</span><span class="line">    &quot;rel&quot;: &quot;addToFavourites&quot;,
+</span><span class="line">    &quot;method&quot;: &quot;POST&quot;,
+</span><span class="line">    &quot;URL&quot;: &quot;http://movies.sample/users/tpluskiewicz/favourites&quot;,
+</span><span class="line">    &quot;parameters&quot;: {
+</span><span class="line">      &quot;movie&quot;: &quot;http://movies.sample/movie/10&quot;
+</span><span class="line">    }
+</span><span class="line">  }]
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>I’ve just invented an <code>application/vnd.warpdrive+json</code> media type, which includes an array of possible actions and details
+about them. In this example I’m instructing the client how to <em>add a movie to favourites</em>. Depending on my needs I would
+extend it with more details:</p>
+
+<ul>
+  <li>accepted and returned media types,</li>
+  <li>contracts of request/response bodies,</li>
+  <li>input datatype constraints (ranges, etc),</li>
+  <li><a href="https://tools.ietf.org/html/rfc6570">URI templates</a>,</li>
+  <li><em>more</em>.</li>
+</ul>
+
+<p>All these details would be defined by the media type itself and implemented in a reusable library. All the API client
+needs to know is the <code>addToFavourites</code> relation name.</p>
+
+<h2 id="hypermedia-media-types">Hypermedia media types</h2>
+
+<p>Or is it just hypermedia types? Anyway, there are a ton of media type, which to some extent satisfy the needs of a hypermedia 
+constraints: <a href="http://stateless.co/hal_specification.html">HAL</a>, <a href="https://github.com/kevinswiber/siren">SIREN</a>, <a href="http://www.hydra-cg.com/spec/latest/core/">Hydra</a>, <a href="https://github.com/collection-json/spec">Collection+JSON</a>, <a href="http://tools.ietf.org/html/rfc4287">Atom</a>, <a href="https://github.com/JornWildt/Mason">MASON</a>, <a href="http://www.narwhl.com/">NARWHL</a>.
+They are not equally powerful, but all have a great advantage over do-it-yourself hypermedia type: <em>they are out there and
+understood by existing clients and tools</em>. So unless you’re creating a dedicated API for a single client application or
+an internal API for an organization it is worth adopting any existing media type. Doing otherwise would require a big
+investment in client libraries, so that clients can be built, which can interact with your API. As I wrote above there is
+a lot to consider when choosing a hypermedia type. I’ve come across two interesting approaches.</p>
+
+<h3 id="hypermedia-maturity-model">Hypermedia Maturity Model</h3>
+
+<p>I <a href="/blog/2015/12/hypermedia-maturity-model/">wrote before</a> about <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-i-hypermedia-ness/">two</a> <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-ii-the-missing-links/">post</a>, where Arnaud Lauret aka. API Handyman discussed what kind
+of descriptive power a good hypermedia type should have:</p>
+
+<ol>
+  <li>Include links to other resources</li>
+  <li>Describe possible actions</li>
+  <li>Describe how to execute those actions</li>
+  <li>Inform why some actions are unavailable</li>
+  <li>Describe complex workflows</li>
+</ol>
+
+<h3 id="h-factor">H-Factor</h3>
+
+<p>A similar, albeit a little earlier model for measuring the hypedmedianess of a media type is <a href="https://twitter.com/mamund">Mike Amundsen’s</a>
+<a href="http://amundsen.com/hypermedia/hfactor/">H-Factor</a>, or hypermedia factors, which defines a different set of features a media type can have:</p>
+
+<ol>
+  <li>Link Support
+    <ul>
+      <li><strong>[LE]</strong> Embedding links</li>
+      <li><strong>[LO]</strong> Outbound links</li>
+      <li><strong>[LT]</strong> Templated queries</li>
+      <li><strong>[LN]</strong> Non-Idempotent updates</li>
+      <li><strong>[LI]</strong> Idempotent updates</li>
+    </ul>
+  </li>
+  <li>Control Data Support
+    <ul>
+      <li><strong>[CR]</strong> Control data for read requests</li>
+      <li><strong>[CU]</strong> Control data for update requests</li>
+      <li><strong>[CM]</strong> Control data for interface methods</li>
+      <li><strong>[CL]</strong> Control data for links</li>
+    </ul>
+  </li>
+</ol>
+
+<p>They are displayed in the form of cute pyramids. Here’s the example of H-Factor for HTML:</p>
+
+<p><img src="http://amundsen.com/images/hypermedia/hfactors-html.png" alt="HTML H-Factor" /></p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/03/rest-misconceptions-3/';
+        var disqus_url = 'http://t-code.pl/blog/2016/03/rest-misconceptions-3/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: blog | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/blog/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[SOPA Wikipedia workaround]]></title>
+    <link href="http://t-code.pl/blog/2012/01/sopa-wikipedia-workaround/"/>
+    <updated>2012-01-18T10:04:28-05:00</updated>
+    <id>http://t-code.pl/blog/2012/01/sopa-wikipedia-workaround</id>
+    <content type="html"><![CDATA[<p><img class="center" src="/uploads/2012/01/WP_SOPA_Splash_Full.jpg" width="565" height="489" title="‘SOPA protest’" ></p>
+
+<!--more-->
+
+<p>Today the English Wikipedia will be unavailable in a protest against the <a href="http://en.wikipedia.org/wiki/SOPA]">2012/01/sopa-wikipedia-workaround/</a>.
+Or will it?</p>
+
+<p>On Chrome when you load any English Wikipedia article, the actual content flicker for a fraction of a second and then
+gets hidden under the SOPA protest content. This means that wikipedia hasn’t been disabled really and javascript is used
+to hide it’s content.</p>
+
+<p>If your really need wikipedia, there are three ways:</p>
+
+<ol>
+  <li>Hit ESC before the black screen appears</li>
+  <li><a href="http://lmgtfy.com/?q=Disable+Javascript+in+browser">Disable Javascript in your browser</a></li>
+  <li>After opening any wikipedia page copy the below text into you address bar and hit enter (works in Chrome)</li>
+</ol>
+
+<p><code>js
+javacript:$('#mw-sopaOverlay').remove();$('div').css('display', 'block');
+</code></p>
+
+<p>In other browsers you would have to paste the above into the javascript console. To open it there is a different shortcut
+in different browsers:</p>
+
+<ul>
+  <li>Chrome: ctrl+shift+j</li>
+  <li>IE: F12 and then click on console tab</li>
+  <li>Firefox: ctrl+shift+k</li>
+  <li>Opera: ctrl+shift+i and click on console tab</li>
+</ul>
+
+<h3 id="disclaimer">DISCLAIMER</h3>
+
+<p>I do not encourage you to ignore the reason why wikipedia decided to do such a move. I merely present ways for you to
+work with wikipedia shall you really need it.</p>
+
+<p>As far as SOPA is concerned, I totally agree with wikipedia and I support their cause!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How I chose WordPress. Part 1]]></title>
+    <link href="http://t-code.pl/blog/2011/06/how-i-chose-wordpress-part-1/"/>
+    <updated>2011-06-25T21:57:24-04:00</updated>
+    <id>http://t-code.pl/blog/2011/06/how-i-chose-wordpress-part-1</id>
+    <content type="html"><![CDATA[<p>Finally my blog is up. It took me ages to start it. OK, it’s not only a blog but also a small CV/portfolio kind of site. 
+And setting it up wasn’t quite as easy as I has hoped.</p>
+
+<p>I’ve tried a few content management systems lately and I am very much disappointed! Most of the option I tried are 
+advertised to work out of the box…</p>
+
+<!--more-->
+
+<h2 id="out-of-the-box-my-a">Out of the box my a**</h2>
+
+<p>OK. Let’s point one thing out. I have been trying to install all of my CMS of choice using Microsoft’s Web Platform 
+Installer. Maybe it would have been different, had I just downloaded the files and tried installing manually. That I do 
+not know. Still my impression is, CMS platforms for .NET simply don’t work as expected. At least not those I chose.</p>
+
+<p>In the next posts I will be sharing my thoughts and problems with my chosen and failed options:</p>
+
+<ul>
+  <li>Umbraco CMS</li>
+  <li>Kentico CMS</li>
+  <li>n2 CMS</li>
+  <li>DotNetNuke Community Edition</li>
+  <li>Composite C1</li>
+  <li>WordPress</li>
+</ul>
+
+<p>Please note once again. I tried installing each of the above using the Microsoft Web Platform Installer. And failed.
+Eventually I downloaded WordPress, set up a MySQL databse according to the 5-minute installation tutorial and voila!!
+It simply works. Maybe except the need to manually set up directory write permissions but that was easy ;)</p>
+
+<p>Thank you  WordPress!</p>
+]]></content>
+  </entry>
+  
+</feed>

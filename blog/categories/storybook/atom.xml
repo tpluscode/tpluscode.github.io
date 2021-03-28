@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: storybook | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/storybook/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Writing storybook inlined with markdown]]></title>
+    <link href="http://t-code.pl/blog/2018/08/storybook-markdown-inline/"/>
+    <updated>2018-08-11T12:15:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/08/storybook-markdown-inline</id>
+    <content type="html"><![CDATA[<p>What good are stories if you’re not actually telling them? Storybook is a fantastic and versatile tool
+to create runnable showrooms of elements written in a number of javascript libraries. It presents live
+examples of components but lack in plain old storytelling - the prose. There are addons but they are not 
+presentable enough (<a href="https://github.com/storybooks/storybook/blob/master/addons/notes">addon-notes</a>) or do not support all targets (<a href="https://github.com/storybooks/storybook/blob/master/addons/info">addon-info</a>).</p>
+
+<p>Here I present a different approach, using <a href="https://polymer.github.io/lit-html/">lit-html</a> and a markdown <a href="https://developers.google.com/web/fundamentals/web-components/customelements">custom element</a>. It works
+well with my web components but hopefully could be adapted to handle any supported framework.</p>
+
+<!--more-->
+
+<h2 id="what-are-you-talking-about">What are you talking about?</h2>
+
+<p>Even if the addon-notes could be easily styled ot addon-info worked with something else than only React, I
+kind of think that putting the textual description of the addons panel make them seem irrelevant. An
+afterthought. Instead, I’d rather it was a prominent part of each story. Sharing space with the live examples.
+Only then the stories create a complete documentation pages and not just a set of naked elements you can
+prod.</p>
+
+<p>Here’s the end effect presenting my web components: <a href="https://wikibus.github.io/lit-any/">https://wikibus.github.io/lit-any/</a></p>
+
+<p><img src="/images/lit-any.png" alt="lit-any storybook" /></p>
+
+<p>Isn’t that the way most documentations out there look like?</p>
+
+<h2 id="writing-stories-inside-markdown">Writing stories inside markdown</h2>
+
+<p>Creating a story is not much different from your typical setup.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">storiesOf</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘@</span><span class="nx">storybook</span><span class="o">/</span><span class="nx">polymer</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">html</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">lit</span><span class="o">-</span><span class="nx">html</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">lit</span><span class="o">-</span><span class="nx">extended</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">markdownNotes</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">.</span><span class="o">/</span><span class="nx">notes</span><span class="o">/</span><span class="nx">lit</span><span class="o">-</span><span class="nx">form</span><span class="o">/</span><span class="nx">fallback</span><span class="o">-</span><span class="nx">input</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">storiesOf</span><span class="p">(</span><span class="err">‘</span><span class="nx">my</span><span class="o">-</span><span class="nx">component</span><span class="err">’</span><span class="p">,</span> <span class="nx">module</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="err">‘</span><span class="nx">Nicely</span> <span class="nx">documented</span><span class="err">’</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">const</span> <span class="nx">story</span> <span class="o">=</span> <span class="nx">html</span><span class="o">&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">my</span><span class="o">-</span><span class="nx">component</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/my-component&amp;gt;&lt;/code&gt;;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>    <span class="k">return</span> <span class="nx">markdownNotes</span><span class="p">(</span><span class="nx">story</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>All of the markdown sits in a separate file. It is also javascript so I suppose it could be written right
+nex to the story itself.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="nx">md</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="nx">markdown</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">story</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">md</span><span class="err">`##</span> <span class="nx">My</span> <span class="nx">component</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">This</span> <span class="nx">is</span> <span class="nx">markdown</span><span class="p">.</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">h2</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;running-example&quot;</span><span class="o">&gt;</span><span class="nx">Running</span> <span class="nx">example</span><span class="o">&lt;</span><span class="err">/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">story</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">h2</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;how-it-works&quot;</span><span class="o">&gt;</span><span class="nx">How</span> <span class="nx">it</span> <span class="nx">works</span><span class="o">&lt;</span><span class="err">/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">More</span> <span class="nx">beautiful</span> <span class="nx">docs</span> <span class="nx">go</span> <span class="nx">here</span><span class="p">.</span> <span class="nx">And</span> <span class="nx">maybe</span> <span class="nx">more</span> <span class="nx">live</span> <span class="nx">examples</span> <span class="nx">too</span><span class="p">.</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">—</span><span class="nx">html</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">my</span><span class="o">-</span><span class="nx">component</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="nx">Instead</span> <span class="nx">of</span> <span class="nx">backticks</span> <span class="nx">hyphens</span> <span class="nx">are</span> <span class="nx">used</span> <span class="nx">to</span> <span class="nx">avoid</span> <span class="nx">slash</span> <span class="nx">escaping</span><span class="p">.</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/my-component&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">—`</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>As you see, the actual story will be rendered within the formatted text</p>
+
+<h2 id="rendering-markdown">Rendering markdown</h2>
+
+<p>The interesting bit you may notice above is the <code>md</code> import which in fact is a <a href="(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates">template string tag function</a>.
+Here’s my lit-html implementation which wraps all static portions with a markdown rendering custom element
+and combines them with the stories. It also handles non-template values so that it’s possible to inject
+not only stories but also any other content dynamically into the documentation template.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">html</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">lit</span><span class="o">-</span><span class="nx">html</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">lit</span><span class="o">-</span><span class="nx">extended</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">TemplateResult</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">lit</span><span class="o">-</span><span class="nx">html</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="p">..</span><span class="o">/</span><span class="nx">bower_components</span><span class="o">/</span><span class="nx">zero</span><span class="o">-</span><span class="nx">md</span><span class="o">/</span><span class="nx">build</span><span class="o">/</span><span class="nx">zero</span><span class="o">-</span><span class="nx">md</span><span class="p">.</span><span class="nx">html</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">createZeroMd</span><span class="p">(</span><span class="nx">markdown</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">const</span> <span class="nx">zeroMd</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="err">‘</span><span class="nx">zero</span><span class="o">-</span><span class="nx">md</span><span class="err">’</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">zeroMd</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">template</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">xmp</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="nx">$</span><span class="p">{</span><span class="nx">markdown</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/---/g</span><span class="p">,</span> <span class="s1">&#39;&lt;/code&gt;``’)}&amp;lt;/xmp&amp;gt;&amp;lt;/template&amp;gt;`;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">&lt;pre&gt;&lt;code&gt;return zeroMd; }</span>
+</span><span class='line'><span class="s1">&lt;/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">&lt;p&gt;export default function (strings, …keys) {</span>
+</span><span class='line'><span class="s1">    if (keys.length === 0) {</span>
+</span><span class='line'><span class="s1">        return html&lt;code&gt;${strings[0]}&lt;/code&gt;;</span>
+</span><span class='line'><span class="s1">    }&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">&lt;pre&gt;&lt;code&gt;let result = &#39;&#39;;</span>
+</span><span class='line'><span class="s1">let currentMarkdown = strings[0];</span>
+</span><span class='line'><span class="s1">keys.forEach((key, i) =&amp;gt; {</span>
+</span><span class='line'><span class="s1">    if (key.constructor === TemplateResult) {</span>
+</span><span class='line'><span class="s1">        result = html`${result} ${createZeroMd(currentMarkdown)} &amp;lt;br&amp;gt; ${key} &amp;lt;br &amp;lt;hr&amp;gt; &amp;lt;br&amp;gt; `;</span>
+</span><span class='line'><span class="s1">        currentMarkdown = &#39;</span><span class="err">&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">currentMarkdown</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">currentMarkdown</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">strings</span><span class="p">[</span><span class="nx">i</span><span class="p">]}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">key</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">===</span> <span class="nx">keys</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">currentMarkdown</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">currentMarkdown</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">strings</span><span class="p">[</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">result</span> <span class="o">=</span> <span class="nx">html</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">result</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">createZeroMd</span><span class="p">(</span><span class="nx">currentMarkdown</span><span class="p">)}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nx">result</span><span class="p">;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>Since I’m creating web components, it came natural to me to compose my documentation pages using lit-html
+and a 3rd party custom element to render markdown. There are a number to <a href="https://www.webcomponents.org/search/markdown">choose from</a>. I chose
+<code>&lt;zero-md&gt;</code> which works well and I simply have used it before. Any other should be good too as long as it
+can be be fed with markdown directly from HTML (as opposed to external <code>.md</code> files).</p>
+
+<p>To load it I use <code>polymer-webpack-loader</code>. I tried adding the element to <code>preview-head.html</code> but it 
+somehow interferes with the polyfill. Bundling with webpack is good enough. Installing from bower could also
+be a faux pas but hey, it works.</p>
+
+<h2 id="room-for-improvement">Room for improvement</h2>
+
+<p>At the point of writing the latest release of <code>lit-html</code> cannot render inside <code>&lt;template&gt;</code> tag. This should
+change soon but for now I build the <code>&lt;zero-md&gt;</code> elements by hand.</p>
+
+<p>Now that I think about it, the markdown rendering element could be replaced with simple JS-based
+transformation. The element however comes with styling capabilities and by default imports GitHub rendering
+styles.</p>
+
+<p>Another current limitation of lit-html is that <code>import { html } from 'lit-html</code> cannot be mixed with
+<code>import { html } from 'lit-html/lib/lit-extended</code>. It’s also about to change soon but something to keep in
+mind.</p>
+
+<p>A lit-html-based implementation probably would not work with React but it should be simple enough to compose
+the content with jsx instead in a similar fashion.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

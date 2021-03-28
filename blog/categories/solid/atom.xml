@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: solid | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/solid/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Strategy pattern and (one reason) why I love Nancy]]></title>
+    <link href="http://t-code.pl/blog/2016/03/strategy-pattern-nancy/"/>
+    <updated>2016-03-21T13:30:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/strategy-pattern-nancy</id>
+    <content type="html"><![CDATA[<p>The open-closed principle is the second letter of the <a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a> acronym. SOLID is a set of software design guidelines 
+which help build better software. The open-closed principle declares that</p>
+
+<blockquote>
+  <p>software entities should be open for extension, but closed for modification</p>
+</blockquote>
+
+<p>One way to satisfy this principle is through the use of the <a href="http://www.oodesign.com/strategy-pattern.html">Strategy design pattern</a>, sometimes called Policy. I’d
+like to show how easy it is to employ this pattern in reusable and extensible components for a <a href="https://github.com/NancyFx/Nancy/">Nancy</a> application.</p>
+
+<!--more-->
+
+<p><img src="/uploads/2016/03/Set_of_security_screw_driver_bits.jpg" alt="screwdrivers" /></p>
+
+<p>While implementing my <a href="https://github.com/wikibus/Argolis">Argolis</a> library I wanted to provide multiple extension points so that the behaviour can
+be changed by consumers. For example there is an interface called <code>ISupportedClassMetaProvider</code> which return some basic
+metadata about the given <code>Type</code>.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">namespace</span> <span class="nn">Hydra.Discovery.SupportedClasses</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">interface</span> <span class="n">ISupportedClassMetaProvider</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SupportedClassMeta</span> <span class="nf">GetMeta</span><span class="p">(</span><span class="n">Type</span> <span class="n">type</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>The default implementation <code>DefaultSupportedClassMetaProvider</code> looks at the type name and <code>[Description]</code> attribute to
+provide default label and description for a documented type. This can be changed by library consumers simply by creating
+a custom implementation from scratch, inheriting from the default implementation or decorating it.</p>
+
+<h2 id="registering-dependencies-with-nancy">Registering dependencies with Nancy</h2>
+
+<p>This is where Nancy comes in with it’s magnificent extensibility model. In Nancy there is <code>IRegistrations</code> interface and
+it’s abstract implementation called… <code>Registrations</code>. They provide simple abstraction over Dependency Injection, which
+is an integral part of Nancy. This abstraction will only let you do basic DI registrations, but it should be enough. Here’s
+an example setup which registers a shared instance of <code>IAppSettings</code> and an implementation of some <code>IUserContext</code>, which
+will be resolved per-request.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Registrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Register</span><span class="p">&lt;</span><span class="n">IAppSettings</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">WebConfigSettings</span><span class="p">());</span>
+</span><span class='line'>        <span class="n">Register</span><span class="p">&lt;</span><span class="n">IUserContext</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">UserContext</span><span class="p">),</span> <span class="n">Lifetime</span><span class="p">.</span><span class="n">PerRequest</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></IUserContext></IAppSettings></p>
+
+<p>Nancy will discover implementations of <code>IRegistrations</code> at startup and translate <code>Register&lt;&gt;()</code> calls to the underlying
+container. It is very important because Nancy supports <a href="https://github.com/NancyFx/Nancy/wiki/Container-Support">(m)any dependency injection container(s)</a> and
+otherwise it would not be possible to create reusable assemblies agnostic of the chosen DI library.</p>
+
+<h3 id="injecting-into-registrations">Injecting into <code>Registrations</code></h3>
+
+<p>Because the very same container is used to create instances of <code>IRegistrations</code>, it is even possible to inject into them.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Registrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">(</span><span class="n">IAppSettings</span> <span class="n">settings</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">settings</span><span class="p">.</span><span class="n">IsDebug</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">Register</span><span class="p">&lt;</span><span class="n">IUserContext</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">TestUserContext</span><span class="p">),</span> <span class="n">Lifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>            <span class="n">Register</span><span class="p">&lt;</span><span class="n">IUserContext</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">UserContext</span><span class="p">),</span> <span class="n">Lifetime</span><span class="p">.</span><span class="n">PerRequest</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></IUserContext></IUserContext></p>
+
+<p>Depending on the container used however this comes with a limitation that the injected type must either:</p>
+
+<ul>
+  <li>be a concrete type (resolving concrete types automatically is supported eg. by <a href="http://stackoverflow.com/a/3267742/1103498">Unity</a> or the bundled <a href="https://github.com/grumpydev/TinyIoC">TinyIoC</a>)</li>
+  <li>be registered up-front in the <a href="https://github.com/NancyFx/Nancy/wiki/Bootstrapping-nancy">Bootstrapper</a></li>
+</ul>
+
+<h2 id="providing-defaults-registrations-to-consumers">Providing defaults registrations to consumers</h2>
+
+<p>Because Nancy provides a container-agnostic way for registering dependencies and will discover them at startup it is
+trivially easy to bundle defaults within a reusable package. In addition to the above it is also possible to register
+defaults, which will only be used if no consumer-defined type is found. <img class="emoji" title=":tada:" alt=":tada:" src="https://assets.github.com/images/icons/emoji/unicode/1f389.png" height="20" width="20" align="absmiddle" /></p>
+
+<p><a href="https://github.com/wikibus/Argolis/blob/master/src/Lernaean.Hydra.Nancy/HydraRegistrations.cs">In Argolis</a> I have a 
+<code>HydraRegistrations</code> class, which defines defaults. It is also possible to register multiple implementations of which can
+be resolved as <code>IEnumerable&lt;&gt;</code>.</p>
+
+<p>Here’s an excerpt showing default registration for the <code>ISupportedClassMetaProvider</code> and three defaults for
+<code>IPropertyRangeMappingPolicy</code>.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">HydraRegistrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">RegisterWithDefault</span><span class="p">&lt;</span><span class="n">ISupportedClassMetaProvider</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">DefaultSupportedClassMetaProvider</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">RegisterWithUserThenDefault</span><span class="p">&lt;</span><span class="n">IPropertyRangeMappingPolicy</span><span class="p">&gt;(</span><span class="k">new</span><span class="p">[]</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">typeof</span><span class="p">(</span><span class="n">XsdDatatypesMappingPolicy</span><span class="p">),</span>
+</span><span class='line'>            <span class="k">typeof</span><span class="p">(</span><span class="n">XsdDatatypesNullablesMappingPolicy</span><span class="p">),</span>
+</span><span class='line'>            <span class="k">typeof</span><span class="p">(</span><span class="n">SupportedClassRangeMappingPolicy</span><span class="p">),</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></IPropertyRangeMappingPolicy></ISupportedClassMetaProvider></p>
+
+<p><code>RegisterWithDefault&lt;&gt;()</code> means that if not other implementation is found within user code, the type <code>DefaultSupportedClassMetaProvider</code>
+will be used.</p>
+
+<p><code>RegisterWithUserThenDefault&lt;&gt;()</code> means that the three given types will be used alongside any consumer’s implementations.</p>
+
+<h2 id="switching-the-policy">Switching the policy</h2>
+
+<p>So how does the user provide a different implementation of <code>ISupportedClassMetaProvider</code>? The easy way is simply creating
+an implementation and it will be registered instead. Alternatively it is possible to create another registrations class
+and register there.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ConsumerRegistrations</span> <span class="p">:</span> <span class="n">Nancy</span><span class="p">.</span><span class="n">Bootstrapper</span><span class="p">.</span><span class="n">Registrations</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Registrations</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Register</span><span class="p">&lt;</span><span class="n">ISupportedClassMetaProvider</span><span class="p">&gt;(</span><span class="k">typeof</span><span class="p">(</span><span class="n">MyBetterProvider</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></ISupportedClassMetaProvider></p>
+
+<h2 id="super-duper-happy-path-at-its-best">Super-duper-happy-path at its best</h2>
+
+<p>I can’t state enough how much I <img class="emoji" title=":sparkling_heart:" alt=":sparkling_heart:" src="https://assets.github.com/images/icons/emoji/unicode/1f496.png" height="20" width="20" align="absmiddle" /> this. Thanks to the <code>Registrations</code> class it is possible to create 
+reusable Nancy libraries, which don’t require any unnecessary setup.</p>
+
+<p>No boilerplate, no NuGet (<img class="emoji" title=":poop:" alt=":poop:" src="https://assets.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle" />) code generated from text templates, no DI-container dependency. It is just works out of
+the box. <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /></p>
+
+<p>Show me how your .NET web framework does it… <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" /></p>
+
+]]></content>
+  </entry>
+  
+</feed>

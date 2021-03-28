@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascript | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Writing storybook inlined with markdown]]></title>
+    <link href="http://t-code.pl/blog/2018/08/storybook-markdown-inline/"/>
+    <updated>2018-08-11T12:15:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/08/storybook-markdown-inline</id>
+    <content type="html"><![CDATA[<p>What good are stories if you’re not actually telling them? Storybook is a fantastic and versatile tool
+to create runnable showrooms of elements written in a number of javascript libraries. It presents live
+examples of components but lack in plain old storytelling - the prose. There are addons but they are not 
+presentable enough (<a href="https://github.com/storybooks/storybook/blob/master/addons/notes">addon-notes</a>) or do not support all targets (<a href="https://github.com/storybooks/storybook/blob/master/addons/info">addon-info</a>).</p>
+
+<p>Here I present a different approach, using <a href="https://polymer.github.io/lit-html/">lit-html</a> and a markdown <a href="https://developers.google.com/web/fundamentals/web-components/customelements">custom element</a>. It works
+well with my web components but hopefully could be adapted to handle any supported framework.</p>
+
+<!--more-->
+
+<h2 id="what-are-you-talking-about">What are you talking about?</h2>
+
+<p>Even if the addon-notes could be easily styled ot addon-info worked with something else than only React, I
+kind of think that putting the textual description of the addons panel make them seem irrelevant. An
+afterthought. Instead, I’d rather it was a prominent part of each story. Sharing space with the live examples.
+Only then the stories create a complete documentation pages and not just a set of naked elements you can
+prod.</p>
+
+<p>Here’s the end effect presenting my web components: <a href="https://wikibus.github.io/lit-any/">https://wikibus.github.io/lit-any/</a></p>
+
+<p><img src="/images/lit-any.png" alt="lit-any storybook" /></p>
+
+<p>Isn’t that the way most documentations out there look like?</p>
+
+<h2 id="writing-stories-inside-markdown">Writing stories inside markdown</h2>
+
+<p>Creating a story is not much different from your typical setup.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">storiesOf</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘@</span><span class="nx">storybook</span><span class="o">/</span><span class="nx">polymer</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">html</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">lit</span><span class="o">-</span><span class="nx">html</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">lit</span><span class="o">-</span><span class="nx">extended</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">markdownNotes</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">.</span><span class="o">/</span><span class="nx">notes</span><span class="o">/</span><span class="nx">lit</span><span class="o">-</span><span class="nx">form</span><span class="o">/</span><span class="nx">fallback</span><span class="o">-</span><span class="nx">input</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">storiesOf</span><span class="p">(</span><span class="err">‘</span><span class="nx">my</span><span class="o">-</span><span class="nx">component</span><span class="err">’</span><span class="p">,</span> <span class="nx">module</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="err">‘</span><span class="nx">Nicely</span> <span class="nx">documented</span><span class="err">’</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">const</span> <span class="nx">story</span> <span class="o">=</span> <span class="nx">html</span><span class="o">&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">my</span><span class="o">-</span><span class="nx">component</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/my-component&amp;gt;&lt;/code&gt;;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>    <span class="k">return</span> <span class="nx">markdownNotes</span><span class="p">(</span><span class="nx">story</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>All of the markdown sits in a separate file. It is also javascript so I suppose it could be written right
+nex to the story itself.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="nx">md</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="nx">markdown</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">story</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">md</span><span class="err">`##</span> <span class="nx">My</span> <span class="nx">component</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">This</span> <span class="nx">is</span> <span class="nx">markdown</span><span class="p">.</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">h2</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;running-example&quot;</span><span class="o">&gt;</span><span class="nx">Running</span> <span class="nx">example</span><span class="o">&lt;</span><span class="err">/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">story</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">h2</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;how-it-works&quot;</span><span class="o">&gt;</span><span class="nx">How</span> <span class="nx">it</span> <span class="nx">works</span><span class="o">&lt;</span><span class="err">/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">More</span> <span class="nx">beautiful</span> <span class="nx">docs</span> <span class="nx">go</span> <span class="nx">here</span><span class="p">.</span> <span class="nx">And</span> <span class="nx">maybe</span> <span class="nx">more</span> <span class="nx">live</span> <span class="nx">examples</span> <span class="nx">too</span><span class="p">.</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">—</span><span class="nx">html</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">my</span><span class="o">-</span><span class="nx">component</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="nx">Instead</span> <span class="nx">of</span> <span class="nx">backticks</span> <span class="nx">hyphens</span> <span class="nx">are</span> <span class="nx">used</span> <span class="nx">to</span> <span class="nx">avoid</span> <span class="nx">slash</span> <span class="nx">escaping</span><span class="p">.</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/my-component&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">—`</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>As you see, the actual story will be rendered within the formatted text</p>
+
+<h2 id="rendering-markdown">Rendering markdown</h2>
+
+<p>The interesting bit you may notice above is the <code>md</code> import which in fact is a <a href="(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates">template string tag function</a>.
+Here’s my lit-html implementation which wraps all static portions with a markdown rendering custom element
+and combines them with the stories. It also handles non-template values so that it’s possible to inject
+not only stories but also any other content dynamically into the documentation template.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">html</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">lit</span><span class="o">-</span><span class="nx">html</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">lit</span><span class="o">-</span><span class="nx">extended</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">TemplateResult</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">lit</span><span class="o">-</span><span class="nx">html</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="p">..</span><span class="o">/</span><span class="nx">bower_components</span><span class="o">/</span><span class="nx">zero</span><span class="o">-</span><span class="nx">md</span><span class="o">/</span><span class="nx">build</span><span class="o">/</span><span class="nx">zero</span><span class="o">-</span><span class="nx">md</span><span class="p">.</span><span class="nx">html</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">createZeroMd</span><span class="p">(</span><span class="nx">markdown</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">const</span> <span class="nx">zeroMd</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="err">‘</span><span class="nx">zero</span><span class="o">-</span><span class="nx">md</span><span class="err">’</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">zeroMd</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">template</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">xmp</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="nx">$</span><span class="p">{</span><span class="nx">markdown</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/---/g</span><span class="p">,</span> <span class="s1">&#39;&lt;/code&gt;``’)}&amp;lt;/xmp&amp;gt;&amp;lt;/template&amp;gt;`;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">&lt;pre&gt;&lt;code&gt;return zeroMd; }</span>
+</span><span class='line'><span class="s1">&lt;/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">&lt;p&gt;export default function (strings, …keys) {</span>
+</span><span class='line'><span class="s1">    if (keys.length === 0) {</span>
+</span><span class='line'><span class="s1">        return html&lt;code&gt;${strings[0]}&lt;/code&gt;;</span>
+</span><span class='line'><span class="s1">    }&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s1">&lt;pre&gt;&lt;code&gt;let result = &#39;&#39;;</span>
+</span><span class='line'><span class="s1">let currentMarkdown = strings[0];</span>
+</span><span class='line'><span class="s1">keys.forEach((key, i) =&amp;gt; {</span>
+</span><span class='line'><span class="s1">    if (key.constructor === TemplateResult) {</span>
+</span><span class='line'><span class="s1">        result = html`${result} ${createZeroMd(currentMarkdown)} &amp;lt;br&amp;gt; ${key} &amp;lt;br &amp;lt;hr&amp;gt; &amp;lt;br&amp;gt; `;</span>
+</span><span class='line'><span class="s1">        currentMarkdown = &#39;</span><span class="err">&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">currentMarkdown</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">currentMarkdown</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">strings</span><span class="p">[</span><span class="nx">i</span><span class="p">]}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">key</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">===</span> <span class="nx">keys</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">currentMarkdown</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">currentMarkdown</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">strings</span><span class="p">[</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">result</span> <span class="o">=</span> <span class="nx">html</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">result</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">createZeroMd</span><span class="p">(</span><span class="nx">currentMarkdown</span><span class="p">)}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nx">result</span><span class="p">;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>Since I’m creating web components, it came natural to me to compose my documentation pages using lit-html
+and a 3rd party custom element to render markdown. There are a number to <a href="https://www.webcomponents.org/search/markdown">choose from</a>. I chose
+<code>&lt;zero-md&gt;</code> which works well and I simply have used it before. Any other should be good too as long as it
+can be be fed with markdown directly from HTML (as opposed to external <code>.md</code> files).</p>
+
+<p>To load it I use <code>polymer-webpack-loader</code>. I tried adding the element to <code>preview-head.html</code> but it 
+somehow interferes with the polyfill. Bundling with webpack is good enough. Installing from bower could also
+be a faux pas but hey, it works.</p>
+
+<h2 id="room-for-improvement">Room for improvement</h2>
+
+<p>At the point of writing the latest release of <code>lit-html</code> cannot render inside <code>&lt;template&gt;</code> tag. This should
+change soon but for now I build the <code>&lt;zero-md&gt;</code> elements by hand.</p>
+
+<p>Now that I think about it, the markdown rendering element could be replaced with simple JS-based
+transformation. The element however comes with styling capabilities and by default imports GitHub rendering
+styles.</p>
+
+<p>Another current limitation of lit-html is that <code>import { html } from 'lit-html</code> cannot be mixed with
+<code>import { html } from 'lit-html/lib/lit-extended</code>. It’s also about to change soon but something to keep in
+mind.</p>
+
+<p>A lit-html-based implementation probably would not work with React but it should be simple enough to compose
+the content with jsx instead in a similar fashion.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Maintaining documentation of JS library in lockstep with code]]></title>
+    <link href="http://t-code.pl/blog/2018/05/js-living-docs/"/>
+    <updated>2018-05-06T18:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/05/js-living-docs</id>
+    <content type="html"><![CDATA[<p>I’ve long been aware of GitBook.com as a way to easily author documentation pages. What I did not know before
+was that it also comes with a robust tooling for building the book locally and building as a static website.
+Works great with GitHub Pages, albeit needing some specific setup to run from the <code>/docs</code> folder. In itself
+though it may just be a good-looking alternative to other static page generators or documentation builders.
+The difference however is the abundance of plugins, and one plugin in particular useful for documenting JS
+code.</p>
+
+<!--more-->
+
+<h2 id="setting-up-gitbook-for-github-pages">Setting up GitBook for GitHub pages</h2>
+
+<p>The GitBook toolchain has some setting which collide with how GitHub Pages expect you to organize your
+repository. It’s nothing really problematic but impossible to change so you may as well be aware of how
+to work with both together.</p>
+
+<p>The first step is to prepare your repository to host both code and documentation. See <a href="https://toolchain.gitbook.com">this gitbook</a>
+to set up and install the command line tool.</p>
+
+<p>Next, initialize a folder for the markdown sources of your documentation pages. I called that folder <code>gitbook</code>.
+You can do it by running the command below.</p>
+
+<p><code>bash
+gitbook init ./gitbook
+</code></p>
+
+<p>You will also have to create a <code>book.json</code> configuration file pointing to the root of you book</p>
+
+<p><code>json
+{
+  "root": "./gitbook"
+}
+</code></p>
+
+<p>To test your GitBook locally you can run <code>gitbook serve</code>. Note that you will want to ignore a folder called
+<code>_book</code> which is where the site is being generated for serving locally.</p>
+
+<p>Once you’ve created some pages you build static documentation pages by running <code>gitbook build</code>. In the latest
+version of GitBook CLI there is no setting to control the output folder and it will by default write the
+output to the same <code>_book</code> folder. GitHub pages however expects the static pages to be served from a <code>/docs</code>
+folder, which also cannot be changed. The only way to make both happy is to pass an output folder to the
+build command. I added a complete command to my <code>package.json</code>.</p>
+
+<p><code>json
+{
+  "scripts": {
+    "build": "webpack; gitbook build . docs"
+  }
+}
+</code></p>
+
+<p>This will take the sources from the root, as set up in <code>book.json</code> and write HTML to <code>/docs</code>. That should be,
+just commit and push to publish your book on github.io.</p>
+
+<h2 id="writing-live-snippets">Writing live snippets…</h2>
+
+<p>As mentioned before, GitBook itself is nice but the real great feature are numerous plugins, and one plugin
+in particular: <a href="https://www.npmjs.com/package/gitbook-plugin-runkit">RunKit</a>. 
+As <a href="https://runkit.com/">its page</a> states</p>
+
+<blockquote>
+  <p>RunKit is Node prototyping</p>
+</blockquote>
+
+<p>It lets anyone create actual live snippets running node with any package available on npmjs.org registry.
+It is actually possible to load any particular version, similarly to how you would install a specific version
+with Yarn on NPM. Additionally it also wraps the snippets in an async function so that they can use the 
+<code>await</code> keyword instead of promises and renders a nice output for JS objects or HTML. Go ahead and see what
+happens when you paste the snippet below snippet on <a href="https://runkit.com/">runkit.com</a>.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">fetch</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="err">‘</span><span class="nx">isomorphic</span><span class="o">-</span><span class="nx">fetch</span><span class="err">@</span><span class="mf">2.2</span><span class="p">.</span><span class="mi">0</span><span class="err">’</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">const</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//google.com’);</span>
+</span><span class='line'><span class="nx">await</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h3 id="inside-you-gitbook">…inside you GitBook…</h3>
+
+<p>Finally, the GitBook plugin makes it trivial to embed actual snippets within your documentation. To install
+it add the plugin in you <code>book.json</code></p>
+
+<p><code>json
+{
+  "plugins": [
+    "runkit"
+  ]
+}
+</code></p>
+
+<p>And run <code>gitbook install</code>.</p>
+
+<p>Now you can add a runkit embed using a special <code>runkit</code> block:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{% runkit %} 
+</span><span class='line'>const fetch = require(‘isomorphic-fetch@2.2.0’);&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;p>const xhr = await fetch(‘http://google.com’);
+</span><span class='line'>await xhr.text();
+</span><span class='line'>{% endrunkit %}</span></code></pre></td></tr></table></div></figure></p>
+
+<h3 id="and-keeping-them-up-to-date-with-code">…and keeping them up to date with code</h3>
+
+<p>The ability to request any chosen version from NPM has one great implication. You can have the embedded
+snippets always use a version matching the state of the repository. Instead of keeping a concrete number
+in the runkit snippets, GitBook lets the authors create variables and inject them in their pages. Here’s
+my config file:</p>
+
+<p><code>json
+{
+  "variables": {
+    "version": "0.4.0-a5"
+  }
+}
+</code></p>
+
+<p>It defines a variable which I use in all my snippets so that they use the most recent version of my
+library:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{% runkit %} 
+</span><span class='line'>const fetch = require(‘alcaeus@{{ book.version }}’);&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;p>// more snippet
+</span><span class='line'>{% endrunkit %}</span></code></pre></td></tr></table></div></figure></p>
+
+<p>At this point there are simple steps to follow in order to always have the documentation using the right
+version:</p>
+
+<ol>
+  <li>Change my code as usual</li>
+  <li>Publish next version to NPM</li>
+  <li>Update documentation</li>
+  <li>Bump the GitBook <code>version</code> variable</li>
+  <li>Build GitBook</li>
+  <li>Commit, tag and push repository</li>
+</ol>
+
+<p>This way the online documentation always point to the most recent version but anyone checking out any tag
+will be able to run the documentation as it existed at that point in time. And the code examples will use
+the matching version from NPM!</p>
+
+<h3 id="bonus-documentating-multiple-versions-of-the-library">Bonus: documentating multiple versions of the library</h3>
+
+<p>With a simple modification of these steps one could also keep multiple versions of the documentation,
+targeting multiple versions of the library.</p>
+
+<ol>
+  <li>Build the book to a <code>/docs/latest</code> instead</li>
+  <li>Whenever you’re ready to tag you repository, make a copy of that folder to one named after the
+version. For example <code>/docs/v0.9</code>, <code>/docs/1.0</code>, <code>/docs/2.0</code>, etc.</li>
+</ol>
+
+<p>This way you will keep all past versions documented alongside the latest on 
+<code>github.io/my-lib/v0.9</code>, <code>github.io/my-lib/v1.0</code> and <code>github.io/my-lib/v2.0</code> respectively.</p>
+
+<h2 id="see-it-in-action">See it in action</h2>
+
+<p>Go ahead and check Alcaeus’ documentation pages at <a href="https://alcaeus.hydra.how">https://alcaeus.hydra.how</a>
+to see live examples published using the RunKit plugin.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How to set up storybook to play nice with lit-html-based element]]></title>
+    <link href="http://t-code.pl/blog/2018/03/storybook-with-lit-html-and-polymer-3/"/>
+    <updated>2018-03-26T21:15:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/03/storybook-with-lit-html-and-polymer-3</id>
+    <content type="html"><![CDATA[<p>I’d like to share a few tips which might help you set up <a href="https://www.npmjs.com/package/@storybook/polymer">@storybook/polymer</a> with a JS-only elements. The
+core issue was importing a base mixin class from Polymer 3, which causes the default babel configuration to 
+transpile into an unusable bundle.</p>
+
+<!--more-->
+
+<h2 id="background">Background</h2>
+
+<p>In <a href="https://github.com/wikibus/lit-any">my code</a> I have a base class which uses Polymer’s <code>PropertiesChanged</code> mixin to offload handling attributes
+and properties:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">PropertiesChanged</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘@</span><span class="nx">polymer</span><span class="o">/</span><span class="nx">polymer</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">mixins</span><span class="o">/</span><span class="nx">properties</span><span class="o">-</span><span class="nx">changed</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">LitAnyBase</span> <span class="kr">extends</span> <span class="nx">PropertiesChanged</span><span class="p">(</span><span class="nx">HTMLElement</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="cm">/* rest of my code */</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>There is not build step and the code works great when bundled using webpack in an actual web application.</p>
+
+<h2 id="the-issue-with-storybook">The issue with storybook</h2>
+
+<p>Unfortunately this does not work of out the box with Storybook for Web Components (maybe it will be renamed
+after all). By design the storybook generates a shell <code>index.html</code> which loads web components polyfill and 
+<code>custom-elements-es5-adapter.js</code>. The latter requires that all <strong>ES6 be transpiled into ES5</strong>. Otherwise any of
+the code would not work in older browsers which do not support classes.</p>
+
+<p>The thing is though that it’s an all or nothing approach. Without the adapter all code must be ES6, as per
+<a href="https://developers.google.com/web/fundamentals/web-components/customelements#define">custom elements v1</a> spec. With the adapter on other hand it is not possible to mix the two approaches. So what
+happens when Storybook generates its bundle? My code gets transpiled as expected:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">LitAnyBase</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">_PropertiesChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">_inherits</span><span class="p">(</span><span class="nx">LitAnyBase</span><span class="p">,</span> <span class="nx">_PropertiesChanged</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">LitAnyBase</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">_classCallCheck</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">LitAnyBase</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">_this</span> <span class="o">=</span> <span class="nx">_possibleConstructorReturn</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">(</span><span class="nx">LitAnyBase</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">||</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">LitAnyBase</span><span class="p">)).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">_this</span><span class="p">;</span>   <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="cm">/* the ugly ES5 continues here */</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><code>_PropertiesChanged</code> however would still be as ES6 class <em>(because it comes from <code>node_modules</code>?)</em> even though
+they both end up in the very same bundle. The effect is a sight many web component developers probably witnessed:</p>
+
+<blockquote>
+  <p>TypeError: Class constructor PropertiesChanged cannot be invoked without ‘new’</p>
+</blockquote>
+
+<h2 id="solution">Solution</h2>
+
+<p>It had taken me a few hours of futile experiments with various webpack and babel configs until my colleague 
+<a href="https://twitter.com/riscent">Kamil</a> helped me out. Turns out all it took was a minimal babel setup.</p>
+
+<h3 id="initial-setup">Initial setup</h3>
+
+<p>First things first, here are the steps I used to set up Storybook in my repository, similar to the
+<a href="https://storybook.js.org/basics/slow-start-guide/">Slow start guide</a></p>
+
+<ol>
+  <li><code>yarn add -D @storybook/polymer</code></li>
+  <li>Create the NPM script</li>
+  <li>Create my <a href="">config</a> and a first <a href="">story</a></li>
+</ol>
+
+<p>When started, nothing will show and the error mentioned above will be reported in the console.</p>
+
+<h3 id="steps-to-fix">Steps to fix</h3>
+
+<p>Turns out the fix is not so difficult but also not obvious for a weekend JS dev <img class="emoji" title=":joy:" alt=":joy:" src="https://assets.github.com/images/icons/emoji/unicode/1f602.png" height="20" width="20" align="absmiddle" />.
+One, it’s necessary to install babel presets:</p>
+
+<p><code>
+yarn add -D babel-preset-react babel-preset-env babel-preset-es2015 babel-preset-stage-0
+</code></p>
+
+<p>Next create <code>.babelrc</code> as follows. It is interesting that <code>es2015</code> in not required to be called out
+explicitly but it has to be installed as a dependency nonetheless.</p>
+
+<p><code>json
+{
+  "presets": ["react", "env", "stage-0"]
+}
+</code></p>
+
+<p>Then also <code>yarn add -D babel-plugin-transform-decorators-legacy</code>.</p>
+
+<p>Finally the simplest webpack config must be added next to storybooks config file.</p>
+
+<p><code>js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader'
+      }
+    ]
+  }
+};
+</code></p>
+
+<p>It will cause all of <code>node_modules</code> to be loaded by babel which can take significantly more to build, but
+hey, at least now my storybook works! <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /></p>
+
+<h2 id="update-for-storybook-4">Update for Storybook 4</h2>
+
+<p>I recently updated to Storybook <code>4.0.alpha.9</code>. It seems to be working fine despite some benign errors showing 
+in the console. It didn’t “just work” though. Right after upgrade I was running into similar issues with bundling.
+To fix that the <code>babel-loader</code> needs a minor tweak:</p>
+
+<p><code>diff
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
++       exclude: /node_modules\/@webcomponents/
+      }
+    ]
+</code></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Building UI like LEGO (with string template literals)]]></title>
+    <link href="http://t-code.pl/blog/2017/08/lego-templates-with-template-literals/"/>
+    <updated>2017-08-29T22:45:00+00:00</updated>
+    <id>http://t-code.pl/blog/2017/08/lego-templates-with-template-literals</id>
+    <content type="html"><![CDATA[<p>Some time ago I experimented and <a href="/blog/2016/04/hypermedia-driven-ui/">wrote</a> about building composable UI using Polymer and <code>&lt;template&gt;</code> was my
+main building block. I used it to declare building blocks for my pages which I would dynamically interchange depending on
+the displayed content. Unfortunately I’ve hit a number of roadblocks but I think I’ve just recently found a solution.</p>
+
+<!--more-->
+
+<p>Just last week I attended the <a href="https://www.youtube.com/watch?v=yTASiOaXlck">third Polymer Summit</a> in Copenhagen where <a href="https://twitter.com/justinfagnani">Justin Fagnani</a> showed his
+newest experiment: <a href="https://github.com/PolymerLabs/lit-html"><code>lit-html</code></a>. You should definitely watch his presentation:</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">What is the middle ground between full VDOM and manual DOM manipulation? Check out <a href="https://twitter.com/justinfagnani">@justinfagnani</a>’s lit-html <a href="https://t.co/a0aR7c70FV">https://t.co/a0aR7c70FV</a></p>&mdash; Surma (@DasSurma) <a href="https://twitter.com/DasSurma/status/902500278905303041">August 29, 2017</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="the-end-of-dom-module">The end of <code>&lt;dom-module&gt;</code></h2>
+
+<p>Why is this important? Apparently, the next version of Polymer won’t directly use the <code>&lt;template&gt;</code> tag. Instead, it will
+be 100% JS. Yes, you heard correctly. No more <code>&lt;dom-module&gt;</code>:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">Element</span> <span class="nx">as</span> <span class="nx">PolymerElement</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="err">@</span><span class="nx">polymer</span><span class="o">/</span><span class="nx">polymer</span><span class="o">/</span><span class="nx">polymer</span><span class="o">-</span><span class="nx">element</span><span class="p">.</span><span class="nx">js</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">MyElement</span> <span class="kr">extends</span> <span class="nx">PolymerElement</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="nx">get</span> <span class="nx">template</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="err">`</span>
+</span><span class='line'>      <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">h1</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="nx">Hello</span> <span class="nx">World</span><span class="o">!&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/h1&amp;gt;</span>
+</span><span class='line'>    <span class="err">`</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="err">‘</span><span class="nx">my</span><span class="o">-</span><span class="nx">element</span><span class="err">’</span><span class="p">,</span> <span class="nx">MyElement</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>As you see, instead of HTML+JS, there is only code. Looks more like React+JSX, doesn’t it? It sparked heated discussions
+at the conference, on Polymer’s Slack channel and on Twitter.</p>
+
+<p>At this stage though, the above <code>template()</code> method returns a static HTML string, which is then injected into a HTML
+template and later stamped into the element’s shadow root. Justin’s lit-html, akin to a number of earlier libraries takes
+this one step further, thanks to the properties of JavaScript’s <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Template_literals">template literals</a> (the backtick strings, duh!).</p>
+
+<h2 id="template-literals">Template literals</h2>
+
+<p>Here’s an example how a basic component could use lit-html</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">CountLit</span> <span class="kr">extends</span> <span class="nx">HTMLElement</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">this</span><span class="p">.</span><span class="nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>   <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">connectedCallback</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="err">‘</span><span class="nx">click</span><span class="err">’</span><span class="p">,</span> <span class="nx">e</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>   <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">times</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">counter</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">times</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">times</span> <span class="o">=</span> <span class="s1">&#39;times&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">html</span><span class="err">`</span><span class="nx">You</span> <span class="nx">clicked</span> <span class="nx">me</span> <span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">times</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">render</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>   <span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>This is has all advantages of JS: scoping, syntax highlighting and suggestions and the ability to compose a template from
+multiple other literals. This opens completely new possibilities where one can create decorator components or override
+extensible points of parent element. Features which were very cumbersome with plain <code>&lt;template&gt;</code> tags.</p>
+
+<p>But most importantly, lit-html is <strong>FAST</strong>.</p>
+
+<h2 id="lit-html-is-not-virtual-dom-but-better">lit-html is not Virtual DOM… but better</h2>
+
+<p>By design, the template literal can be prefixed with a tag (did you open the MDN link above?).
+A tag, in this case called <code>html</code> is actually a function with a simple signature:</p>
+
+<p><code>js
+html(strings, ...values);
+</code></p>
+
+<p>The strings will be an array of all static parts and the values are the interpolated expressions. The trick is that
+whenever the <code>render</code> function is called with the same template it will actually be just one instance (even if it’s) not
+visible in code. lit-html takes advantage of that fact and whenever the same template is used, it will only update any
+changed expressions.</p>
+
+<p>In the example above each click will only update a tiny piece of the rendered HTML which will keep DOM operations to the
+minimum. Even though the <code>times</code> variable is calculated each time, it will only ever be rendered when it actually changes
+between renders. Not every time.</p>
+
+<h2 id="so-what-about-declarative-ui">So what about declarative UI?</h2>
+
+<p>Previously I struggled to bend <code>&lt;template&gt;</code> to suit my needs in pursuit of a declarative solution for defining views
+which are dynamically selected based on the content.</p>
+
+<p>First of all, in my current implementation the order in which the templates appear in the page is important for the
+order in which the will be selected. In case there are multiple matches.</p>
+
+<p>Secondly, I used Polymer 1.0’s <a href="/blog/2015/08/polymer-templatizer/"><code>Templatizer</code></a> which not only disappeared in Polymer 2.0, but it was also
+notoriously buggy and hard to master.</p>
+
+<p>With <code>lit-html</code> I will be “freed” from Polymer and likely implement my elements will in plain JS. Additionally it will
+be much easier to work with those templates; to extend with ES classes and compose with less custom element on the page.</p>
+
+<h3 id="some-sample-code">Some sample code</h3>
+
+<p>At the top level would still be a view element</p>
+
+<p>```html</p>
+<object-view id="top-view"></object-view>
+
+<script>
+    var objectView = document.getElementById('top-view');
+    
+    objectView.object = {
+        "@type": "http://example.com/vocab#Person",
+        "http://example.com/vocab#avatar": {
+            "@type": "http://schema.org/ImageObject"
+        }
+    };
+</script>
+
+<p>```</p>
+
+<p>But from there on it could be all templates composed of smaller parts. Each part rendered with a template selected from
+some <code>templateRepository</code>.</p>
+
+<p>```js
+import {TemplateRepository} from ‘template-repository’;
+import {render} from ‘template-selector’;
+import {html} from ‘lit-html’;</p>
+
+<p>/**
+* Will render http://example.com/vocab#Person
+*/
+class PersonTemplate extends TypeTemplate {</p>
+
+<pre><code>get type() {
+    return 'http://example.com/vocab#Person';
+}
+
+get context() {
+    return { '@vocab': 'http://example.com/vocab#' };
+}
+
+get template(person) {
+    return html`&lt;h2&gt;
+                    ${person.name}
+                &lt;/h2&gt;
+                &lt;div class="details"&gt;
+                    &lt;a href="${person.website}"&gt;My website&lt;/a&gt;
+                &lt;/div&gt;
+                &lt;div class="avatar"&gt;
+                    ${render(person.avatar)}
+                &lt;/div&gt;`;
+} }
+</code></pre>
+
+<p>/**
+* Will render http://schema.org/ImageObject 
+*/
+class SchemaImageTemplate extends TypeTemplate {</p>
+
+<p>}</p>
+
+<p>TemplateRepository.append(PersonTemplate);
+TemplateRepository.append(SchemaImageTemplate);
+```</p>
+
+<p>The <code>render</code> imported above would select a template from the repository and insert it into the parent template. No need
+for nesting <code>&lt;object-view&gt;</code> elements. That is of course if I figure out how to observe changes ;)</p>
+
+<h2 id="bottom-line">Bottom line</h2>
+
+<p>I really do like what’s coming with Polymer 3.0. It will embrace ES6 modules, finally. It may be that Polymer will become
+more similar to Vue or React but it will still be closest to the Web Platform.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Inserting style tag dynamically with Prototype]]></title>
+    <link href="http://t-code.pl/blog/2011/09/inserting-style-tag-dynamically/"/>
+    <updated>2011-09-16T01:44:15-04:00</updated>
+    <id>http://t-code.pl/blog/2011/09/inserting-style-tag-dynamically</id>
+    <content type="html"><![CDATA[<p>Recently I created a small on-screen keyboard. I may present it on my blog some time later. For now I’d like to share my
+experience with IE behaving different than other browsers (yet again).</p>
+
+<p>The on-screen keyboard is a javascript class, which when created adds itself to document’s DOM. Doing that it also
+creates itself some styles. Those styles are also updated when keyboard’s properties change.</p>
+
+<!--more-->
+
+<p>I’m using <a href="http://www.prototypejs.org/">prototype</a> and my initial (simplified to the core idea) solution is listed below.</p>
+
+<p>``` js
+recreateStyles = function() {
+    styleElement = $(Numpad.styleId);</p>
+
+<pre><code>if (styleElement == null) {
+    $$('body')[0].insert(new Element('style', {
+        id: Numpad.styleId
+    }));
+}
+styleText = 'some style text';
+Element.update(Numpad.styleId, styleText); } ```
+</code></pre>
+
+<p>The above works perfectly with <em>most</em> modern browser. These include Chrome, Firefox and IE9. Unfortunately a fairly
+modern browser, which is IE8 refuses to add this style tag to the document. Not to mention IE6 ;)</p>
+
+<p>Fortunately Uncle Google already had a solution. Stoyan Stefanov posted at his blog a solution for this problem and also 
+a way to insert script tag dynamically. His post can be found here: <a href="http://www.phpied.com/dynamic-script-and-style-elements-in-ie/">http://www.phpied.com/dynamic-script-and-style-elements-in-ie/</a></p>
+
+<p>Below I extracted the important part, JS code:
+<code>js
+var ss1 = document.createElement('style');
+var def = 'some style text';
+ss1.setAttribute("type", "text/css");
+var hh1 = document.getElementsByTagName('head')[0];
+hh1.appendChild(ss1);
+if (ss1.styleSheet) {   // IE
+    ss1.styleSheet.cssText = def;
+} else {                // the world
+    var tt1 = document.createTextNode(def);
+    ss1.appendChild(tt1);
+}
+</code></p>
+
+<p>The above works fine and I could have stayed with it and adjusted my code accordingly, but as I mentioned before,
+I’m using prototype so I made the above utilize it:</p>
+
+<p>``` js
+Numpad.recreateStyleSheet = function () {
+    styleElement = $(Numpad.styleId);</p>
+
+<pre><code>if (styleElement == null) {
+    styleElement = new Element('style', {
+        id: Numpad.styleId
+        });
+    $$('body')[0].insert(styleElement);
+}
+
+styleText = 'some style text';&lt;/p&gt;
+
+$$('head')[0].insert(styleElement);
+if (styleElement.styleSheet) {   // IE
+    styleElement.styleSheet.cssText = styleText;
+} else {                // the world
+    styleElement.update(styleText);
+} }; ```
+</code></pre>
+
+<p>There! It’s a working way for inserting style tag into HTML document’s <code>&lt;head&gt;</code> (possibly anywhere), which works in IE8.
+I also tested it in recent versions of Opera and Chrome and Firefox 3.6.</p>
+]]></content>
+  </entry>
+  
+</feed>

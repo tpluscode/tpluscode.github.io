@@ -1,0 +1,336 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Versioning .NET git projects - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Ever struggled with setting assembly versions in .NET projects? Here's a simple a elegant way!">
+    
+        <meta name="keywords" content="assembly version, git, versioning software, .net framework">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2014/08/versioning-git-projects/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Versioning .NET Git Projects</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I myself have always struggled with proper versioning of .NET software. I’m not alone:</p>
+
+<ul>
+  <li><a href="http://stackoverflow.com/questions/3768261/best-practices-guidance-for-maintaining-assembly-version-numbers">Best practices/guidance for maintaining assembly version numbers</a></li>
+  <li><a href="http://stackoverflow.com/questions/64602/what-are-differences-between-assemblyversion-assemblyfileversion-and-assemblyin">What are differences between AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion?</a></li>
+</ul>
+
+<p>A linked issue, which adds to the complexity is mixing .NET versioning with NuGet SemVer guidelines.
+This has been described for example in this <a href="http://ruthlesslyhelpful.net/2012/03/05/build-numbering-and-versioning/">blog post</a></p>
+
+<!--more-->
+
+<p>TL; DR; <a href="#solution">click here</a></p>
+
+<h2 id="setting-version-numbers-in-net-projects">Setting version numbers in .NET projects</h2>
+
+<p>Empty .NET projects come with a AssemblyInfo.cs file, which contains assembly attributes, most notably</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="na">[assembly: AssemblyVersion(&quot;2.3&quot;)]</span>
+</span><span class="line"><span class="na">[assembly: AssemblyFileVersion(&quot;2.3.4.1556&quot;)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The first line determines the version of the program or library. That’s the number you mean when you say that you add
+reference to library version 2.3. The second number is a more detailed number which can be incremented separately, for
+example to distinguish subsequent versions, which did not introduce any breaking changes. Although there is no such
+requirement, it’s probably sensible to keep the first two numbers aligned.</p>
+
+<h2 id="constructing-version-numbers">Constructing version numbers</h2>
+
+<h3 id="one-of-the-microsoft-ways">(One of) the Microsoft way(s)</h3>
+
+<p>Let’s take the assembly version number from above: <code>2.3.4.1556</code>. It is constructed from four integers
+separated by dots.</p>
+
+<ul>
+  <li>2 - major version</li>
+  <li>3 - minor version</li>
+  <li>4 - build version</li>
+  <li>1556 - revision</li>
+</ul>
+
+<p>I personally find these monikers quite misleading. Is build number an automatically incremented? Does it make sense
+actually? Exact same source code would yield a different number on a build server and each developer’s machine.</p>
+
+<p>And what about revision number? With centralized version control systems like SVN traditionally I would see the commit
+number be used here. So the above would mean that the code was built from revision 1556. This has a number of problems:</p>
+
+<ol>
+  <li><strong>each version segment cannot exceed 65535</strong> - a problem for large repositories, probably shared between multiple projects in an organization</li>
+  <li><strong>this will not work with git or mercurial</strong> - decentralized VCS use numeric commit numbers only locally - if at all. And SHA1 is a no-go, because version number cannot contain alpha characters<br /></li>
+</ol>
+
+<h3 id="the-other-microsoft-way">The other microsoft way</h3>
+
+<p>Out of the box .NET projects offer another way of automatically numbering assemblies at each build. It is possible to
+declare the assembly version attribute as</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="na">[assembly: AssemblyVersion(&quot;2.3.*&quot;)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It will produce a number like 2.3.5354.19262. The build number is calculated as number of days since January 1st 2000
+and the second is the number of 2 second intervals (rember the 65k limit) since midnight on a given day. Thus every time
+a project is built a different number will be calculated. However this is a very bad pattern IMO and should be
+discouraged. Most importantly there is no link between the number and the source code used. You could build you software
+and the build it again from outdated files and get a higher version number (sic!).</p>
+
+<h3 id="msbuild-community-tasks">MSBuild community tasks</h3>
+
+<p>There is a project on <a href="https://github.com/loresoft/msbuildtasks">GitHub</a> and <a href="https://nuget.org/packages/MSBuildTasks">NuGet</a>, 
+which contains various <a href="http://msdn.microsoft.com/en-us/library/ms171466.aspx">MSBuild tasks</a>, which can extend the build 
+process to include automated calculation of the assembly version number based on various algorithms called, ta dam, 
+<a href="https://github.com/loresoft/msbuildtasks/blob/master/Source/MSBuild.Community.Tasks/Version.cs">Version</a>. It offers a 
+number of options to better manage the version number such as storing and updating a version number text file and
+automatically incrementing build/revision numbers. Simple as it may be, it’s still poorly documented and requires manual 
+fitting into your build process by modifying the msbuild targets.</p>
+
+<p>The version file as another down side if you want to use a build server, because in some cases you would have to alter 
+the build process to commit the changed version file.</p>
+
+<h3 id="and-what-about-major-and-minor">And what about major and minor</h3>
+
+<p>Another obstacle is actually managing the major and minor numbers. You can keep it in the AssemblyInfo.cs, version file 
+or MSBuild task declaration. When you want to increment the version you have to remember to modify the wherever it is 
+stored. If you want to create a tag for each version you have to also remember!</p>
+
+<h2 id="a-namesolutionsimple-better-waya"><a name="solution">Simple, better way</a></h2>
+<p>I’ve just recently come across a simple solution for projects that use git as their version control. Here’s how it works:</p>
+
+<ol>
+  <li>You create a tag in your repository to set the major and minor version, for example <strong>v2.3</strong>.</li>
+  <li>You apply some more changes in <strong>13</strong> commits.</li>
+  <li>You build your project</li>
+  <li>The version is calculated as <strong>2.3.13</strong>, which means that the program was built from source code <strong>13</strong> commits ahead of tag <strong>v2.3</strong>.</li>
+</ol>
+
+<p><img src="/uploads/2014/08/git-ver.png" alt="git-ver" /></p>
+
+<p>The project is called Zoltu.Versioning and is <a href="https://www.nuget.org/packages/Zoltu.Versioning/">available from NuGet</a>.
+The great thing is that it requires almost no preparations whatsoever. Just remove the existing version attributes from
+AssemblyInfo.cs and install the nuget package. Now whenever you create a new tag in git, your version number will always
+be up to date and aligned with changes in your repository. Also when some other developer (or build server) clones your
+code and checks out some previous revision, the version will be always in line with the point in your source code history.</p>
+
+<h3 id="limitations">Limitations</h3>
+
+<p>The only requirement is that the .git folder is present (ie. code must be a clone). Git however is not required, because
+the package uses <a href="https://www.nuget.org/packages/LibGit2Sharp">LibGit2Sharp</a> internally to find tags and process commit
+history. This could be an obstacle for some build servers. With TeamCity for example it is necessary that the source
+<a href="http://stackoverflow.com/questions/17555931/how-do-i-get-teamcity-to-create-the-git-directory-when-cloning-a-repo-for-build">code is checked out on agent and not on server</a></p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2014/08/versioning-git-projects/';
+        var disqus_url = 'http://t-code.pl/blog/2014/08/versioning-git-projects/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

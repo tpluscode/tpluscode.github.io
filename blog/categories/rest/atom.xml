@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rest | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/rest/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Towards server-side routing with URI Templates (RFC 6570)]]></title>
+    <link href="http://t-code.pl/blog/2016/11/Towards-server-side-routing-with-URI-Templates/"/>
+    <updated>2016-11-13T23:15:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/11/Towards-server-side-routing-with-URI-Templates</id>
+    <content type="html"><![CDATA[<p>There are many MVC frameworks out there and all of them share a common feature - routing. Most libraries use a form of
+URI patterns to match incoming requests. On top of powerful features like limiting allowed values to certain types or
+by using regular expressions, they all share a common flaw - great simplification of the <a href="https://tools.ietf.org/html/rfc3986">URI</a>.</p>
+
+<p>There is however a similar <a href="https://en.wikipedia.org/wiki/Internet_Standard#Proposed_Standard">proposed standard</a> described by <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a> and appropriately called <strong>URI Template</strong>
+As the name implies, it defines URI patterns which can be then expanded to actual URIs by substituting variables and work
+the opposite way by extracting variables from a given URI. This makes it a viable option for matching request URIs on the
+server to determine what code to execute, if any.</p>
+
+<!--more-->
+
+<h2 id="so-what-is-wrong-with-typical-routing">So what is wrong with typical routing?</h2>
+
+<p>In most libraries I have seen routing is declared simply by defining variables as URI segments:</p>
+
+<ul>
+  <li><a href="https://docs.djangoproject.com/en/1.10/topics/http/urls/">Django</a> is all about regex:
+    <ul>
+      <li><code>r'^blog/page(?P&lt;num&gt;[0-9]+)/$'</code></li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/NancyFx/Nancy/wiki/Defining-routes">Nancy</a>, <a href="https://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-in-aspnet-web-api">ASP.NET Web API</a>, <a href="https://github.com/ServiceStack/ServiceStack/wiki/Routing">Service Stack</a> or <a href="http://www.baeldung.com/spring-requestmapping">Spring</a> support a form of simplified URI Templates but extended with optional constraints:
+    <ul>
+      <li><code>/content/{Version*}/literal/{Slug*}</code> - greedy segments (All)</li>
+      <li><code>/ex/bars/{numericId:[\\d]+}</code> - number-only segment (Spring)</li>
+      <li><code>users/{id:int}</code> number-only segment (Nancy, Web API)</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/NancyFx/Nancy/wiki/Defining-routes">Nancy</a> also does regular expressions:
+    <ul>
+      <li><code>/(?&lt;age&gt;[\d]{1,2})</code></li>
+    </ul>
+  </li>
+  <li><a href="https://metacpan.org/pod/Dancer2::Manual#Route-Handlers">Dancer</a> and <a href="http://expressjs.com/en/guide/routing.html">Express</a> use a similar syntax and also support regular expressions:
+    <ul>
+      <li><code>/users/:userId/books/:bookId</code> (Both)</li>
+      <li><code>/team/:team/**</code> (Dancer)</li>
+      <li><code>/ab(cd)?e</code> (Express)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The features to constrain segments to specific values using regular expression or some custom feature certainly is a
+powerful one but there is much more to URL than just segments (not to mention URI in general). The general syntax of an
+URL is as follows:</p>
+
+<p><code>
+scheme:[//[user:password@]host[:port]][/]path[?query][#fragment]
+</code></p>
+
+<p>In a web application the scheme will usually be HTTP(S). Let’s also ignore the user/password and host/port which aren’t
+usually the concern of a REST server accepting requests. That leaves us with the <a href="https://tools.ietf.org/html/rfc3986#section-3.3">path</a>, <a href="https://tools.ietf.org/html/rfc3986#section-3.4">query</a> 
+and <a href="https://tools.ietf.org/html/rfc3986#section-3.5">fragment</a>.</p>
+
+<blockquote>
+  <p>Do you notice already how typical routing completely neglects query and fragment?</p>
+</blockquote>
+
+<p>In my opinion they should be part of it. Why, you ask? Read on!</p>
+
+<h2 id="using-identifiers-like-you-probably-should">Using identifiers like you probably should</h2>
+
+<h3 id="query-string-is-part-of-the-identifier">Query string is part of the identifier</h3>
+
+<p>In a RESTful API the identifier is the complete URL. If the client does a request like</p>
+
+<p><code>http
+GET /user?id=123 HTTP/1.1 
+</code></p>
+
+<p>Why shouldn’t it be possible to include the query string parameter as part of the route? It is after all an integral part
+of the identifier. Yet all libraries that I’ve worked with require manual work to extract the value of <code>id</code> in user code.</p>
+
+<h3 id="segments-are-so-much-more-powerful">Segments are so much more powerful</h3>
+
+<p>The URI path is a series of zero or more segments delimited by the slash <code>/</code> character. And so an absolute path like
+<code>/users/tomasz/articles/uri-template</code> has four segments:</p>
+
+<ul>
+  <li>users</li>
+  <li>tomasz</li>
+  <li>articles</li>
+  <li>uri-template</li>
+</ul>
+
+<p>But segments are not necessarily just text. And they certainly don’t have to represent hierarchy of file system folders.</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">A friendly <a href="https://twitter.com/hashtag/RESTful?src=hash">#RESTful</a> reminder - URL path does not represent file-system hierarchy. Heck, it doesn&#39;t have to be a hierarchy at all <a href="https://twitter.com/hashtag/hypermedia?src=hash">#hypermedia</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/797895110306369536">November 13, 2016</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>A little known feature, which I’ve only just discovered very recently, are parametrized path segments. They work similarly
+to query strings:</p>
+
+<p><code>
+/segment1;param1=val1;param2=val2,val3/segment2
+</code></p>
+
+<p>See how <code>segment1</code> has extra bits attached. As JSON these parameters would be represented as</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“param1”:</span> <span class="err">“val1”,</span>
+</span><span class='line'>  <span class="err">“param2”:</span> <span class="err">[</span>
+</span><span class='line'>    <span class="err">“val2”,</span>
+</span><span class='line'>    <span class="err">“val3”</span>
+</span><span class='line'>  <span class="err">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>And here’s a practical example. A hypothetical API could serve a resource representing a collection of, say, books:
+<code>http://example.rest/books</code>. Another resource could be used to retrieve covers of those books: <code>http://example.rest/books/gallery</code>.
+Usually any manipulation of such resource is handed over ot query strings.</p>
+
+<p>So, what if the resource owner wanted to offer a gallery of books cover but only books by Oscar Wilde and only covers in
+PNG format. Because why not?</p>
+
+<p>The URL would probably look like <code>http://example.rest/books/gallery?author=Oscar%20Wilde&amp;format=png</code>. Do you also see the
+<a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">SRP</a> rule being validated? Why not instead use the URL like</p>
+
+<p><code>
+http://example.rest/books;author=Oscar%20Wilde/gallery;format=png
+</code></p>
+
+<p>And hey! Now it’s possible to just drop the last segment and leave</p>
+
+<p><code>
+http://example.rest/books;author=Oscar%20Wilde
+</code></p>
+
+<p>That looks like a resource containing books by Oscar Wilde. Despite the tweet quoted above, people do love URL hierarchies
+right? They probably <em>are</em> quite useful in the end.</p>
+
+<p>And it’s not just about <a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">single responsibility</a> of path segments (there probably isn’t such a thing). I don’t have
+empirical proof, but I would guess that parametrizing segments could lead to better controller/module/handler design.</p>
+
+<h2 id="so-how-do-i-implement-that">So how do I implement that?</h2>
+
+<p>Most languages probably have a library out there that implements the URI Template standard. So just go ahead a try to
+replace the routing in your favourite Web framework so that it works with RFC6570 instead. The books covers resource route
+shown above would become:</p>
+
+<p><code>
+/books{;author}/gallery{;format}
+</code></p>
+
+<p>Isn’t that nice? No query strings lurking in the implementation. Everything clear up front.</p>
+
+<h3 id="my-nancy-experiment">My Nancy experiment</h3>
+
+<p>I did precisely that and created a proof of concept in <a href="https://github.com/NancyFx/Nancy">Nancy</a>. It’s available on GitHub under 
+<a href="https://github.com/tpluscode/nancy.routing.uritemplates">https://github.com/tpluscode/nancy.routing.uritemplates</a> and
+hopefully I will make it into a useful library (there are still some issues to sort out).</p>
+
+<p>In the current shape the usage is akin to implementing a typical Nancy application. Instead of <code>NancyModule</code> you implement
+<code>UriTemplateModule</code> and replace the RouteResolver with <code>UriTemplateRouteResolver</code>. The actual route definition is just the
+same:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">TestModule</span> <span class="p">:</span> <span class="n">UriTemplateModule</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">TestModule</span><span class="p">()</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="err">“</span><span class="p">/</span><span class="n">books</span><span class="err">”</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Get</span><span class="p">(</span><span class="err">“</span><span class="p">{;</span><span class="n">author</span><span class="p">}/</span><span class="n">gallery</span><span class="p">{;</span><span class="n">format</span><span class="p">}</span><span class="err">”</span><span class="p">,</span> <span class="n">GetCoverGallery</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Such route will match <code>/books/gallery</code>, <code>/books;author=Shakespeare/gallery</code> and <code>/books/gallery;format=square</code>.</p>
+
+<h2 id="possible-issues">Possible issues?</h2>
+
+<p>Have you made that far? Great. Now it’s time to learn about the thorns that this rose has.</p>
+
+<h3 id="route-variable-constrains">Route variable constrains</h3>
+
+<p>In the beginning of this post I show how routing in existing libraries allow constraining captured variables using
+custom syntax or regular expressions. The URI Templates specification has no such notion neither any extensibility mechanism.</p>
+
+<p>This is not a great deal as far as I’m concerned. It should be possible to replicate the constraining functionality of
+Nancy or Spring by extending variable template expressions. The standard does reserve some characters for future use and
+they could serve as a separator between the variable name and the constraining expression. For example, to only allow
+the page variable of a collection to be an integer the template could be</p>
+
+<p><code>
+/collection{/page|int}
+</code></p>
+
+<p>The pipe character is reserved and as such cannot be a legal part of the expression. As a consequence, a web framework
+could reliably separate the <code>page</code> variable from the <code>int</code> constrain.</p>
+
+<h3 id="route-prioritization">Route prioritization</h3>
+
+<p>This is something I haven’t figured out yet. Nancy, and likely other libraries have the ability to work with multiple
+routes matching a given URL. For example routes <code>/page/{title}/{sub}</code> and <code>/page/about/{sub}</code> would both match a
+request for <code>/page/about/cats</code>. But because the <code>about</code> segment is an exact literal match in the latter route, that route
+would actually be executed. It’s potentially a deal-breaker and I’m eager to find a solution to that problem.</p>
+
+<h2 id="closing-words">Closing words</h2>
+
+<p>I’m looking forward to your comments here or at the <a href="https://github.com/tpluscode/nancy.routing.uritemplates">Nancy.Routing.UriTemplates</a>
+repository.</p>
+
+<p>I’m quite convinced that URI Templates should have been used for routing from get-go. To me it seems quite obvious now
+that hypermedia is becoming more and more recognized as an important design pattern and URI Templates are an important
+part of driving the clients between application states. 
+Being able to reuse the same technology on both client and server side should be very beneficial to visibility and maintainability
+of hypermedia-driven APIs.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Problem Details for HTTP APIs and Nancy]]></title>
+    <link href="http://t-code.pl/blog/2016/11/RFC-7807-and-Nancy/"/>
+    <updated>2016-11-11T10:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/11/RFC-7807-and-Nancy</id>
+    <content type="html"><![CDATA[<p>There are a number of guidelines for returning errors from a REST API in a consistent way. Of course, API authors should
+<a href="http://www.micheltriana.com/blog/2013/09/27/http-status-codes-in-rest-web-api">use status codes correctly</a> to signify
+the result of an action. It is also a good idea to return some error details in resource representation. Some API vendors,
+like Facebook or Twitter <a href="https://apigee.com/about/blog/technology/restful-api-design-what-about-errors">have come up with their own solutions</a>.</p>
+
+<p>However, there is a Internet Engineering Task Force (IETF) proposed standard called <strong>Problem Details for HTTP APIs</strong>. It
+was created be Mark Nottingham and is described in document <a href="https://tools.ietf.org/html/rfc7807">RFC 7807</a>. Interestingly
+though there is fairly little support in for .NET Web API libraries and none for Nancy 1.x.</p>
+
+<!--more-->
+
+<p>Actually, I found precisely three NuGet packages: one for <a href="https://www.nuget.org/packages/HttpProblemDetails.Nancy">Nancy 2.0</a>,
+one for <a href="https://www.nuget.org/packages/HttpProblemDetails.Nancy">ASP.NET Core</a> and one for <a href="https://www.nuget.org/packages/WebApiProblem/">ASP.NET Web API</a>.</p>
+
+<p>Unfortunately there wasn’t one for the stable branch of Nancy, currently at 1.4.3.</p>
+
+<h2 id="introducing-nancyproblemdetails">Introducing Nancy.ProblemDetails</h2>
+
+<p>And so, I have created my own package I called <a href="https://www.nuget.org/packages/Nancy.ProblemDetails"><strong>Nancy.ProblemDetails</strong></a>.
+It adds support for serializing JSON Problem Details and uses the library Tavis.Problem by Darrel Miller.</p>
+
+<p>Do have a look at the repository for usage examples: <a href="https://github.com/tpluscode/Nancy.ProblemDetails">https://github.com/tpluscode/Nancy.ProblemDetails</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST misconceptions part 6 - Versioning and Hypermedia]]></title>
+    <link href="http://t-code.pl/blog/2016/03/rest-misconceptions-6/"/>
+    <updated>2016-03-13T17:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/rest-misconceptions-6</id>
+    <content type="html"><![CDATA[<p>This will be the last part about REST mistakes and confusion for the time being. In this post I will share my opinions
+about common approaches to versioning REST APIs. I will also present my view about why and how versioning could be avoided.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-2">Not linked enough</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">Leaky business</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-4">Resources are application state</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><strong>Versioning</strong></li>
+</ol>
+
+<h2 id="how-can-i-version-my-uri">How can I version my URI?</h2>
+
+<p>Troy Hunt wrote in his <a href="http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html">blog posting</a>, that there are number of ways to version a REST API and all of them wrong. There
+are the 3 common ways, but together with a bunch of comments under Troy’s post, one could count up to 6 or maybe 8 various
+wrong options. First let’s look again at the most common and then I’ll try to convince you that there is in fact a way 
+less wrong.</p>
+
+<h3 id="version-number-in-uri">Version number in URI</h3>
+
+<p>Like most other problems with REST, a common flawed approach to API versioning stems from <a href="/blog/2016/02/rest-misconceptions-1">misunderstanding of the URI</a>.
+This popular way simply adds a version number as a segment in the resource identifiers, such as in a template</p>
+
+<p><code>
+http://book.store/v{version}/books/{isbn}
+</code></p>
+
+<p>This pattern could produce identifiers <code>http://book.store/v1.0/books/978-0321125217</code> and <code>http://book.store/v2.0/books/978-0321125217</code>
+as identifiers for <a href="http://www.amazon.com/gp/product/0321125215">the blue DDD book by Eric Evans</a>. Immediately a question
+should come to mind</p>
+
+<blockquote>
+  <p>Do these URLs identify two separate resources?</p>
+</blockquote>
+
+<p>I think not. It’s the representation or the behaviour that changes and not the actual resource. In other words it is the
+<strong>contract</strong> that changes. The two identifiers are used to access the same resource. This is the most common argument why
+this is wrong. However this way is temptingly simple and will never break the cache constraint.</p>
+
+<p>And of course there is one case when the version in URL makes sense. That is when the resource changes and it each 
+individual revision must be accessible at the same time (see below). This however is not why entire APIs need versions.</p>
+
+<h3 id="version-in-accept-header">Version in Accept header</h3>
+
+<p>Another option for serving multiple versions of an API is the use of Accept headers. The client would add the version 
+number to the request. In addition to (or instead of) plain <code>application/json</code>, the server would allow custom media types
+like <code>application/vnd.bookstore.v2+json</code> to serve version 2 of a representation.</p>
+
+<p>It <a href="http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802">has been noted</a> that 
+for this solution to be symmetrical, the server should not only serve resources with various media types, but should also
+accept requests with versioned payload. And there is even more edge cases when <code>DELETE</code> method is concerned, which doesn’t
+take neither <code>Accept</code> nor <code>Content-Type</code> headers.</p>
+
+<p>Also only part of the server contract could change. For example the server could return updated representation for version
+2 but still expect the same request body as in version 1. Does it mean that both need a new version, even if only part of
+the API changes? I intuitively say yes, but I’m not so sure. Definitely dodgy space.</p>
+
+<p>Another issue with <code>Accept</code> header approach is that it will lead to <a href="https://www.mnot.net/blog/2012/04/17/profiles">media type proliferation</a>.</p>
+
+<h3 id="custom-header">Custom header</h3>
+
+<p>Last of the common <em>wrong ways</em> is leveraging custom HTTP headers for requests:</p>
+
+<p><code>http
+GET /book.store/book/Hamlet HTTP/1.1
+X-Version: 2
+</code></p>
+
+<p>and responses:</p>
+
+<p><code>http
+HTTP/1.1 200 OK
+X-Version: 2
+</code></p>
+
+<p>The worst that can happen when applying API versioning this way is broken cache, where HTTP middleware ignores custom
+headers.</p>
+
+<p>Also, both custom header and vendor media type have another caveat. What should the server return when the client doesn’t
+specify a version? Returning the latest will keep breaking clients while returning the oldest (supported) will likely
+stall adoption of the improved API.</p>
+
+<h2 id="what-am-i-versioning">What am I versioning?</h2>
+
+<p>Let’s take a step back and think about what actually can be version about an API. There are three possible answers:</p>
+
+<ol>
+  <li>The resource itself (ie. the content)</li>
+  <li>The resource representations</li>
+  <li>The resource behaviour</li>
+</ol>
+
+<p><strong>Note</strong> that in examples below I will be using pseudo <a href="http://jsonl-ld.org">JSON-LD</a>+<a href="http://hydra-cg.com">Hydra</a>.</p>
+
+<h3 id="maintaining-versions-of-a-resource">Maintaining versions of a resource</h3>
+
+<p>As stated above, the first possibility is the only circumstance where adding a version number to a resource does indeed
+make sense. This could be used for a parallel-universe dbpedia, where individual revisions of a wikipedia resource are
+served as they changed over time. The main resource could be like</p>
+
+<p><code>json
+{
+  "@context": "http://dbpedia.alternati.ve/context.jsonld",
+  "@id": "/resource/Berlin",
+  "revisions": [
+    "/resource/Berlin/rev1",
+    "/resource/Berlin/rev2",
+    "/resource/Berlin/rev3"
+  ],
+  // whatever current data
+}
+</code></p>
+
+<p>This means the each revision is a resource in it’s own rights and can be interacted with via representations.</p>
+
+<h3 id="handling-changes-in-resource-representations">Handling changes in resource representations</h3>
+
+<p>This is where resource custom media types sound like a viable options. A new version of the media type could be introduced
+to let the clients interact with the new and old representations. For example in the initial version of an API there can
+be some sort of person resource:</p>
+
+<p><code>json
+{
+  "@context": "example.company/context.jsonld",
+  "@id": "/employee/tom",
+  "name": "Tomasz Pluskiewicz"
+}
+</code></p>
+
+<p>What if someone decided to change on <code>name</code> field into <code>firstName</code> and <code>lastName</code>. A breaking change at first glance,
+but there is nothing wrong with including both the old and new property instead of replacing:</p>
+
+<p><code>json
+{
+  "@context": "example.company/context.jsonld",
+  "@id": "/employee/tom",
+  "@type": "Person",
+  "name": "Tomasz Pluskiewicz",
+  "firstName": "Tomasz",
+  "lastName": "Pluskiewicz"
+}
+</code></p>
+
+<p>What about doing a <code>PUT</code> operation on that resource you ask? The media type used should actually inform clients what are
+the required inputs. So before the change there would be something similar to:</p>
+
+<p><code>json
+{
+  "@id": "Person",
+  "type": "Class",
+  "property": [
+    { 
+      "@id": "name",
+      "required": true,
+      "writeable": true
+    }
+  ]
+}
+</code></p>
+
+<p>This tells clients that in order to modify a <code>Person</code> resource, the <code>name</code> property must be set. Now after the change
+we would have a different situation:</p>
+
+<p><code>json
+{
+  "@id": "Person",
+  "type": "Class",
+  "property": [
+    { "@id": "name", "writeable": false, "obsolete": true },
+    { "@id": "firstName", "required": true, "writeable": true },
+    { "@id": "lastName", "required": true, "writeable": false }
+  ]
+}
+</code></p>
+
+<p>This time round the description of the <code>Person</code> class states that <code>firstName</code> and <code>lastName</code> properties are required. The
+<code>name</code> property is still there but marked as read-only and obsolete, which could mean that it will be removed in the future.</p>
+
+<p>Thus <strong>if the server provides enough hypermedia descriptions and clients take advantage of them, no API versioning is 
+actually required</strong>.</p>
+
+<h3 id="evolving-the-resource-behaviour">Evolving the resource behaviour</h3>
+
+<p>Last case is modifying how the client interacts with the resources. <a href="http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802">The comment linked above</a>
+talks about change in a blogging platform. In the first version the blog is simply posted and published immediately. 
+Such interaction could easily be modelled as a <code>POST</code> to some blog resource.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='http'><span class='line'><span class="err">POST http://t-code.pl/blog HTTP/1.1&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;{</span>
+</span><span class='line'><span class="err">  “title”: “REST misconceptions part 6 - Versioning and Hypermedia”,</span>
+</span><span class='line'><span class="err">  “text”: “…”</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Let’s say the the server returns a link to the newly created blog post. (I assume that the current date at the time of
+submitting is used in the URL).</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='http'><span class='line'><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+</span><span class='line'><span class="na">Location</span><span class="o">:</span> <span class="l">http://t-code.pl/blog/2013/03/REST-misconceptions-part-6</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>So what happens when the contract changes so that a post is not published immediately but saved as draft? The first <code>POST</code>
+request could stay the same, so there is nothing to break the client just yet. However the response would be different:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='http'><span class='line'><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+</span><span class='line'><span class="na">Location</span><span class="o">:</span> <span class="l">http://t-code.pl/drafts/REST-misconceptions-part-6</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>A different <code>Location</code> is returned. The client now gets the draft resource and learns that there is a link, which is used
+to publish.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='http'><span class='line'><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;{
+</span><span class='line'>  “@id”: “http://t-code.pl/drafts/REST-misconceptions-part-6”,
+</span><span class='line'>  “@type”: “Draft”,
+</span><span class='line'>  “publishedPosts”: {
+</span><span class='line'>    “@id”: “/blog/published”,
+</span><span class='line'>    “body”: {
+</span><span class='line'>      “@id”: “http://t-code.pl/drafts/REST-misconceptions-part-6”
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>The exact details of how the client should request are debatable and irrelevant really. All that matters is that the 
+media type must be expressive enough to describe that interaction. And the client must follow.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I hope that my examples can convince some people out there that there are ways to avoid using version numbers within an
+API completely. Rich hypermedia used from day one should insulate the client from any breaking changes that the server may
+introduce.</p>
+
+<blockquote>
+  <p>You don’t version the API.<br />
+You don’t version the resource.<br />
+You don’t version your media type. <br />
+<strong>You version you hypermedia controls</strong>. <br />
+<em>And of course, if you don’t have hypermedia controls you’re in trouble.</em></p>
+</blockquote>
+
+<p>It seem as though <em>almost</em> any other argument for adding version numbers anywhere in a REST API is the consequence of 
+<strong>not following the Hypermedia As The Engine Of Application State</strong> and thus introducing <strong>out-of-bound information</strong> on
+the client’s side of affairs.</p>
+
+<h2 id="links">Links</h2>
+
+<p>Here are some more interesting reads:</p>
+
+<ul>
+  <li><a href="http://codebetter.com/howarddierking/2012/11/09/versioning-restful-services/">Versioning RESTful Services</a></li>
+  <li><a href="http://thereisnorightway.blogspot.com/2011/02/versioning-and-types-in-resthttp-api.html">Versioning and Types in REST/HTTP API Resources</a></li>
+  <li><a href="http://nirmata.com/2013/10/rest-apis-part-1/">REST Is Not About APIs, Part 1</a></li>
+  <li><a href="http://blog.steveklabnik.com/posts/2012-02-23-rest-is-over">REST is OVER!</a></li>
+  <li><a href="https://www.mnot.net/blog/2012/07/11/header_versioning">Bad HTTP API Smells: Version Headers</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST misconceptions part 5 - REST "documentation"]]></title>
+    <link href="http://t-code.pl/blog/2016/03/rest-misconceptions-5/"/>
+    <updated>2016-03-12T17:50:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/rest-misconceptions-5</id>
+    <content type="html"><![CDATA[<p>In this installment of my REST series I will take on the train wreck, which some people call REST API documentation. Of
+course some form of documentation is necessary but I am growing more and more disappointed with most current solutions.
+Tools like <a href="http://swagger.io">Swagger</a>  or <a href="http://apiary.io">Apiary</a> can be used to create some sort of documentation, but they sure 
+as hell don’t describe REST APIs.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-2">Not linked enough</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">Leaky business</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-4">Resources are application state</a></li>
+  <li><strong>REST “documentation”</strong></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-6">Versioning</a></li>
+</ol>
+
+<h2 id="sum-of-all-sins">Sum of all sins</h2>
+
+<p>I tend to think that most mistakes made when discussing REST boil down to the <a href="/blog/2016/02/rest-misconceptions-1">misunderstanding of the identifier</a>
+but also neglecting the other constraints. There are great tools out there like <a href="https://apiblueprint.org/">API Blueprint</a>, <a href="http://swagger.io">Swagger</a> 
+or <a href="http://raml.org">RAML</a>, but they have a significant flaw in common - they are <strong><em>URI centric</em></strong>.</p>
+
+<p>I admire how most tools take an approach complete with steps for design, testing and API security but in the end the client 
+and server usually rely on URI hierarchies.</p>
+
+<p><img src="http://presentations.t-code.pl/hateoas/img/swagger.png" alt="swagger petstore" /></p>
+
+<p>Here’s a screenshot from sample Swagger <a href="http://petstore.swagger.io">petstore API</a>. It’s nice that URI templates are used,
+but that’s where the good ends. This kind of API documentation encourages developers to code against rigid URL structures.
+Also most of these tools don’t promote the use of links, which means that at every step in the interaction with the server
+clients must be aware of the entirety of the API and the documentation also gives little information on the next possible
+state transfers.</p>
+
+<h2 id="web-api-dj-vu">Web API déjà vu</h2>
+
+<p>A coffin to the most “REST documentation” tools that I have seen is the idea of generating client and server code. I’ve
+recently looked at <a href="https://github.com/Azure/autorest">AutoRest</a> to generate client code from Swagger. It’s quite neat and works just fine. You
+run the executable, pass in the Swagger URL and the program produces a whole lot of code, which indeed works perfect with
+the API. But it has little to nothing to do with REST.</p>
+
+<p>Haven’t we seen that before?</p>
+
+<p><img src="/uploads/2016/03/wsdl.png" alt="wsdl in vs" /></p>
+
+<p>You guessed it: <strong>WSDL</strong>. The infamous <a href="https://www.w3.org/TR/wsdl">Web Services Description Language</a>, which in it’s latest incarnation is 
+about as old as the first mention of REST. And it’s by no means the <a href="http://www.informationweek.com/from-edi-to-xml-and-uddi-a-brief-history-of-web-services/d/d-id/1012008">first attempt</a> at web services. Haven’t
+we just come full circle? <img class="emoji" title=":recycle:" alt=":recycle:" src="https://assets.github.com/images/icons/emoji/unicode/267b.png" height="20" width="20" align="absmiddle" /></p>
+
+<p><img src="/uploads/2016/03/api-evolution.jpg" alt="api evolution" /></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST misconceptions part 4 - Resources are application state]]></title>
+    <link href="http://t-code.pl/blog/2016/03/rest-misconceptions-4/"/>
+    <updated>2016-03-11T22:30:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/rest-misconceptions-4</id>
+    <content type="html"><![CDATA[<p>This part four (0-based) of my series about REST, the mistakes people often make and some ideas of mine. This post on 
+talks about taking advantage of resource representations in a javascript client. This is somewhat related to my <a href="/blog/2015/01/hateoas-as-if-you-meant-it/">other 
+REST post</a>, where I argue that when resources are <a href="/blog/2016/02/rest-misconceptions-1">properly identified</a> 
+and <a href="/blog/2016/03/rest-misconceptions-2">actually linked</a> is should be possible (and beneficial) to ditch client URL routing.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-2">Not linked enough</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">Leaky business</a></li>
+  <li><strong>Resources are application state</strong></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-6">Versioning</a></li>
+</ol>
+
+<h2 id="resource-based-ui">Resource-based UI</h2>
+
+<p>How do client applications decide what view to present? Most commonly used tool is a router, in which developers define
+URL patterns and their respective views/controllers/etc. I think this is a terrible idea. Instead I think we should be
+reusing the resource identifier whenever possible so that (part of) it becomes the client’s address. Period.</p>
+
+<p>Simplest thing would mean stripping part of the resource identifier and putting it in the address bar:</p>
+
+<p><img src="/uploads/2016/03/routing.png" alt="no routing routing" /></p>
+
+<p>And what if the address is not user-friendly? Add a permalink to the representation. There is even a very appropriate
+link relation:</p>
+
+<p><img src="/uploads/2016/03/permalink.png" alt="no routing routing with permalink" /></p>
+
+<p>Of course this is just a demonstration of a general idea. In a real system the user interface would likely be presenting
+multiple resource representations and so a complete solution should take that into account.</p>
+
+<h2 id="selecting-views">Selecting views</h2>
+
+<p>Now, the view could also be selected based on the resource currently being displayed. A big problem with the routing
+approach is unexpected data. What happens when the server returns some representation, which doesn’t ‘fit’ into the view
+mapped to the given route? A description of an error is one example. Of course, the client will have to take appropriate
+action and that means more (repeatable) code to maintain.</p>
+
+<p>Instead why not include enough information in the representation so that the client can decide what to render? You serve
+representations of books - make it clear in the representation.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='http'><span class='line'><span class="err">GET http://movies.sample/movie/10 HTTP/1.1&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;{</span>
+</span><span class='line'><span class="err">  “type”: “Movie”</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>I added a <strong><em>type relation</em></strong>, which the client will use to render the UI accordingly. How it is done is irrelevant and
+there likely are a number of possibilities like view template file conventions or a <a href="/blog/2015/02/declarative-ui/">declarative web component</a>.</p>
+
+<h2 id="no-warning-there-be-delnodel-dragons">(No) Warning: There be <del>no</del> dragons</h2>
+
+<p>Some reader familiar with the work of Roy Fielding may be familiar with what he <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">wrote</a> about <strong><em>typed resources</em></strong>:</p>
+
+<blockquote>
+  <p>A REST API should never have “typed” resources that are significant to the client. Specification authors may use resource
+types for describing server implementation behind the interface, but those types must be irrelevant and invisible to the
+client. The only types that are significant to a client are the current representation’s media type and standardized 
+relation names. <em>[Failure here implies that clients are assuming a resource structure due to out-of band information, 
+such as a domain-specific standard, which is the data-oriented equivalent to RPC’s functional coupling]</em></p>
+</blockquote>
+
+<p>However it does not apply in this context, because the meaning of typing is different. In an RPC style API a typed resource
+would mean that the client can expect a resource to show certain properties of behaviour. This is not the case. The type
+can be viewed simply as another property, whose meaning does not allow to draw any conclusions about the resource itself.
+To put it differently, the type I’m writing about would be viewed as the type of representation and not the resource in
+it’s programming model sense.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

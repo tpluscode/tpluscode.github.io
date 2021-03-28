@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: conference | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/conference/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Lest I forget&#58; International Conference on Web Engineering - Day 2 Research Tracks]]></title>
+    <link href="http://t-code.pl/blog/2016/06/ICWE-2016-day-2/"/>
+    <updated>2016-06-19T22:45:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/06/ICWE-2016-day-2</id>
+    <content type="html"><![CDATA[<p>Earlier this week I shortly wrote about the first day Research Track at <a href="http://icwe2016.inf.usi.ch">International Conference on Web Engineering</a> 
+which took place between June 6-7. Today it’s time for day 2 (keynote included).</p>
+
+<!--more-->
+
+<h2 id="day-2">Day 2</h2>
+
+<p>The second day ended with a lovely dinner in the restaurant and lookout point atop <a href="https://en.wikipedia.org/wiki/Monte_Br%C3%A8">Monte Brè</a>. Although the weather
+was a little flaky, everyone got a chance for some pictures of Lugano from above. Here’s my panorama shot of Lugano:</p>
+
+<p><a href="/uploads/2016/06/lugano_pano_big.jpg"><img src="/uploads/2016/06/lugano_pano.jpg" alt="Lugano panorama" /></a></p>
+
+<p>Other than that, unsurprisingly, the conference research track featured a whole lot of interesting lectures, ideas and
+showcases.</p>
+
+<h3 id="the-keynote---microservices---the-hunting-of-the-snark">The keynote - Microservices - The Hunting of the Snark</h3>
+
+<p><a href="https://www.thoughtworks.com/profiles/james-lewis">James Lewis of ThoughtWorks</a> (yes, the one famous for Martin Fowler)
+gave and extensive and wildly interesting talk about the state of Microservices, organizational challenges for companies
+which want to try and also consultancy work at banks. As we all know, a picture is worth a thousand words, so here are
+some tweet highlights from the keynote</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">&quot;how big are they&quot; doesn&#39;t matter for <a href="https://twitter.com/hashtag/Microservices?src=hash">#Microservices</a>; what matters is how many you can handle. do you have a plan? <a href="https://twitter.com/boicy">@boicy</a> at <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a></p>&mdash; Erik Wilde (@dret) <a href="https://twitter.com/dret/status/740090382013374465">June 7, 2016</a></blockquote>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">And areas necessary for an organization to excel at before going for <a href="https://twitter.com/hashtag/microservices?src=hash">#microservices</a> <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a>  <a href="https://t.co/g8hr42yctQ">https://t.co/g8hr42yctQ</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740093263890223104">June 7, 2016</a></blockquote>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">&#39;The death of the integration env&#39; predicted by <a href="https://twitter.com/boicy">@boicy</a>. It&#39;s not possible for 100s of <a href="https://twitter.com/hashtag/Microservices?src=hash">#Microservices</a> <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a> <a href="https://t.co/kgzPEpqa60">pic.twitter.com/kgzPEpqa60</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740092582609494016">June 7, 2016</a></blockquote>
+
+<h3 id="rest-apis-a-large-scale-analysis-of-compliance-with-principles-and-best-practices">REST APIs: A Large-Scale Analysis of Compliance with Principles and Best Practices</h3>
+
+<p>Unfortunately, this one I didn’t enjoy as much. <a href="https://twitter.com/floriandanielit">Florian Daniel</a> showed their results
+of a large scale analysis of mobile data usage around Milan. The team gathered 78 GB worth of data and calculated a number
+of metrics like HTTP method usage, media types, user agents and more. An intriguing idea, but without interaction context
+it is really hard to come to any conclusions about the “quality” of any single endpoint from REST perspective. Not to mention
+that the dataset likely misses any encrypted traffic, which I would expect to be a significant portion. If anything, the
+work is an analysis of HTTP protocol usage on the mobile web, but not really REST at all. This is quite evident when you
+look closely at some of the metrics, most of which revolve around the URI (eg. presence of underscores, <code>api</code> in path, 
+presence of a trailing slash, version in URI). <a href="../../02/rest-misconceptions-1/">I find it very harmful to consider anything specific about URIs a REST
+principle and best practice</a>.</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">URI practices are so unnecessary. Come to my <a href="https://twitter.com/wsREST">@wsREST</a> talk on Thursday at 12 to hear more <a href="https://twitter.com/floriandanielit">@floriandanielit</a> <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a> <a href="https://t.co/bW1tNi14gy">pic.twitter.com/bW1tNi14gy</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740111148465422336">June 7, 2016</a></blockquote>
+
+<h3 id="benchmarking-web-api-quality">Benchmarking Web API Quality</h3>
+
+<p>A similar presentation followed, in which <a href="https://twitter.com/erikwittern">Erik Wittern</a> presented the results of a daunting benchmarking of a
+some popular public APIs including Twitter and Flickr, but also less popular services like police.co.uk. It was very 
+entertaining to see how wildly some APIs differ when requested from different regions and at various time of day.</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">.<a href="https://twitter.com/erikwittern">@erikwittern</a> is painting a dire picture of Web API availability <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a> <a href="https://t.co/1UNoTonVWO">pic.twitter.com/1UNoTonVWO</a></p>&mdash; Philipp Leitner (@xLeitix) <a href="https://twitter.com/xLeitix/status/740120861550739456">June 7, 2016</a></blockquote>
+
+<p>Of course one could argue that such comparison is a bit unfair. For example the aforementioned police.co.uk is likely not
+intended to work smoothly from Australia but on the other hand it may of interest to someone anywhere on the globe occasionally.
+The authors are aware of limitation to their method but rightly point out that it is very important to plan for availability
+when designing a public API. Especially that every single tested service showed occasional peaks in latencies and even 
+outages.</p>
+
+<h3 id="mira-a-model-driven-framework-for-semantic-interfaces-for-web-applications">MIRA: A Model-Driven Framework for Semantic Interfaces for Web Applications</h3>
+
+<p>Next presentation that really got my attention was <a href="https://twitter.com/SchwabeD">Daniel Schwabe’s</a> presentation of <a href="https://github.com/TecWebLab/mira">MIRA</a>, a JavaScript tool
+and RDF notation for modelling user interfaces with abstract elements, so that they can be replaced by concrete elements
+on a given platform. This method addresses the volatility of the web and the shortcoming of responsive design, which will
+soon be unable to cater for futuristic User Interfaces.</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">These are four reasons why responsive web design isn&#39;t enough. Talk by <a href="https://twitter.com/SchwabeD">@schwabed</a> <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a> <a href="https://t.co/XuJIGz3lXt">pic.twitter.com/XuJIGz3lXt</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/740152809941827584">June 7, 2016</a></blockquote>
+
+<p>MIRA authors also boast their results which show that for seasoned programmers and non-developers alike it took the least
+time to build a simple application using their tool. However we’ve seen that already, which makes me skeptical (I’m looking
+at you Lightswitch!).</p>
+
+<p>There is a demo available at <a href="http://mira.tecweb.inf.puc-rio.br/">http://mira.tecweb.inf.puc-rio.br/</a>.</p>
+
+<h3 id="volatile-functionality-in-action-methods-techniques-and-assessmenthttpicwe2016infusichsitesicwe2016filesslidesdarian-frajbergpptx"><a href="http://icwe2016.inf.usi.ch/sites/icwe2016/files/slides/Darian-Frajberg.pptx">Volatile Functionality in Action: Methods, Techniques and Assessment</a></h3>
+
+<p>This was another slight disappointment of that day. Darian Frajberg presented their evaluation of using various techniques
+to manage volatile functionalities of an application. An example is a time-limited prices reduction on certain item on an
+e-commerce platform. The problem there is that programming tools such as code weaving and regular expressions, which were
+the basis for their platform are very demanding on the programmers. Even when packaged as a reusable library, such a library
+would take a great effort to support and evolve. Also, the authors didn’t really compare their results to real methods
+used in practice. The baseline for their evaluation included naïve and unrealistice methods, which would not be used in
+serious software.</p>
+
+<h3 id="abstracting-and-structuring-web-contents-for-supporting-personal-web-experiencehttpicwe2016infusichsitesicwe2016filesslidesgabriela-bosettiwoapdf"><a href="http://icwe2016.inf.usi.ch/sites/icwe2016/files/slides/Gabriela-Bosetti_WOA.pdf">Abstracting and Structuring Web contents for supporting Personal Web Experience</a></h3>
+
+<p>This very unassuming and slightly misleading title hides an exciting piece of software called <a href="https://sites.google.com/site/webobjectambient">Web Objects Ambient</a>.
+It is a Firefox extension (with a Chrome version a possibility) which allows end users to enhance web content by interacting
+with elements and combining it with more data like tweets, reviews, etc. And it uses DBpedia as the source of concepts <img class="emoji" title=":+1:" alt=":+1:" src="https://assets.github.com/images/icons/emoji/unicode/1f44d.png" height="20" width="20" align="absmiddle" />.
+In case I somehow failed to convey the general idea, here’s a video showing WOA in action.</p>
+
+<iframe width="640" height="360" src="https://www.youtube.com/embed/kZyHZpU8ue8" frameborder="0" allowfullscreen=""></iframe>
+
+<p>Finally, there is also an <a href="https://sites.google.com/site/webobjectambient/documentation">extensibility model</a>, which allows
+developers to extend the sidebar seen above with more powers!</p>
+
+<h3 id="the-direwolf-inside-you-end-user-development-for-heterogeneous-web-of-things-applianceshttpwwwslidesharenetistvankorenthe-direwolf-inside-you-end-user-development-for-heterogeneous-web-of-things-appliances"><a href="http://www.slideshare.net/IstvanKoren/the-direwolf-inside-you-end-user-development-for-heterogeneous-web-of-things-appliances">The DireWolf Inside You: End User Development for Heterogeneous Web of Things Appliances</a></h3>
+
+<p>Because RDF Streams are above me I’m skipping right to the last presentation of the day. Awarded the Best Vision Paper Award,
+the vision by <a href="https://twitter.com/istinhere">Istvan Koren</a> and <a href="https://twitter.com/klamma">Ralf Klamma</a> ongoing effort to build a distributed End User Interface for
+the Web of Things. Build with Polymer and their own peer-to-peer communication library! Again, because a picture will
+explain uch better than words, here the slide showing an overview of the authors’ vision.</p>
+
+<p><a href="/uploads/2016/06/direwolf_big.png"><img src="/uploads/2016/06/direwolf.png" alt="DireWolf overview slide" /></a></p>
+
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Lest I forget&#58; International Conference on Web Engineering - Day 1 Research Tracks]]></title>
+    <link href="http://t-code.pl/blog/2016/06/ICWE-2016-day-1/"/>
+    <updated>2016-06-13T22:45:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/06/ICWE-2016-day-1</id>
+    <content type="html"><![CDATA[<p>This past week I took part in the <a href="http://icwe2016.inf.usi.ch">International Conference on Web Engineering</a> or ICWE for
+short. I’d like to round up the lectures I attended, demos I watched and posters I saw. While I still remember, I want to
+write about my impressions about each individual one, at least at the very shortest. Of course I won’t be able to cover
+it all, because I wasn’t able to attend every session for obvious reasons and at the same time I didn’t find everything
+equally interesting. I’ll do my best nonetheless.</p>
+
+<!--more-->
+
+<h2 id="day-1">Day 1</h2>
+
+<p>Throughout the three conference days I mostly attended the Research Tracks. They contain a whole lot of knowledge, new ideas
+and ingenious tools. Here’s what caught my attention on the first day.</p>
+
+<p><img src="/uploads/2016/06/icwe-program.jpg" alt="icwe program cover" /></p>
+
+<h3 id="the-keynote---quo-vadis-google-knowledge-graph">The keynote - Quo vadis Google Knowledge Graph</h3>
+
+<p>The conference started with a <a href="http://icwe2016.inf.usi.ch/program/keynotes/xin.luna.dong">talk</a> by <a href="http://lunadong.com/">Xin Luna Dong</a>
+about the Google Knowledge Graph. It was very interesting to see how Google employs a data model similar in concept to
+RDF to build it’s massive knowledge base, how Freebase is currently being replaced by <a href="https://en.wikipedia.org/wiki/Knowledge_Vault">Google Knowledge Vault</a> and
+learn about (Lightweight) Verticals, which are one how Google collects its data. However, as one listener points out:</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a>! Nice presentation by Luna Dong but... where is Wikidata?</p>&mdash; Alberto Tonon (@otreblanonot) <a href="https://twitter.com/otreblanonot/status/739729514750742529">June 6, 2016</a></blockquote>
+
+<h3 id="ctat-tilt-and-tap-across-devices">CTAT: Tilt-and-Tap Across Devices</h3>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Thank you really much <a href="https://twitter.com/hashtag/icwe2016?src=hash">#icwe2016</a> for this award.Special thanks to <a href="https://twitter.com/mariahusman">@MariaHusman</a> <a href="https://twitter.com/hashtag/Abhi?src=hash">#Abhi</a> <a href="https://twitter.com/hashtag/can?src=hash">#can</a>  and my mentor <a href="https://twitter.com/emseen">@emseen</a>. <a href="https://t.co/q4PI4otfHM">pic.twitter.com/q4PI4otfHM</a></p>&mdash; Lindig (@lindadigeronimo) <a href="https://twitter.com/lindadigeronimo/status/740461345632620544">June 8, 2016</a></blockquote>
+
+<p>This interesting work by <a href="https://twitter.com/lindadigeronimo">Linda Di Geronimo</a>, <a href="https://twitter.com/MariaHusmann">Maria Husmann</a>, Abhimanyu Patel, Can Tuerk and <a href="https://twitter.com/emseen">Moira C. Norrie</a>
+was awarded the Best Paper Award for good reason. During the talk we could watch what great interactions can be achieve
+by communicating multiple mobile device equipped with accelerometers. That has some proper SCI-FI potential. And just thing
+about all the games. Well, unfortunately we’ve heard that lagging would be too great for dynamic real-time interaction, 
+but some less intensive activities? After all we all have a universal Wii-like controller in our pockets. It just so happens
+that it can take calls.</p>
+
+<p><video width='870' preload='metadata' controls ><source src='/uploads/2016/06/ctat.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></p>
+
+<h3 id="revisting-web-data-extraction-using-in-browser-structural-analysis-and-visual-cues-in-modern-web-designs">Revisting Web Data Extraction using In-Browser Structural Analysis and Visual Cues in Modern Web Designs</h3>
+
+<p>In his presentation, <a href="https://twitter.com/alfonsomurolo">Alfonso Murolo</a> showcased his Chrome extension called <strong>DeepDesign</strong>, which uses some 
+state-of-the-art techniques to aid extracting (scraping) data from websites. The extension takes advantage of structural
+and visual cues to automate the creation of wrappers for extracting data from web pages. I only wish that the extension
+was made public and included a crawler so that entire websites can be scraped. Currently it requires manual action.</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">DeepDesign: Chrome Web extractor extension. I was looking for this! Will have to try it out. <a href="https://twitter.com/hashtag/ICWE2016?src=hash">#ICWE2016</a> <a href="https://t.co/8e74pJct1D">pic.twitter.com/8e74pJct1D</a></p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/739754809729929216">June 6, 2016</a></blockquote>
+
+<p>Unfortunately, currently trying DeepDesign won’t be possible.</p>
+
+<h3 id="clustering-aided-page-object-generation-for-web-testing">Clustering-Aided Page Object Generation for Web Testing</h3>
+
+<p>First day, and yet another award - for best student paper. In this presentation the audience was introduced to <a href="http://sepl.dibris.unige.it/APOGEN.php">APOGEN</a> 
+or <strong>Automatic Page Objects Generator</strong>. It is a Java tool, which crawls a website to create Page Objects for its pages.
+However it does by combining multiple instances of the same page into clusters. It allows correcting these clusters with
+a simple UI. That UI even shows small renderings of crawled pages. There is so much usefulness in this tool and it is
+already <a href="https://app.assembla.com/spaces/sepl-apo/subversion/source/HEAD/trunk">available as open source</a> (just why SVN?).</p>
+
+<p><video width='870' preload='metadata' controls poster='/uploads/2016/06/apogen.png'><source src='/uploads/2016/06/apogen.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></p>
+
+<p>How cool is that? If I ever hear that scientific conferences don’t have anything practical offer to I will slap that
+person across their face <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" />.</p>
+
+<h3 id="qwwwq-querying-wikipedia-without-writing-queries">QwwwQ: Querying Wikipedia without writing queries</h3>
+
+<p>This is another cool Chrome extension I’m very excited about, which unfortunately is not available publicly just yet.
+QwwwQ (pron. quick) is an ingenious tool for querying <a href="http://dbpedia.org">DBpedia</a> in a way I would describe as a mix of
+query-by-example and maybe faceted search. It would allow non-technical users to explore the wealth of data stored on
+wikipedia and also help developers build SPARQL queries for DBpedia with a nice GUI instead of a text editor. In their
+paper the authors (<a href="https://www.linkedin.com/in/massimiliano-battan-2b49b359">Massimiliano Battan</a> and <a href="http://latemar.science.unitn.it/segue/index.php?&amp;login=logout&amp;action=site&amp;site=ronchet">Marco Ronchetti</a>) mention future plans for allowing <code>JOIN</code>
+operations to traverse relations. I would add to that list the possibility to retrieve the underlying query for further
+customization.</p>
+
+<p>What I found most interesting is that QwwwQ cites a 1975 paper <em>A psychological study of query by example</em> by John C. Thomas
+and John D. Gould. Isn’t that cool?</p>
+
+<h3 id="aspect-based-sentiment-analysis-on-the-web-using-rhetorical-structure-theory">Aspect-Based Sentiment Analysis on the Web using Rhetorical Structure Theory</h3>
+
+<p>Another award that day - Distinguished Paper Award. Although the topic is quite advanced, the presenters succinctly explained
+their application of <a href="https://en.wikipedia.org/wiki/Rhetorical_Structure_Theory">Rhetorical Structure Theory or RST</a> in
+deriving sentiment from product reviews written in English. What does it mean? It means that by deconstructing and
+classifying parts of a review multiple algorithms devised by the authors can determine what positive and negative sentiments
+the reviewer expressed. Interestingly, the results are slightly worse for negative reviews (allegedly, because positive 
+words are often used to express negative sentiments) and results are better for reviews consisting of multiple sentences.</p>
+
+<h3 id="diversity-in-social-media-urban-analytics">Diversity in Social Media Urban Analytics</h3>
+
+<p>An fairly interesting paper, which shows how social media activity data (from Twitter and Instagram in this case) can be
+used to determine patterns of their respective users in cities. The authors analyzed the usage of said social networks in
+four European cities: Amsterdam, London, Paris and Rome. Among the findings the authors discovered that</p>
+
+<ul>
+  <li>Instagram users concentrate more in the vicinity of tourist locations</li>
+  <li>The same can be said for tourists as opposed to residents</li>
+  <li>Instagram shows more uniform activity over time in various cities that Twitter (for example Amsterdam Twitter activity dies out much quicker in evenings)</li>
+  <li>Both social networks’ activity is proportional to city size</li>
+  <li>The activity of people aged 45+ is very low</li>
+</ul>
+
+<p>As unsurprising as they may seem, these results are not really meant to reflect the reality in 100%. The authors are aware
+of the challenges and acknowledge shortcomings of their techniques. This paper is however a good exploration of various
+possibilities which await a data scientist who is interested in analyzing social behaviour on the web.</p>
+
+<h3 id="design-of-cqa-systems-for-flexible-and-scalable-deployment-and-evaluationhttpicwe2016infusichsitesicwe2016filesslidesivan-srbapdf"><a href="http://icwe2016.inf.usi.ch/sites/icwe2016/files/slides/Ivan-Srba.pdf">Design of CQA Systems for Flexible and Scalable Deployment and Evaluation</a></h3>
+
+<p>Another work with so much potential for practical application. Long ago I have been looking for a good, open source
+alternative to Stack Exchange. It turns out that there is one such open-source project being developed at Slovak University
+of Technology in Bratislava. Its focus is on educational use and has unique features for teachers/students and integrates
+with edX and MOOC. It is also used on the University in Lugano.</p>
+
+<p>Oh, and did I mention that it is open source and <a href="https://github.com/AskalotCQA/askalot">hosted on GitHub</a>? Go give it a
+try.</p>
+
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: lit-html | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/lit-html/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How to set up storybook to play nice with lit-html-based element]]></title>
+    <link href="http://t-code.pl/blog/2018/03/storybook-with-lit-html-and-polymer-3/"/>
+    <updated>2018-03-26T21:15:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/03/storybook-with-lit-html-and-polymer-3</id>
+    <content type="html"><![CDATA[<p>I’d like to share a few tips which might help you set up <a href="https://www.npmjs.com/package/@storybook/polymer">@storybook/polymer</a> with a JS-only elements. The
+core issue was importing a base mixin class from Polymer 3, which causes the default babel configuration to 
+transpile into an unusable bundle.</p>
+
+<!--more-->
+
+<h2 id="background">Background</h2>
+
+<p>In <a href="https://github.com/wikibus/lit-any">my code</a> I have a base class which uses Polymer’s <code>PropertiesChanged</code> mixin to offload handling attributes
+and properties:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">PropertiesChanged</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘@</span><span class="nx">polymer</span><span class="o">/</span><span class="nx">polymer</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">mixins</span><span class="o">/</span><span class="nx">properties</span><span class="o">-</span><span class="nx">changed</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">LitAnyBase</span> <span class="kr">extends</span> <span class="nx">PropertiesChanged</span><span class="p">(</span><span class="nx">HTMLElement</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="cm">/* rest of my code */</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>There is not build step and the code works great when bundled using webpack in an actual web application.</p>
+
+<h2 id="the-issue-with-storybook">The issue with storybook</h2>
+
+<p>Unfortunately this does not work of out the box with Storybook for Web Components (maybe it will be renamed
+after all). By design the storybook generates a shell <code>index.html</code> which loads web components polyfill and 
+<code>custom-elements-es5-adapter.js</code>. The latter requires that all <strong>ES6 be transpiled into ES5</strong>. Otherwise any of
+the code would not work in older browsers which do not support classes.</p>
+
+<p>The thing is though that it’s an all or nothing approach. Without the adapter all code must be ES6, as per
+<a href="https://developers.google.com/web/fundamentals/web-components/customelements#define">custom elements v1</a> spec. With the adapter on other hand it is not possible to mix the two approaches. So what
+happens when Storybook generates its bundle? My code gets transpiled as expected:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">LitAnyBase</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">_PropertiesChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">_inherits</span><span class="p">(</span><span class="nx">LitAnyBase</span><span class="p">,</span> <span class="nx">_PropertiesChanged</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">LitAnyBase</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">_classCallCheck</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">LitAnyBase</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">_this</span> <span class="o">=</span> <span class="nx">_possibleConstructorReturn</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">(</span><span class="nx">LitAnyBase</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">||</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">LitAnyBase</span><span class="p">)).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">_this</span><span class="p">;</span>   <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="cm">/* the ugly ES5 continues here */</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><code>_PropertiesChanged</code> however would still be as ES6 class <em>(because it comes from <code>node_modules</code>?)</em> even though
+they both end up in the very same bundle. The effect is a sight many web component developers probably witnessed:</p>
+
+<blockquote>
+  <p>TypeError: Class constructor PropertiesChanged cannot be invoked without ‘new’</p>
+</blockquote>
+
+<h2 id="solution">Solution</h2>
+
+<p>It had taken me a few hours of futile experiments with various webpack and babel configs until my colleague 
+<a href="https://twitter.com/riscent">Kamil</a> helped me out. Turns out all it took was a minimal babel setup.</p>
+
+<h3 id="initial-setup">Initial setup</h3>
+
+<p>First things first, here are the steps I used to set up Storybook in my repository, similar to the
+<a href="https://storybook.js.org/basics/slow-start-guide/">Slow start guide</a></p>
+
+<ol>
+  <li><code>yarn add -D @storybook/polymer</code></li>
+  <li>Create the NPM script</li>
+  <li>Create my <a href="">config</a> and a first <a href="">story</a></li>
+</ol>
+
+<p>When started, nothing will show and the error mentioned above will be reported in the console.</p>
+
+<h3 id="steps-to-fix">Steps to fix</h3>
+
+<p>Turns out the fix is not so difficult but also not obvious for a weekend JS dev <img class="emoji" title=":joy:" alt=":joy:" src="https://assets.github.com/images/icons/emoji/unicode/1f602.png" height="20" width="20" align="absmiddle" />.
+One, it’s necessary to install babel presets:</p>
+
+<p><code>
+yarn add -D babel-preset-react babel-preset-env babel-preset-es2015 babel-preset-stage-0
+</code></p>
+
+<p>Next create <code>.babelrc</code> as follows. It is interesting that <code>es2015</code> in not required to be called out
+explicitly but it has to be installed as a dependency nonetheless.</p>
+
+<p><code>json
+{
+  "presets": ["react", "env", "stage-0"]
+}
+</code></p>
+
+<p>Then also <code>yarn add -D babel-plugin-transform-decorators-legacy</code>.</p>
+
+<p>Finally the simplest webpack config must be added next to storybooks config file.</p>
+
+<p><code>js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader'
+      }
+    ]
+  }
+};
+</code></p>
+
+<p>It will cause all of <code>node_modules</code> to be loaded by babel which can take significantly more to build, but
+hey, at least now my storybook works! <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /></p>
+
+<h2 id="update-for-storybook-4">Update for Storybook 4</h2>
+
+<p>I recently updated to Storybook <code>4.0.alpha.9</code>. It seems to be working fine despite some benign errors showing 
+in the console. It didn’t “just work” though. Right after upgrade I was running into similar issues with bundling.
+To fix that the <code>babel-loader</code> needs a minor tweak:</p>
+
+<p><code>diff
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
++       exclude: /node_modules\/@webcomponents/
+      }
+    ]
+</code></p>
+
+]]></content>
+  </entry>
+  
+</feed>

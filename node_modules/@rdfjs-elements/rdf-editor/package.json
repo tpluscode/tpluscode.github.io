@@ -1,0 +1,42 @@
+{
+  "name": "@rdfjs-elements/rdf-editor",
+  "version": "0.3.4",
+  "description": "Code Mirror editor for RDF",
+  "author": "Zazuko GmbH",
+  "license": "MIT",
+  "main": "rdf-editor.js",
+  "module": "rdf-editor.js",
+  "scripts": {
+    "analyze": "run-p analyze:*",
+    "analyze:wc": "wca --format json --outFile ./custom-elements.json",
+    "analyze:readme": "wca --outFile ./README.md",
+    "analyze:lit": "lit-analyzer --strict --quiet --rules.no-invalid-css off",
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zazuko/rdfjs-elements.git",
+    "directory": "packages/rdf-editor"
+  },
+  "homepage": "https://zazuko.github.io/rdfjs-elements/rdf-editor/",
+  "dependencies": {
+    "@rdf-esm/data-model": "^0.5.3",
+    "@rdfjs-elements/formats-pretty": "*",
+    "@tpluscode/rdf-ns-builders": "^0.3.7",
+    "@vanillawc/wc-codemirror": "^1.8.10",
+    "codemirror": "^5.56.0",
+    "readable-stream": "^3",
+    "lit-element": "^2.2.1",
+    "lit-html": "^1.1.2",
+    "string-to-stream": "^3.0.1"
+  },
+  "devDependencies": {
+    "@open-wc/testing": "^2.5.29",
+    "@rdfjs-elements/testing": "*",
+    "api-viewer-element": "^0.4.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

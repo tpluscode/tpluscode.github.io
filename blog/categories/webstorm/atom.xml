@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: webstorm | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/webstorm/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Configure Webstorm to use Babun shell]]></title>
+    <link href="http://t-code.pl/blog/2016/02/webstorm-babun/"/>
+    <updated>2016-02-26T21:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/02/webstorm-babun</id>
+    <content type="html"><![CDATA[<p>Instructions for setting up <a href="http://babun.github.io/">Babun</a> (zsh) as Webstorm terminal. I’ve recently been shown Babun and having it replace
+GitHub for Windows shell in Webstorm was the last piece of my happiness. The tricky part was to have it open in the 
+current working copy and not the default home path.</p>
+
+<!--more-->
+
+<p>I found these instructions <a href="http://mjusix.blogspot.com/2015/12/babun-in-webstorm-intellij-als-konsole.html">somewhere on the web</a> ~~but forgot where it was~~. It’s quite simple and required some minor 
+tweaks so here’s how I have it set up.</p>
+
+<p><strong>1</strong> Go to Babun installation folder (for me it’s <code>%USERPROFILE%\.babun</code>)</p>
+
+<p><strong>2</strong> Create a batch file. I called it <code>cygwin.bat</code></p>
+
+<p><strong>3</strong> The batch script is</p>
+
+<p><code>batch
+@echo off
+set currentdir=%cd:\=/%
+@echo cd %currentdir% &gt; "%USERPROFILE%\.babun\cygwin\home\%USERNAME%\.bashrc_cd"
+call %USERPROFILE%\.babun\cygwin\bin\bash --login -i -ls
+</code></p>
+
+<p><strong>4</strong> Add the created script as terminal command in Webstorm settings (you cannot use <code>%USERPROFILE%</code> variable here)</p>
+
+<p><img src="/uploads/2016/02/babun.png" alt="Webstorm settings" /></p>
+
+<p><strong>5</strong> Add the following to <code>%USERPROFILE%\.babun\cygwin\home\%USERNAME%\.bashrc</code></p>
+
+<p><code>bash
+if [ -f "${HOME}/.bashrc_cd" ]; then
+   source "${HOME}/.bashrc_cd"
+   rm "${HOME}/.bashrc_cd"
+fi
+</code></p>
+
+<p><strong>6</strong> Enjoy!</p>
+
+<p><img src="/uploads/2016/02/webstorm.png" alt="Webstorm terminal" /></p>
+
+]]></content>
+  </entry>
+  
+</feed>

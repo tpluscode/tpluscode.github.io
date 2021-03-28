@@ -1,0 +1,410 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Maintaining documentation of JS library in lockstep with code - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="This article shows how to write documentation which will always follow the evolution of you code">
+    
+        <meta name="keywords" content="javascript, documentation">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2018/05/js-living-docs/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Maintaining Documentation of JS Library in Lockstep With Code</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I’ve long been aware of GitBook.com as a way to easily author documentation pages. What I did not know before
+was that it also comes with a robust tooling for building the book locally and building as a static website.
+Works great with GitHub Pages, albeit needing some specific setup to run from the <code>/docs</code> folder. In itself
+though it may just be a good-looking alternative to other static page generators or documentation builders.
+The difference however is the abundance of plugins, and one plugin in particular useful for documenting JS
+code.</p>
+
+<!--more-->
+
+<h2 id="setting-up-gitbook-for-github-pages">Setting up GitBook for GitHub pages</h2>
+
+<p>The GitBook toolchain has some setting which collide with how GitHub Pages expect you to organize your
+repository. It’s nothing really problematic but impossible to change so you may as well be aware of how
+to work with both together.</p>
+
+<p>The first step is to prepare your repository to host both code and documentation. See <a href="https://toolchain.gitbook.com">this gitbook</a>
+to set up and install the command line tool.</p>
+
+<p>Next, initialize a folder for the markdown sources of your documentation pages. I called that folder <code>gitbook</code>.
+You can do it by running the command below.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">gitbook init ./gitbook
+</span></code></pre></td></tr></table></div></figure>
+
+<p>You will also have to create a <code>book.json</code> configuration file pointing to the root of you book</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;root&quot;</span><span class="p">:</span> <span class="s2">&quot;./gitbook&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>To test your GitBook locally you can run <code>gitbook serve</code>. Note that you will want to ignore a folder called
+<code>_book</code> which is where the site is being generated for serving locally.</p>
+
+<p>Once you’ve created some pages you build static documentation pages by running <code>gitbook build</code>. In the latest
+version of GitBook CLI there is no setting to control the output folder and it will by default write the
+output to the same <code>_book</code> folder. GitHub pages however expects the static pages to be served from a <code>/docs</code>
+folder, which also cannot be changed. The only way to make both happy is to pass an output folder to the
+build command. I added a complete command to my <code>package.json</code>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;scripts&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;build&quot;</span><span class="p">:</span> <span class="s2">&quot;webpack; gitbook build . docs&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This will take the sources from the root, as set up in <code>book.json</code> and write HTML to <code>/docs</code>. That should be,
+just commit and push to publish your book on github.io.</p>
+
+<h2 id="writing-live-snippets">Writing live snippets…</h2>
+
+<p>As mentioned before, GitBook itself is nice but the real great feature are numerous plugins, and one plugin
+in particular: <a href="https://www.npmjs.com/package/gitbook-plugin-runkit">RunKit</a>. 
+As <a href="https://runkit.com/">its page</a> states</p>
+
+<blockquote>
+  <p>RunKit is Node prototyping</p>
+</blockquote>
+
+<p>It lets anyone create actual live snippets running node with any package available on npmjs.org registry.
+It is actually possible to load any particular version, similarly to how you would install a specific version
+with Yarn on NPM. Additionally it also wraps the snippets in an async function so that they can use the 
+<code>await</code> keyword instead of promises and renders a nice output for JS objects or HTML. Go ahead and see what
+happens when you paste the snippet below snippet on <a href="https://runkit.com/">runkit.com</a>.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kr">const</span> <span class="nx">fetch</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;isomorphic-fetch@2.2.0&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="kr">const</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;http://google.com&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="nx">await</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="inside-you-gitbook">…inside you GitBook…</h3>
+
+<p>Finally, the GitBook plugin makes it trivial to embed actual snippets within your documentation. To install
+it add the plugin in you <code>book.json</code></p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;plugins&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="s2">&quot;runkit&quot;</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>And run <code>gitbook install</code>.</p>
+
+<p>Now you can add a runkit embed using a special <code>runkit</code> block:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{% runkit %} 
+</span><span class="line">const fetch = require('isomorphic-fetch@2.2.0');
+</span><span class="line">
+</span><span class="line">const xhr = await fetch('http://google.com');
+</span><span class="line">await xhr.text();
+</span><span class="line">{% endrunkit %}</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="and-keeping-them-up-to-date-with-code">…and keeping them up to date with code</h3>
+
+<p>The ability to request any chosen version from NPM has one great implication. You can have the embedded
+snippets always use a version matching the state of the repository. Instead of keeping a concrete number
+in the runkit snippets, GitBook lets the authors create variables and inject them in their pages. Here’s
+my config file:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.4.0-a5&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It defines a variable which I use in all my snippets so that they use the most recent version of my
+library:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{% runkit %} 
+</span><span class="line">const fetch = require('alcaeus@{{ book.version }}');
+</span><span class="line">
+</span><span class="line">// more snippet
+</span><span class="line">{% endrunkit %}</span></code></pre></td></tr></table></div></figure>
+
+<p>At this point there are simple steps to follow in order to always have the documentation using the right
+version:</p>
+
+<ol>
+  <li>Change my code as usual</li>
+  <li>Publish next version to NPM</li>
+  <li>Update documentation</li>
+  <li>Bump the GitBook <code>version</code> variable</li>
+  <li>Build GitBook</li>
+  <li>Commit, tag and push repository</li>
+</ol>
+
+<p>This way the online documentation always point to the most recent version but anyone checking out any tag
+will be able to run the documentation as it existed at that point in time. And the code examples will use
+the matching version from NPM!</p>
+
+<h3 id="bonus-documentating-multiple-versions-of-the-library">Bonus: documentating multiple versions of the library</h3>
+
+<p>With a simple modification of these steps one could also keep multiple versions of the documentation,
+targeting multiple versions of the library.</p>
+
+<ol>
+  <li>Build the book to a <code>/docs/latest</code> instead</li>
+  <li>Whenever you’re ready to tag you repository, make a copy of that folder to one named after the
+version. For example <code>/docs/v0.9</code>, <code>/docs/1.0</code>, <code>/docs/2.0</code>, etc.</li>
+</ol>
+
+<p>This way you will keep all past versions documented alongside the latest on 
+<code>github.io/my-lib/v0.9</code>, <code>github.io/my-lib/v1.0</code> and <code>github.io/my-lib/v2.0</code> respectively.</p>
+
+<h2 id="see-it-in-action">See it in action</h2>
+
+<p>Go ahead and check Alcaeus’ documentation pages at <a href="https://alcaeus.hydra.how">https://alcaeus.hydra.how</a>
+to see live examples published using the RunKit plugin.</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2018/05/js-living-docs/';
+        var disqus_url = 'http://t-code.pl/blog/2018/05/js-living-docs/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

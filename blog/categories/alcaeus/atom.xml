@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: alcaeus | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/alcaeus/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Maintaining documentation of JS library in lockstep with code]]></title>
+    <link href="http://t-code.pl/blog/2018/05/js-living-docs/"/>
+    <updated>2018-05-06T18:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/05/js-living-docs</id>
+    <content type="html"><![CDATA[<p>I’ve long been aware of GitBook.com as a way to easily author documentation pages. What I did not know before
+was that it also comes with a robust tooling for building the book locally and building as a static website.
+Works great with GitHub Pages, albeit needing some specific setup to run from the <code>/docs</code> folder. In itself
+though it may just be a good-looking alternative to other static page generators or documentation builders.
+The difference however is the abundance of plugins, and one plugin in particular useful for documenting JS
+code.</p>
+
+<!--more-->
+
+<h2 id="setting-up-gitbook-for-github-pages">Setting up GitBook for GitHub pages</h2>
+
+<p>The GitBook toolchain has some setting which collide with how GitHub Pages expect you to organize your
+repository. It’s nothing really problematic but impossible to change so you may as well be aware of how
+to work with both together.</p>
+
+<p>The first step is to prepare your repository to host both code and documentation. See <a href="https://toolchain.gitbook.com">this gitbook</a>
+to set up and install the command line tool.</p>
+
+<p>Next, initialize a folder for the markdown sources of your documentation pages. I called that folder <code>gitbook</code>.
+You can do it by running the command below.</p>
+
+<p><code>bash
+gitbook init ./gitbook
+</code></p>
+
+<p>You will also have to create a <code>book.json</code> configuration file pointing to the root of you book</p>
+
+<p><code>json
+{
+  "root": "./gitbook"
+}
+</code></p>
+
+<p>To test your GitBook locally you can run <code>gitbook serve</code>. Note that you will want to ignore a folder called
+<code>_book</code> which is where the site is being generated for serving locally.</p>
+
+<p>Once you’ve created some pages you build static documentation pages by running <code>gitbook build</code>. In the latest
+version of GitBook CLI there is no setting to control the output folder and it will by default write the
+output to the same <code>_book</code> folder. GitHub pages however expects the static pages to be served from a <code>/docs</code>
+folder, which also cannot be changed. The only way to make both happy is to pass an output folder to the
+build command. I added a complete command to my <code>package.json</code>.</p>
+
+<p><code>json
+{
+  "scripts": {
+    "build": "webpack; gitbook build . docs"
+  }
+}
+</code></p>
+
+<p>This will take the sources from the root, as set up in <code>book.json</code> and write HTML to <code>/docs</code>. That should be,
+just commit and push to publish your book on github.io.</p>
+
+<h2 id="writing-live-snippets">Writing live snippets…</h2>
+
+<p>As mentioned before, GitBook itself is nice but the real great feature are numerous plugins, and one plugin
+in particular: <a href="https://www.npmjs.com/package/gitbook-plugin-runkit">RunKit</a>. 
+As <a href="https://runkit.com/">its page</a> states</p>
+
+<blockquote>
+  <p>RunKit is Node prototyping</p>
+</blockquote>
+
+<p>It lets anyone create actual live snippets running node with any package available on npmjs.org registry.
+It is actually possible to load any particular version, similarly to how you would install a specific version
+with Yarn on NPM. Additionally it also wraps the snippets in an async function so that they can use the 
+<code>await</code> keyword instead of promises and renders a nice output for JS objects or HTML. Go ahead and see what
+happens when you paste the snippet below snippet on <a href="https://runkit.com/">runkit.com</a>.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">fetch</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="err">‘</span><span class="nx">isomorphic</span><span class="o">-</span><span class="nx">fetch</span><span class="err">@</span><span class="mf">2.2</span><span class="p">.</span><span class="mi">0</span><span class="err">’</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">const</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//google.com’);</span>
+</span><span class='line'><span class="nx">await</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h3 id="inside-you-gitbook">…inside you GitBook…</h3>
+
+<p>Finally, the GitBook plugin makes it trivial to embed actual snippets within your documentation. To install
+it add the plugin in you <code>book.json</code></p>
+
+<p><code>json
+{
+  "plugins": [
+    "runkit"
+  ]
+}
+</code></p>
+
+<p>And run <code>gitbook install</code>.</p>
+
+<p>Now you can add a runkit embed using a special <code>runkit</code> block:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{% runkit %} 
+</span><span class='line'>const fetch = require(‘isomorphic-fetch@2.2.0’);&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;p>const xhr = await fetch(‘http://google.com’);
+</span><span class='line'>await xhr.text();
+</span><span class='line'>{% endrunkit %}</span></code></pre></td></tr></table></div></figure></p>
+
+<h3 id="and-keeping-them-up-to-date-with-code">…and keeping them up to date with code</h3>
+
+<p>The ability to request any chosen version from NPM has one great implication. You can have the embedded
+snippets always use a version matching the state of the repository. Instead of keeping a concrete number
+in the runkit snippets, GitBook lets the authors create variables and inject them in their pages. Here’s
+my config file:</p>
+
+<p><code>json
+{
+  "variables": {
+    "version": "0.4.0-a5"
+  }
+}
+</code></p>
+
+<p>It defines a variable which I use in all my snippets so that they use the most recent version of my
+library:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{% runkit %} 
+</span><span class='line'>const fetch = require(‘alcaeus@{{ book.version }}’);&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;p>// more snippet
+</span><span class='line'>{% endrunkit %}</span></code></pre></td></tr></table></div></figure></p>
+
+<p>At this point there are simple steps to follow in order to always have the documentation using the right
+version:</p>
+
+<ol>
+  <li>Change my code as usual</li>
+  <li>Publish next version to NPM</li>
+  <li>Update documentation</li>
+  <li>Bump the GitBook <code>version</code> variable</li>
+  <li>Build GitBook</li>
+  <li>Commit, tag and push repository</li>
+</ol>
+
+<p>This way the online documentation always point to the most recent version but anyone checking out any tag
+will be able to run the documentation as it existed at that point in time. And the code examples will use
+the matching version from NPM!</p>
+
+<h3 id="bonus-documentating-multiple-versions-of-the-library">Bonus: documentating multiple versions of the library</h3>
+
+<p>With a simple modification of these steps one could also keep multiple versions of the documentation,
+targeting multiple versions of the library.</p>
+
+<ol>
+  <li>Build the book to a <code>/docs/latest</code> instead</li>
+  <li>Whenever you’re ready to tag you repository, make a copy of that folder to one named after the
+version. For example <code>/docs/v0.9</code>, <code>/docs/1.0</code>, <code>/docs/2.0</code>, etc.</li>
+</ol>
+
+<p>This way you will keep all past versions documented alongside the latest on 
+<code>github.io/my-lib/v0.9</code>, <code>github.io/my-lib/v1.0</code> and <code>github.io/my-lib/v2.0</code> respectively.</p>
+
+<h2 id="see-it-in-action">See it in action</h2>
+
+<p>Go ahead and check Alcaeus’ documentation pages at <a href="https://alcaeus.hydra.how">https://alcaeus.hydra.how</a>
+to see live examples published using the RunKit plugin.</p>
+]]></content>
+  </entry>
+  
+</feed>

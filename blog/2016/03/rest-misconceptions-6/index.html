@@ -1,0 +1,550 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>REST misconceptions part 6 - Versioning and Hypermedia - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="There is a heated debate about how to maintain serve multiple versions of a REST API and most opinions are wrong">
+    
+        <meta name="keywords" content="hypermedia, rest, rest mistakes">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/03/rest-misconceptions-6/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">REST Misconceptions Part 6 - Versioning and Hypermedia</h1>
+	<div class="entry-content" itemprop="articleBody"><p>This will be the last part about REST mistakes and confusion for the time being. In this post I will share my opinions
+about common approaches to versioning REST APIs. I will also present my view about why and how versioning could be avoided.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-2">Not linked enough</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">Leaky business</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-4">Resources are application state</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><strong>Versioning</strong></li>
+</ol>
+
+<h2 id="how-can-i-version-my-uri">How can I version my URI?</h2>
+
+<p>Troy Hunt wrote in his <a href="http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html">blog posting</a>, that there are number of ways to version a REST API and all of them wrong. There
+are the 3 common ways, but together with a bunch of comments under Troy’s post, one could count up to 6 or maybe 8 various
+wrong options. First let’s look again at the most common and then I’ll try to convince you that there is in fact a way 
+less wrong.</p>
+
+<h3 id="version-number-in-uri">Version number in URI</h3>
+
+<p>Like most other problems with REST, a common flawed approach to API versioning stems from <a href="/blog/2016/02/rest-misconceptions-1">misunderstanding of the URI</a>.
+This popular way simply adds a version number as a segment in the resource identifiers, such as in a template</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">http://book.store/v{version}/books/{isbn}</span></code></pre></td></tr></table></div></figure>
+
+<p>This pattern could produce identifiers <code>http://book.store/v1.0/books/978-0321125217</code> and <code>http://book.store/v2.0/books/978-0321125217</code>
+as identifiers for <a href="http://www.amazon.com/gp/product/0321125215">the blue DDD book by Eric Evans</a>. Immediately a question
+should come to mind</p>
+
+<blockquote>
+  <p>Do these URLs identify two separate resources?</p>
+</blockquote>
+
+<p>I think not. It’s the representation or the behaviour that changes and not the actual resource. In other words it is the
+<strong>contract</strong> that changes. The two identifiers are used to access the same resource. This is the most common argument why
+this is wrong. However this way is temptingly simple and will never break the cache constraint.</p>
+
+<p>And of course there is one case when the version in URL makes sense. That is when the resource changes and it each 
+individual revision must be accessible at the same time (see below). This however is not why entire APIs need versions.</p>
+
+<h3 id="version-in-accept-header">Version in Accept header</h3>
+
+<p>Another option for serving multiple versions of an API is the use of Accept headers. The client would add the version 
+number to the request. In addition to (or instead of) plain <code>application/json</code>, the server would allow custom media types
+like <code>application/vnd.bookstore.v2+json</code> to serve version 2 of a representation.</p>
+
+<p>It <a href="http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802">has been noted</a> that 
+for this solution to be symmetrical, the server should not only serve resources with various media types, but should also
+accept requests with versioned payload. And there is even more edge cases when <code>DELETE</code> method is concerned, which doesn’t
+take neither <code>Accept</code> nor <code>Content-Type</code> headers.</p>
+
+<p>Also only part of the server contract could change. For example the server could return updated representation for version
+2 but still expect the same request body as in version 1. Does it mean that both need a new version, even if only part of
+the API changes? I intuitively say yes, but I’m not so sure. Definitely dodgy space.</p>
+
+<p>Another issue with <code>Accept</code> header approach is that it will lead to <a href="https://www.mnot.net/blog/2012/04/17/profiles">media type proliferation</a>.</p>
+
+<h3 id="custom-header">Custom header</h3>
+
+<p>Last of the common <em>wrong ways</em> is leveraging custom HTTP headers for requests:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">GET</span> <span class="nn">/book.store/book/Hamlet</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line"><span class="na">X-Version</span><span class="o">:</span> <span class="l">2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>and responses:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span class="line"><span class="na">X-Version</span><span class="o">:</span> <span class="l">2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The worst that can happen when applying API versioning this way is broken cache, where HTTP middleware ignores custom
+headers.</p>
+
+<p>Also, both custom header and vendor media type have another caveat. What should the server return when the client doesn’t
+specify a version? Returning the latest will keep breaking clients while returning the oldest (supported) will likely
+stall adoption of the improved API.</p>
+
+<h2 id="what-am-i-versioning">What am I versioning?</h2>
+
+<p>Let’s take a step back and think about what actually can be version about an API. There are three possible answers:</p>
+
+<ol>
+  <li>The resource itself (ie. the content)</li>
+  <li>The resource representations</li>
+  <li>The resource behaviour</li>
+</ol>
+
+<p><strong>Note</strong> that in examples below I will be using pseudo <a href="http://jsonl-ld.org">JSON-LD</a>+<a href="http://hydra-cg.com">Hydra</a>.</p>
+
+<h3 id="maintaining-versions-of-a-resource">Maintaining versions of a resource</h3>
+
+<p>As stated above, the first possibility is the only circumstance where adding a version number to a resource does indeed
+make sense. This could be used for a parallel-universe dbpedia, where individual revisions of a wikipedia resource are
+served as they changed over time. The main resource could be like</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="s2">&quot;http://dbpedia.alternati.ve/context.jsonld&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;/resource/Berlin&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;revisions&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="s2">&quot;/resource/Berlin/rev1&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="s2">&quot;/resource/Berlin/rev2&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="s2">&quot;/resource/Berlin/rev3&quot;</span>
+</span><span class="line">  <span class="p">],</span>
+</span><span class="line">  <span class="err">//</span> <span class="err">whatever</span> <span class="err">current</span> <span class="err">data</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This means the each revision is a resource in it’s own rights and can be interacted with via representations.</p>
+
+<h3 id="handling-changes-in-resource-representations">Handling changes in resource representations</h3>
+
+<p>This is where resource custom media types sound like a viable options. A new version of the media type could be introduced
+to let the clients interact with the new and old representations. For example in the initial version of an API there can
+be some sort of person resource:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="s2">&quot;example.company/context.jsonld&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;/employee/tom&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz Pluskiewicz&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>What if someone decided to change on <code>name</code> field into <code>firstName</code> and <code>lastName</code>. A breaking change at first glance,
+but there is nothing wrong with including both the old and new property instead of replacing:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="s2">&quot;example.company/context.jsonld&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;/employee/tom&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz Pluskiewicz&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;firstName&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;lastName&quot;</span><span class="p">:</span> <span class="s2">&quot;Pluskiewicz&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>What about doing a <code>PUT</code> operation on that resource you ask? The media type used should actually inform clients what are
+the required inputs. So before the change there would be something similar to:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Class&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;property&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">      <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+</span><span class="line">      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class="line">      <span class="nt">&quot;writeable&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This tells clients that in order to modify a <code>Person</code> resource, the <code>name</code> property must be set. Now after the change
+we would have a different situation:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Class&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;property&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">    <span class="p">{</span> <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nt">&quot;writeable&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nt">&quot;obsolete&quot;</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+</span><span class="line">    <span class="p">{</span> <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;firstName&quot;</span><span class="p">,</span> <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nt">&quot;writeable&quot;</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+</span><span class="line">    <span class="p">{</span> <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;lastName&quot;</span><span class="p">,</span> <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nt">&quot;writeable&quot;</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This time round the description of the <code>Person</code> class states that <code>firstName</code> and <code>lastName</code> properties are required. The
+<code>name</code> property is still there but marked as read-only and obsolete, which could mean that it will be removed in the future.</p>
+
+<p>Thus <strong>if the server provides enough hypermedia descriptions and clients take advantage of them, no API versioning is 
+actually required</strong>.</p>
+
+<h3 id="evolving-the-resource-behaviour">Evolving the resource behaviour</h3>
+
+<p>Last case is modifying how the client interacts with the resources. <a href="http://www.troyhunt.com/2014/02/your-api-versioning-is-wrong-which-is.html#comment-2322098802">The comment linked above</a>
+talks about change in a blogging platform. In the first version the blog is simply posted and published immediately. 
+Such interaction could easily be modelled as a <code>POST</code> to some blog resource.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">POST</span> <span class="nn">http://t-code.pl/blog</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;title&quot;: &quot;REST misconceptions part 6 - Versioning and Hypermedia&quot;,
+</span><span class="line">  &quot;text&quot;: &quot;...&quot;
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Let’s say the the server returns a link to the newly created blog post. (I assume that the current date at the time of
+submitting is used in the URL).</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+</span><span class="line"><span class="na">Location</span><span class="o">:</span> <span class="l">http://t-code.pl/blog/2013/03/REST-misconceptions-part-6</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>So what happens when the contract changes so that a post is not published immediately but saved as draft? The first <code>POST</code>
+request could stay the same, so there is nothing to break the client just yet. However the response would be different:</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+</span><span class="line"><span class="na">Location</span><span class="o">:</span> <span class="l">http://t-code.pl/drafts/REST-misconceptions-part-6</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>A different <code>Location</code> is returned. The client now gets the draft resource and learns that there is a link, which is used
+to publish.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;@id&quot;: &quot;http://t-code.pl/drafts/REST-misconceptions-part-6&quot;,
+</span><span class="line">  &quot;@type&quot;: &quot;Draft&quot;,
+</span><span class="line">  &quot;publishedPosts&quot;: {
+</span><span class="line">    &quot;@id&quot;: &quot;/blog/published&quot;,
+</span><span class="line">    &quot;body&quot;: {
+</span><span class="line">      &quot;@id&quot;: &quot;http://t-code.pl/drafts/REST-misconceptions-part-6&quot;
+</span><span class="line">    }
+</span><span class="line">  }
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The exact details of how the client should request are debatable and irrelevant really. All that matters is that the 
+media type must be expressive enough to describe that interaction. And the client must follow.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I hope that my examples can convince some people out there that there are ways to avoid using version numbers within an
+API completely. Rich hypermedia used from day one should insulate the client from any breaking changes that the server may
+introduce.</p>
+
+<blockquote>
+  <p>You don’t version the API.<br />
+You don’t version the resource.<br />
+You don’t version your media type. <br />
+<strong>You version you hypermedia controls</strong>. <br />
+<em>And of course, if you don’t have hypermedia controls you’re in trouble.</em></p>
+</blockquote>
+
+<p>It seem as though <em>almost</em> any other argument for adding version numbers anywhere in a REST API is the consequence of 
+<strong>not following the Hypermedia As The Engine Of Application State</strong> and thus introducing <strong>out-of-bound information</strong> on
+the client’s side of affairs.</p>
+
+<h2 id="links">Links</h2>
+
+<p>Here are some more interesting reads:</p>
+
+<ul>
+  <li><a href="http://codebetter.com/howarddierking/2012/11/09/versioning-restful-services/">Versioning RESTful Services</a></li>
+  <li><a href="http://thereisnorightway.blogspot.com/2011/02/versioning-and-types-in-resthttp-api.html">Versioning and Types in REST/HTTP API Resources</a></li>
+  <li><a href="http://nirmata.com/2013/10/rest-apis-part-1/">REST Is Not About APIs, Part 1</a></li>
+  <li><a href="http://blog.steveklabnik.com/posts/2012-02-23-rest-is-over">REST is OVER!</a></li>
+  <li><a href="https://www.mnot.net/blog/2012/07/11/header_versioning">Bad HTTP API Smells: Version Headers</a></li>
+</ul>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/03/rest-misconceptions-6/';
+        var disqus_url = 'http://t-code.pl/blog/2016/03/rest-misconceptions-6/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

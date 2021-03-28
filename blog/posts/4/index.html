@@ -1,0 +1,519 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Mar 13th, 2016 5:00 pm hypermedia, rest REST Misconceptions Part 6 - Versioning and Hypermedia This will be the last part about REST mistakes and &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/posts/4/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-13T17:00:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:00 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/rest-misconceptions-6/" itemprop="url">REST Misconceptions Part 6 - Versioning and Hypermedia</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>This will be the last part about REST mistakes and confusion for the time being. In this post I will share my opinions
+about common approaches to versioning REST APIs. I will also present my view about why and how versioning could be avoided.</p>
+
+
+		
+		<a href="/blog/2016/03/rest-misconceptions-6/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-12T17:50:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:50 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/rest-misconceptions-5/" itemprop="url">REST Misconceptions Part 5 - REST "Documentation"</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In this installment of my REST series I will take on the train wreck, which some people call REST API documentation. Of
+course some form of documentation is necessary but I am growing more and more disappointed with most current solutions.
+Tools like <a href="http://swagger.io">Swagger</a>  or <a href="http://apiary.io">Apiary</a> can be used to create some sort of documentation, but they sure 
+as hell don’t describe REST APIs.</p>
+
+
+		
+		<a href="/blog/2016/03/rest-misconceptions-5/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-11T22:30:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:30 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/rest-misconceptions-4/" itemprop="url">REST Misconceptions Part 4 - Resources Are Application State</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>This part four (0-based) of my series about REST, the mistakes people often make and some ideas of mine. This post on 
+talks about taking advantage of resource representations in a javascript client. This is somewhat related to my <a href="/blog/2015/01/hateoas-as-if-you-meant-it/">other 
+REST post</a>, where I argue that when resources are <a href="/blog/2016/02/rest-misconceptions-1">properly identified</a> 
+and <a href="/blog/2016/03/rest-misconceptions-2">actually linked</a> is should be possible (and beneficial) to ditch client URL routing.</p>
+
+
+		
+		<a href="/blog/2016/03/rest-misconceptions-4/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-07T22:40:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:40 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/wikibus/'>wikibus</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/wikibus-technology-details/" itemprop="url">Why I Like Buses - More About wikibus.org</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Previously, in my first <a href="/2016/03/dajsiepoznac-wikibus/">#dajsiepoznać post</a>, I wrote about how I’ve been <em>trying</em> to create wikibus.org, the
+public transport encyclopedia. Sadly, Most of that <em>development</em> has been more of blind technology exploration, learning
+and very little delivery. Now, I’m going forward with renewed strength, and I’d like to share more details about the
+idea behind the project.</p>
+
+
+		
+		<a href="/blog/2016/03/wikibus-technology-details/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-07T22:20:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:20 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/rdf/'>rdf</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/getting-started-with-dydra/" itemprop="url">Introduction to Dydra, the Cloud-based RDF Store</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>For anyone interested in the <a href="https://www.w3.org/standards/semanticweb/">Semantic Web</a>, data storage continues to be an issue. Although there is a fair number
+of <a href="https://en.wikipedia.org/wiki/Triplestore">triple- and quadstore</a>, your mileage may vary. Some triple stores offer mediocre performance, there are
+stability issues, missing features or unsupported platforms. There however one simple, but hassle-free alternative in the
+cloud.</p>
+
+
+		
+		<a href="/blog/2016/03/getting-started-with-dydra/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-06T10:10:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:10 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/rest-misconceptions-3/" itemprop="url">REST Misconceptions Part 3 - More Than Links</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In the fourth part of my REST series I will expand the idea of links. Links are just a stepping stone no matter how important.
+Simple links aren’t enough for the client to interact with the server. After all how is it going to know when to <code>POST</code>
+and when to <code>PUT</code> or what are the required parameters and request bodies. This is where affordances come into play. It
+means that the server should include all information the client needs. Just as defined by the <strong>self-descriptive</strong> constraint.</p>
+
+
+		
+		<a href="/blog/2016/03/rest-misconceptions-3/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-03T20:50:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>8:50 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/heroku/'>heroku</a>, <a class='category' href='/blog/categories/mono/'>mono</a>, <a class='category' href='/blog/categories/paket/'>paket</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/mono-paket-heroku-deployment/" itemprop="url">Deploying .NET App to Heroku Is Not Fun &#35;dajsiepoznac</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’ve been building my wikibus.org code on AppVeyor, which is quite neat and used it to publish over WebDeploy to my VPS.
+Having recently watched a convincing presentation about Heroku on <a href="http://wrocnet.github.io">Wrocław .NET User Group</a> I decided that maybe
+it will be an interesting experience.</p>
+
+
+		
+		<a href="/blog/2016/03/mono-paket-heroku-deployment/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-02T20:30:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2016</span></span> <span class='time'>8:30 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/wikibus/'>wikibus</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/dajsiepoznac-wikibus/" itemprop="url">wikibus.org and the &#35;dajsiepoznac Competition</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>My colleague <a href="https://twitter.com/j_stadnicki">Jarek Stadnicki</a> convinced me to join the competition called <strong><em><a href="http://www.maciejaniserowicz.com/daj-sie-poznac/">Daj się poznać</a></em></strong> 
+(Polish for <em>Let them get to know you</em>). Here are a few words about that and what I will be doing</p>
+
+
+		
+		<a href="/blog/2016/03/dajsiepoznac-wikibus/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-02-27T21:40:00+00:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:40 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/02/rest-misconceptions-2/" itemprop="url">REST Misconceptions Part 2 - (Not) Linking Data (Enough)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In the third installment of my REST misconceptions series in which I explore hyperlinks. Links are an essential part of 
+a REST API as has been written down by Richard Fowler in his article about the <a href="http://martinfowler.com/articles/richardsonMaturityModel.html#level3">Richardson Maturity Model</a>. Wonder
+why links are important? Please, do read on.</p>
+
+
+		
+		<a href="/blog/2016/02/rest-misconceptions-2/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-02-26T21:00:00+00:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:00 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/webstorm/'>webstorm</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/02/webstorm-babun/" itemprop="url">Configure Webstorm to Use Babun Shell</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Instructions for setting up <a href="http://babun.github.io/">Babun</a> (zsh) as Webstorm terminal. I’ve recently been shown Babun and having it replace
+GitHub for Windows shell in Webstorm was the last piece of my happiness. The tricky part was to have it open in the 
+current working copy and not the default home path.</p>
+
+
+		
+		<a href="/blog/2016/02/webstorm-babun/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+        <a href="/blog/posts/3" class="prev">Prev</a>
+    
+    
+        <a href="/blog/posts/5" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

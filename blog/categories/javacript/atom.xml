@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javacript | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/javacript/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Interesting JavaScript quirk when accessing object with index]]></title>
+    <link href="http://t-code.pl/blog/2016/05/indexing-object-with-array/"/>
+    <updated>2016-05-15T20:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/05/indexing-object-with-array</id>
+    <content type="html"><![CDATA[<p>I’ve just discovered an interesting JavaScript quirk which I haven’t seen before. It turns out that indexing an object with a single
+element array has the exact same effect as indexing with that array’s element.</p>
+
+<!--more-->
+
+<p>JavaScript just doesn’t stop amazing developers. There are <a href="http://developer.telerik.com/featured/seven-javascript-quirks-i-wish-id-known-about/">many quirks</a> I’ve seen, known and exploited. I was so surprised to hav
+found one that I’ve never seen before. It turns out that <a href="http://www.quirksmode.org/js/associative.html">accessing object as an associative array</a> works not only with the actual
+index but also when a <strong>single element array</strong> is used for index.</p>
+
+<p>See for yourself below:</p>
+
+<p><a class="jsbin-embed" href="http://jsbin.com/lizeho/embed?js,console">JS Bin on jsbin.com</a></p>
+
+<p>Of course, the array with two elements returns <code>undefined</code> as expected.</p>
+
+<p>What is even more insane, is that the array can be of any depth as long as it is a single element array within a single element array 
+within a single element array etc. How weird is that?</p>
+
+<p><a class="jsbin-embed" href="http://jsbin.com/fawihu/embed?js,console">JS Bin on jsbin.com</a></p>
+
+<p>Digging deeper, I discovered that it is possible to index an object with arrays on any dimension and that would be equivalent
+as indexing with the elements joined with a comma. Here’s a demonstration</p>
+
+<p><a class="jsbin-embed" href="http://jsbin.com/xokoze/embed?js,console">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.35.12"></script></p>
+
+<p>Again, it does not matter whether the array is deeply nested inside other arrays</p>
+
+<p>I imaging this can actually be quite useful though I’d be afraid that programmers not familiar with this trick would not understand
+what is happening.</p>
+
+<p>A superfluous google search didn’t answer why this works like that. A comment with an explanation will be greatly appreciated <img class="emoji" title=":smile:" alt=":smile:" src="https://assets.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle" />.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: typescript | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/typescript/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Publishing Polymer elements written in TypeScript (with dependencies)]]></title>
+    <link href="http://t-code.pl/blog/2016/08/publishing-polymerts-elements/"/>
+    <updated>2016-08-15T10:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/08/publishing-polymerts-elements</id>
+    <content type="html"><![CDATA[<p>I love consuming <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements">custom elements</a> but writing them in <a href="http://polymer-project.org">Polymer</a> with ES5 is far from ideal. ES6 (<a href="http://benmccormick.org/2015/09/14/es5-es6-es2016-es-next-whats-going-on-with-javascript-versioning/">or
+more correctly ES2015</a>) could offer some improvement but it is still not officially supported by the Polymer
+team and their toolset.</p>
+
+<p>Thankfully, there is <a href="https://github.com/nippur72/PolymerTS">PolymerTS</a> which offers a vastly improved Polymer API, mainly thanks to decorators. It 
+also let’s developers take advantage of ES6 modules but there is one problem: how do you publish elements with dependencies
+both on JSPM packages and other elements from Bower?</p>
+
+<!--more-->
+
+<h2 id="tldr">TL;DR;</h2>
+
+<p>Here are some highlights from this post:</p>
+
+<ol>
+  <li>Don’t reference bower dependencies directly to avoid vulcanizing <code>polymer.html</code>
+  * reference them in package manager-specific entrypoint instead</li>
+  <li>Use <code>jspm build-sfx</code> to publish for Bower</li>
+  <li>Use <code>jspm bundle</code> to publish for JSPM</li>
+</ol>
+
+<h3 id="show-me-the-code-already">Show me the code already</h3>
+
+<p>I’ve created two example repositories:</p>
+
+<ol>
+  <li><a href="https://github.com/tpluscode/md-ed"><code>md-ed</code> - a component written in PolymerTS</a></li>
+  <li>its sample usage with <a href="https://github.com/tpluscode/md-ed-sample/tree/bower">Bower</a> and <a href="https://github.com/tpluscode/md-ed-sample/tree/jspm">JSPM</a></li>
+</ol>
+
+<h2 id="repo-setup">Repo setup</h2>
+
+<p>Inspired by the <a href="http://blog.charto.net/typescript/Taming-Polymer-with-SystemJS-and-TypeScript-part-1/">Taming Polymer post</a> by Juha Järvi, the initial setup involves preparing JSPM, SystemJS and 
+TypeScript. The original post however, discusses creating apps. Here I will show how to create, publish and consume a
+reusable element.</p>
+
+<p><strong>First</strong>, bootstrap JSPM by running <code>jspm init</code>. All question can be left with default answers except choosing TypeScript 
+as the transpiler.</p>
+
+<p><strong>Second</strong>, instruct SystemJS to assume <code>ts</code> as the default extension when loading your code. I usually place it in the 
+<code>src</code> folder and so update <code>config.js</code> file accordingly by adding the <code>packages</code> property for the sources folder.</p>
+
+<p><figure class='code'><figcaption><span>config.js</span><a href='https://github.com/tpluscode/md-ed/blob/master/config.js#L10'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">System</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">packages</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">src</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="err">“</span><span class="nx">defaultExtension</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">ts</span><span class="err">”</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><strong>Lastly</strong>, you will need PolymerTS itself and SystemJS plugin for loading HTML files using the ES6 <code>import</code> syntax. They
+are installed by running:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bower init
+</span><span class='line'>bower i nippur72/PolymerTS –save
+</span><span class='line'>jspm i <span class="nv">html</span><span class="o">=</span>github:Hypercubed/systemjs-plugin-html
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Note that unlike Juha Järvi, I install systemjs-plugin-html from jspm and not bower. It is also crucial that you explicitly
+set the name for the plugin by installing with <code>html=</code> prefix. Otherwise bundling, which I explain later in this post, will
+not work.</p>
+
+<h2 id="creating-elements">Creating elements</h2>
+
+<h3 id="internal-dependencies-and-html-templates">Internal dependencies and HTML templates</h3>
+
+<p>Because I’m using SystemJS with a transpiler, each element will be split into separate html and ts files. The HTML will 
+contain the <code>&lt;dom-module&gt;</code> element but no script. Instead, each of the elements’ code will import the template using the
+import syntax via the systemjs-plugin-html plugin. Note the <code>.html!</code> suffix. This is the outline of my <code>&lt;md-ed&gt;</code> element.</p>
+
+<p><figure class='code'><figcaption><span>md-ed.ts</span><a href='https://github.com/tpluscode/md-ed/blob/master/src/md-ed.ts'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ts'><span class='line'><span class="kr">import</span> <span class="err">‘</span><span class="p">.</span><span class="o">/</span><span class="nx">md</span><span class="o">-</span><span class="nx">ed</span><span class="p">.</span><span class="nx">html</span><span class="o">!</span><span class="err">’</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">DefaultMdBehavior</span><span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">DefaultMdBehavior</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">@</span><span class="nx">component</span><span class="p">(</span><span class="err">‘</span><span class="nx">md</span><span class="o">-</span><span class="nx">ed</span><span class="err">’</span><span class="p">)</span>
+</span><span class='line'><span class="err">@</span><span class="nx">behavior</span><span class="p">(</span><span class="nx">DefaultMdBehavior</span><span class="p">)</span>
+</span><span class='line'><span class="kr">class</span> <span class="nx">MdEd</span> <span class="kr">extends</span> <span class="nx">polymer</span><span class="p">.</span><span class="nx">Base</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">MdEd</span><span class="p">.</span><span class="nx">register</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Similarly, any shared module or other local elements can be referenced using modules. Above you can see the second line
+which imports a behavior.</p>
+
+<h3 id="external-library-dependencies">External library dependencies</h3>
+
+<p>With the help of JSPM and SystemJS, your elements written in TypeScript (or ES6 I imagine) can reference virtually any
+external library. They can be packaged as AMD or CommonJS modules or as globals. JSPM unifies the module definitions so
+that most libraries simply work in the browser.</p>
+
+<p>The example component uses the <a href="https://github.com/chjj/marked">marked</a> library to parse markdown. It is an npm module
+which I install with JSPM as usual.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>jspm i npm:marked
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now, it’s possible to import the library and use its functionality in the custom element:</p>
+
+<p><figure class='code'><figcaption><span>md-ed.ts</span><a href='https://github.com/tpluscode/md-ed/blob/master/src/md-ed.ts'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="err">‘</span><span class="nx">marked</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">class</span> <span class="nx">MdEd</span> <span class="kr">extends</span> <span class="nx">polymer</span><span class="p">.</span><span class="nx">Base</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="err">@</span><span class="nx">property</span><span class="p">({</span> <span class="nx">notify</span><span class="o">:</span> <span class="kc">true</span> <span class="p">})</span>
+</span><span class='line'><span class="nx">markdown</span><span class="o">:</span><span class="nb">String</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nx">observe</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="nx">_markdownChanged</span><span class="p">(</span><span class="nx">md</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="nx">marked</span><span class="p">(</span><span class="nx">md</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// do something with parsed markdown</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<h3 id="external-web-component-dependencies">External web component dependencies</h3>
+
+<p>Most web components are currently installed with bower. This is true for Google’s elements from <a href="https://elements.polymer-project.org">elements.polymer-project.org</a>
+and most I’ve seen on <a href="https://customelements.io">customelements.io</a>. Bower is used because it creates a flat directory structure which allows
+for predictable import links. Unfortunately, there is no built-in way for importing such dependencies. Also bundling won’t
+work for elements which explicitly import polymer.html. There is currently no way to exclude certain imports from the bundle
+which causes multiple Polymers. Needless to say, it is bad.</p>
+
+<p>So, if you need to reference a third party component like some Iron or Paper Elements simply install them from bower but
+don’t import them in any of your source files. Instead they will all be imported in an entrypoint - separate for Bower and
+JSPM.</p>
+
+<h2 id="publishing-for-bower">Publishing for Bower</h2>
+
+<p>Follow the instructions below if you want to publish you element to be consumed from Bower.</p>
+
+<h3 id="bundling">Bundling</h3>
+
+<p>Bundling is done by running the JSPM CLI which has a number of options. For Bower, I’ve found the <code>bundle-sfx</code>
+command works best, because it allows creating packages which require neither any specific module loader
+nor JSPM/SystemJS. Elements bundled this way will be possible to consume using bower just like any other element.</p>
+
+<p>I usually add the bundling command to NPM scripts:</p>
+
+<p><figure class='code'><figcaption><span>package.json</span><a href='https://github.com/tpluscode/md-ed/blob/master/package.json#L4'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“</span><span class="nx">scripts</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">build</span><span class="o">-</span><span class="nx">bower</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">jspm</span> <span class="nx">bundle</span><span class="o">-</span><span class="nx">sfx</span> <span class="nx">src</span><span class="o">/</span><span class="nx">md</span><span class="o">-</span><span class="nx">ed</span> <span class="o">-</span> <span class="nx">marked</span> <span class="nx">dist</span><span class="o">/</span><span class="nx">bower</span><span class="o">/</span><span class="nx">build</span><span class="p">.</span><span class="nx">js</span> <span class="err">–</span><span class="nx">format</span> <span class="nx">global</span> <span class="err">–</span><span class="nx">globals</span> <span class="s2">&quot;{‘marked’: ‘marked’}&quot;</span><span class="err">”</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><code>src/md-ed - marked dist/build/build.js</code> means that the root <code>src/md-ed.ts</code> file and it’s dependent modules will be bundled 
+into <code>dist/bower/build.js</code> but will not include the marked library. The marked library will be added later as a bower
+dependency.</p>
+
+<p><code>--format global</code> creates a bundle without any module loaders. This is enough for bower and web components.</p>
+
+<p>Finally, the <code>--globals "{'marked': 'marked'}"</code> switch is required for some excluded modules when bundling. It tells
+JSPM what global variable to use when injecting dependencies into your bundled modules.</p>
+
+<p>I’m intentionally not minifying the contents. The consumer will do so when bundling his or her actual application.</p>
+
+<p>Now, running <code>npm run build-bower</code> will create a <code>bower/dist/build.js</code> with transpiled and bundled scripts and <code>bower/dist/build.html</code>
+with <a href="https://github.com/Polymer/vulcanize">vulcanized</a> files. Interestingly, the html must exist beforehand, which looks like a bug in the SystemJS html
+plugin. Simply create one before running the npm script:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mkdir dist
+</span><span class='line'>touch build.html
+</span><span class='line'>npm run build-bower
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Oh, and don’t exclude the <code>dist</code> folder from git. You’ll want to push the bundled files with everything else.</p>
+
+<h3 id="packaging">Packaging</h3>
+
+<p>Most components published with Bower include a html file named same as the repository (and element). My element is called
+<code>md-ed</code> and so I created a <code>md-ed.html</code> file in the root of my repository. This will be the main entrypoint for consumers
+to import. Here’s the complete file:</p>
+
+<p><figure class='code'><figcaption><span>md-ed.html</span><a href='https://github.com/tpluscode/md-ed/blob/master/md-ed.html'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- imports of bower dependencies --&gt;</span><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../polymer-ts/polymer-ts.min.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../paper-input/paper-textarea.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../paper-tabs/paper-tabs.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;../iron-pages/iron-pages.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;../marked/lib/marked.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- import of bundled HTML files --&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;dist/bower/build.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- this is required due to a bug in HTML loader for SystemJS --&gt;</span>
+</span><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">System</span> <span class="o">=</span> <span class="nx">System</span> <span class="o">||</span> <span class="p">{};</span>
+</span><span class='line'>    <span class="nx">System</span><span class="p">.</span><span class="nx">register</span> <span class="o">=</span> <span class="nx">System</span><span class="p">.</span><span class="nx">register</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(){};</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- referencing the bundled, transpiled code of the element --&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;dist/bower/build.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>At the top I added bower dependencies. It’s important that the paths don’t include <code>bower_components</code>. On the consumer 
+side, the elements will already live alongside other bower dependencies. I include all component dependencies and marked,
+which I excluded from the bundle. Shall you choose not to exclude some dependency, you would then keep it out of your
+bower entrypoint.</p>
+
+<p>Below the bundled files are referenced. There is some additional boilerplate here. The extra script is a remedy for another 
+shortcoming of the systemjs-plugin-html. It doesn’t play nice with the <code>bundle-sfx</code> command and leaves some references to
+SystemJS. This is simply to avoid <code>System is undefined</code> or similar errors.</p>
+
+<p>Finally, you may also want to add the file to you bower.json as <code>"main": "md-ed.html"</code>.</p>
+
+<p><figure class='code'><figcaption><span>bower.json</span><a href='https://github.com/tpluscode/md-ed/blob/master/bower.json#L4'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“name”:</span> <span class="err">“md-ed”,</span>
+</span><span class='line'>  <span class="err">“main”:</span> <span class="err">“md-ed.html”</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h3 id="consuming">Consuming</h3>
+
+<p>Consuming with Bower is as easy as it gets. Simply install the element:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bower install –save tpluscode/md-ed
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>add an import <code>&lt;link&gt;</code> and use the element on you page:</p>
+
+<p><figure class='code'><figcaption><span>https://github.com/tpluscode/md-ed-sample/blob/bower/index.html </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="ni">&amp;lt;</span>!doctype html<span class="ni">&amp;gt;</span><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'><span class="nt">&lt;head&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/webcomponentsjs/webcomponents.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;bower_components/md-ed/md-ed.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/head&gt;</span>
+</span><span class='line'><span class="nt">&lt;body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;md-ed&gt;&lt;/md-ed&gt;</span>
+</span><span class='line'><span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2 id="publishing-for-jspm">Publishing for JSPM</h2>
+
+<p>Follow the instructions below if you want to publish you element to be consumed from JSPM.</p>
+
+<h3 id="bundling-1">Bundling</h3>
+
+<p>Unfortunately, the same bundling command doesn’t work for both Bower and JSPM. I’ve found that for JSPM it is best to
+use the <code>jspm bundle</code> command which produces a similar output but for use exclusively with SystemJS and no other module
+loaders. The npm script is similar but simpler than the command used for Bower:</p>
+
+<p><figure class='code'><figcaption><span>package.json</span><a href='https://github.com/tpluscode/md-ed/blob/master/package.json#L5'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“</span><span class="nx">scripts</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">build</span><span class="o">-</span><span class="nx">jspm</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">jspm</span> <span class="nx">bundle</span> <span class="nx">src</span><span class="o">/</span><span class="nx">md</span><span class="o">-</span><span class="nx">ed</span> <span class="o">-</span> <span class="nx">marked</span> <span class="nx">dist</span><span class="o">/</span><span class="nx">jspm</span><span class="o">/</span><span class="nx">bundle</span><span class="p">.</span><span class="nx">js</span><span class="err">”</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>It produces a similar output - combined scripts in <code>dist/jspm/bundle.js</code> file and vulcanized <code>dist/jspm/bundle.html</code>. Here
+the marked library is also excluded from the bundle.</p>
+
+<h3 id="packaging-1">Packaging</h3>
+
+<p>For consumers to be able to use your JSPM package it is also necessary to create a main entrypoint. For that purpose I 
+created an <code>md-ed.js</code> file in the root of the repository.</p>
+
+<p><figure class='code'><figcaption><span>md-ed.js</span><a href='https://github.com/tpluscode/md-ed/blob/master/md-ed.js'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ts'><span class='line'><span class="kr">import</span> <span class="err">“</span><span class="nx">bower_components</span><span class="o">/</span><span class="nx">polymer</span><span class="o">-</span><span class="nx">ts</span><span class="o">/</span><span class="nx">polymer</span><span class="o">-</span><span class="nx">ts</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">html</span><span class="o">!</span><span class="err">”</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="err">“</span><span class="nx">bower_components</span><span class="o">/</span><span class="nx">paper</span><span class="o">-</span><span class="nx">input</span><span class="o">/</span><span class="nx">paper</span><span class="o">-</span><span class="nx">textarea</span><span class="p">.</span><span class="nx">html</span><span class="o">!</span><span class="err">”</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="err">“</span><span class="nx">bower_components</span><span class="o">/</span><span class="nx">paper</span><span class="o">-</span><span class="nx">tabs</span><span class="o">/</span><span class="nx">paper</span><span class="o">-</span><span class="nx">tabs</span><span class="p">.</span><span class="nx">html</span><span class="o">!</span><span class="err">”</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="err">“</span><span class="nx">bower_components</span><span class="o">/</span><span class="nx">iron</span><span class="o">-</span><span class="nx">pages</span><span class="o">/</span><span class="nx">iron</span><span class="o">-</span><span class="nx">pages</span><span class="p">.</span><span class="nx">html</span><span class="o">!</span><span class="err">”</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">import</span> <span class="err">‘</span><span class="p">.</span><span class="o">/</span><span class="nx">dist</span><span class="o">/</span><span class="nx">jspm</span><span class="o">/</span><span class="nx">bundle</span><span class="p">.</span><span class="nx">html</span><span class="o">!</span><span class="err">’</span>
+</span><span class='line'><span class="kr">import</span> <span class="err">‘</span><span class="p">.</span><span class="o">/</span><span class="nx">dist</span><span class="o">/</span><span class="nx">jspm</span><span class="o">/</span><span class="nx">bundle</span><span class="err">’</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">System</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="err">‘</span><span class="nx">src</span><span class="o">/</span><span class="nx">md</span><span class="o">-</span><span class="nx">ed</span><span class="p">.</span><span class="nx">ts</span><span class="err">’</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>The outline is very similar to Bower’s entrypoint:</p>
+
+<ol>
+  <li>Import bower dependencies with HTML plugin</li>
+  <li>Import the bundled HTML and scripts</li>
+  <li>Load the element from the bundle</li>
+</ol>
+
+<p>The last step is necessary because JSPM bundles don’t immediately load any modules. They are just used to combine multiple
+modules in one script.</p>
+
+<p>For the element’s package to be installed correctly, the configuration file must include the main file, similarly to that
+of bower.</p>
+
+<p>A perceptive reader will also notice that I’m using ES6 module syntax above. SystemJS can handle this just fine provided the
+format option is set in <code>package.json</code>. Here’s mine, with both entrypoint script and the format set.</p>
+
+<p><figure class='code'><figcaption><span>package.json</span><a href='https://github.com/tpluscode/md-ed/blob/master/package.json#L8'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“jspm”:</span> <span class="err">{</span>
+</span><span class='line'>    <span class="err">“main”:</span> <span class="err">“md-ed.js”,</span>
+</span><span class='line'>    <span class="err">“format”:</span> <span class="err">“es6”</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Publishing a package in ES6 syntax will also enable rescursive bundling of the element’s dependencies. Otherwise JSPM
+would not be able to bundle direct usages of <code>System.import</code>. In other words some dependencies would remain unbundled.</p>
+
+<h3 id="consuming-1">Consuming</h3>
+
+<p>Consumers, in order to us the element, must install it using JSPM but also install the necessary bower packages. The
+easiest seems to be installing the same element from both JSPM <strong>and</strong> bower. This way, albeit cumbersome when updating,
+will ensure that all necessary dependencies are pulled as well. To install the sample element one would eun the two 
+commands</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bower i tpluscode/md-ed –save
+</span><span class='line'>jspm i github:tpluscode/md-ed
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Typically there would be single application module, like <a href="https://github.com/tpluscode/md-ed-sample/blob/jspm/app.js"><code>app.js</code></a>, which references all it’s dependencies. For our jspm
+component the import would be a simple <code>import 'tpluscode/md-ed'</code></p>
+
+<p>At runtime, it will pull all necessary files from bower and jspm components. The main <code>index.html</code> file will then reference
+the <code>app.js</code> script and uses SystemJS to load the add.</p>
+
+<p><figure class='code'><figcaption><span>https://github.com/tpluscode/md-ed-sample/blob/jspm/index.html </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="ni">&amp;lt;</span>!doctype html<span class="ni">&amp;gt;</span>
+</span><span class='line'>        <span class="ni">&amp;lt;</span>html<span class="ni">&amp;gt;</span><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;head&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jspm_packages/system.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;config.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/webcomponentsjs/webcomponents.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;/head&gt;</span>
+</span><span class='line'><span class="nt">&lt;body&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;md-ed&gt;&lt;/md-ed&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'>    <span class="nx">System</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;p&gt;</span><span class="ni">&amp;lt;</span>/html<span class="ni">&amp;gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I realize that the presented ideas are far from ideal. The web stack is not yet consistent enough, with its multiple
+package managers etc, to support the modern ideas around web components. Until it matures I hope that someone out there
+will find my ideas helpful.</p>
+
+<p>And please, if you think my bundling routine can be simplified, do leave me a note in the comments.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Heracles resources vs JSON-LD compaction - enumerable js properties]]></title>
+    <link href="http://t-code.pl/blog/2016/04/heracles-compacting-resources/"/>
+    <updated>2016-04-20T08:45:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/04/heracles-compacting-resources</id>
+    <content type="html"><![CDATA[<p>In my <a href="/blog/2016/04/introducing-heracles/">previous post</a> I presented the first incarnation of Heracles, the Hydra Core
+client library. While trying to replace my makeshift client I’d implemented for an in-house training project at <a href="http://pgs-soft.com">PGS</a>
+I quickly decided that I’m going to need a way to compact my resources. It wasn’t that hard but there was one simple
+hurdle to overcome.</p>
+
+<!--more-->
+
+<h2 id="tldr-with-heracles-you-can-do-this"><strong>TL;DR; with Heracles you can do this:</strong></h2>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Hydra</span><span class="p">.</span><span class="nx">Resource</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//my.api/my/resource’)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">jsonld</span><span class="p">.</span><span class="nx">promises</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">compacted</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// do something with the compacted resource</span>
+</span><span class='line'>    <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2 id="uri-properties-are-a-nuisance">URI properties are a nuisance</h2>
+
+<p>Just as in heracles, in my proof of concept code I too mostly worked with expanded JSON-LD objects. This has the downside
+that any time I needed to access the properties full property identifiers must be used. Also it is not possible with
+<a href="https://www.polymer-project.org/">Polymer</a> to use the indexer notation for declarative data binding:</p>
+
+<p>``` html
+<!-- Such markup is not valid data binding syntax in Polymer -->
+<span>{{myObject[‘http://xmlns.com/foaf/0.1/name’]}}</span></p>
+
+<!-- Databound object's properties must be accessed with the dot notation -->
+<p><span>{{myObject.name}}</span>
+```</p>
+
+<p>This is precisely what JSON-LD compaction algorithm is for. It translates URI keys in a compacted JSON object. This 
+translation is defined in a <code>@context</code> object.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// before</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">original</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//xmlns.com/foaf/0.1/name’: ‘Tomasz Pluskiewicz’</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// after</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">compacted</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">‘@</span><span class="nx">context</span><span class="err">’</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">‘</span><span class="nx">name</span><span class="err">’</span><span class="o">:</span> <span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//xmlns.com/foaf/0.1/’</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="err">‘</span><span class="nx">name</span><span class="err">’</span><span class="o">:</span> <span class="err">‘</span><span class="nx">Tomasz</span> <span class="nx">Pluskiewicz</span><span class="err">’</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>There are many tricks up compaction’s sleeve, which can help turning ugly JSON-LD into a digestive form. Have a look at
+<a href="http://www.slideshare.net/lanthaler/building-next-generation-web-ap-is-with-jsonld-and-hydra/23">this presentation</a> by <a href="https://twitter.com/markuslanthaler">Markus Manthaler</a> for some more examples.</p>
+
+<h2 id="my-code-before">My code before</h2>
+
+<p>In my code I used compaction to get rid of long URI keys so that I can take advantage of Polymer’s data binding without
+verbose methods like <a href="https://www.polymer-project.org/1.0/docs/devguide/properties.html#computed-properties">computed properties</a> or wrapping the object in a view model class.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">getAuthors</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">“@</span><span class="nx">vocab</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//wykop.pgs-soft.com/vocab#WeeksLink/”,</span>
+</span><span class='line'>        <span class="err">“</span><span class="nx">member</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//www.w3.org/ns/hydra/core#member”,</span>
+</span><span class='line'>        <span class="err">“</span><span class="nx">links</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="err">“@</span><span class="nx">id</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//wykop.pgs-soft.com/vocab#WeeksLinksBySubmitter/links”,</span>
+</span><span class='line'>            <span class="err">“@</span><span class="nx">container</span><span class="err">”</span><span class="o">:</span><span class="err">”@</span><span class="nx">set</span><span class="err">”</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="err">“</span><span class="nx">submitter</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//wykop.pgs-soft.com/vocab#WeeksLinksBySubmitter/submitter”</span>
+</span><span class='line'>    <span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">jsonld</span><span class="p">.</span><span class="nx">promises</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">context</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">model</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">compactedModel</span> <span class="o">=</span> <span class="nx">model</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>This is simple, the jsonld.js library takes care of the heavy lifting and produces a compacted object which is data binding
+friendly.</p>
+
+<h2 id="enter-heracles">Enter heracles</h2>
+
+<p>How is this relevant to the heracles library? In my previous post I showed the <code>Operation</code> type (and other parts of the
+ApiDocumentation classes) can be compacted so that working with them is easier.</p>
+
+<p>Resources however are a little different. They are always returned expanded and thus should be ready for being compacted.
+I was surprised to see that <code>jsonld.promises.compact</code> throws a stack overflow error. The reason is that JSON-LD algorithms
+are not designed to work with cyclical object graphs. It simply loops until the call stack runs out.</p>
+
+<h3 id="the-resource-class">The Resource class</h3>
+
+<p>In my code I have this <code>PartialCollectionView</code> class (excerpt):</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">private</span> <span class="nx">_collection</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">_collection</span> <span class="o">=</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get</span> <span class="nx">collection</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_collection</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>See the <code>collection</code> getter? This is where I had a cycle (collection -&gt; view -&gt; collection …). There was also another
+cycle inside the <code>apiDocumentation</code> getter in the base <code>Resource</code> class. There are actually two thing going on here. The
+first and obvious culprit is the <em>private field</em>. Of course this is just TypeScript sugar, because it will become just a
+typical field in the compiled JavaScript. JavaScript has no such notion of private members.</p>
+
+<h2 id="solution">Solution</h2>
+
+<p>The first step was to get rid of the field. There is no perfect way to do that but a friend of mine sent me <a href="http://davidvujic.blogspot.com/2015/03/what-wait-really-oh-no-a-post-about-es6-classes-and-privacy.html">this post</a>,
+which presents the use of <code>WeakMap</code> as a possible solution. With that I changed my code so that it no longer contains
+unwanted fields. <em>(actual code is actually a little different but you get the drift)</em></p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_collection</span> <span class="o">=</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get</span> <span class="nx">collection</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>Unfortunately the compaction algorithm still entered the vicious cycle and failed. Why is that? Because <a href="https://developer.mozilla.org/pl/docs/Web/JavaScript/Enumerability_and_ownership_of_properties">enumerable 
+properties</a>. jsonld.js <a href="https://github.com/digitalbazaar/jsonld.js/blob/master/js/jsonld.js#L6594">iterates over the object</a> using simple <code>for (var i in obj)</code> loop, which also
+returns all getters by default. One way is to use the native <code>Object.defineProperty</code> method instead of ES6 <code>get x()</code> 
+syntax but it breaks TypeScript code analysis and generally smells. There is a better way though.</p>
+
+<h3 id="solution-part-two">Solution part two</h3>
+
+<p>Luckily TypeScript has the decorators and there is a decorator, which does precisely what I wanted. Instead of writing</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_collection</span> <span class="o">=</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">get</span><span class="o">:</span> <span class="p">()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>I can simply install the <a href="https://www.npmjs.com/package/core-decorators">core-decorators package</a> from jspm (npm) and 
+decorate the property with <code>@nonenumerable</code></p>
+
+<p><code>bash
+jpsm install npm:core-decorators
+</code></p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">nonenumerable</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">core</span><span class="o">-</span><span class="nx">decorators</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_collection</span> <span class="o">=</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nx">nonenumerable</span>
+</span><span class='line'><span class="nx">get</span> <span class="nx">collection</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<h3 id="one-caveat">One Caveat</h3>
+
+<p>Of course this will still fail if there are actual cycles in the object graph. I’m hoping though that it won’t be the
+case all too often. And for the rare occasion a library like <a href="https://www.npmjs.com/package/circular-json">circular-json</a> can be used as suggested in <a href="https://github.com/digitalbazaar/jsonld.js/issues/97">this github
+issue</a>. It will make sure that there are no reference cycles. Unfortunately it is a only replacement for
+<code>JSON.stringify</code> and so to use it with jsonld.js it’s necessary to deserialize and serialize every time:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">CircularJSON</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">circular</span><span class="o">-</span><span class="nx">json</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">serialized</span> <span class="o">=</span> <span class="nx">CircularJSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">object</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">jsonLd</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">serialized</span><span class="p">);</span>
+</span><span class='line'><span class="nx">jsonld</span><span class="p">.</span><span class="nx">promises</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">jsonLd</span><span class="p">,</span> <span class="nx">context</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="cm">/* … */</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>This is because jsonld.js wants to treat a string parameter as URI.</p>
+
+<p>Please let me know if there is a better way for handling cyclical objects…</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fight TypeScript with TypeScript]]></title>
+    <link href="http://t-code.pl/blog/2016/04/test-typescript-with-typescript/"/>
+    <updated>2016-04-11T09:35:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/04/test-typescript-with-typescript</id>
+    <content type="html"><![CDATA[<p>Given that I’m fairly satisfied with the state of my server-side <a href="http://hydra-cg.org">Hydra</a> library for <a href="http://github.com/nancyfx/nancy">NancyFx</a> called
+<strong>Argolis</strong> it is now time to write some client-side library to consume it. I did some spiking in another small project
+and it was now time to do it properly. I’ve already had some experience with TypeScript and JSPM so I decided to give
+these two a go.</p>
+
+<p>Unfortunately getting the project setup right was harder than I’d hoped. Here’s how I managed to get my first test to pass.</p>
+
+<!--more-->
+
+<h2 id="test-first">Test first</h2>
+
+<p>I want to proceed with a TDD approach but unlike before this time I want to write both my code and modules in TypeScript.</p>
+
+<p><img src="/uploads/2016/04/FightFireWith_Fire.png" alt="fight fire with fire" /></p>
+
+<p>Here’s my first test. I will place all tests in <code>tests</code> folder and my modules in the <code>src</code> folder as you can see in the
+import in line 2.</p>
+
+<p>As you see I’m using ES6/TypeScript syntax here with module imports and arrow functions.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">sinon</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">sinon</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">heracles</span> <span class="nx">from</span> <span class="err">‘</span><span class="p">..</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">heracles</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">describe</span><span class="p">(</span><span class="err">‘</span><span class="nx">Hydra</span> <span class="nx">resource</span><span class="err">’</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">it</span><span class="p">(</span><span class="err">‘</span><span class="nx">should</span> <span class="nx">load</span> <span class="nx">resource</span> <span class="kd">with</span> <span class="nx">RDF</span> <span class="nx">accept</span> <span class="nx">header</span><span class="err">’</span><span class="p">,</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">sinon</span><span class="p">.</span><span class="nx">stub</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span> <span class="err">‘</span><span class="nx">fetch</span><span class="err">’</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>    <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">returns</span><span class="p">(</span><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="k">new</span> <span class="nx">Response</span><span class="p">()));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">heracles</span><span class="p">.</span><span class="nx">Hydra</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;http://example.com/resource&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">expect</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">calledWithMatch</span><span class="p">(</span><span class="s1">&#39;http://example.com/resource&#39;</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">})</span>
+</span><span class='line'>        <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">done</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">afterEach</span><span class="p">(()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span><span class='line'><span class="p">});</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>In my first test I want to check that <code>window.fetch</code> is called with the expected URL. To do that I’m using <a href="http://sinonjs.org/">sinon</a>
+stub to set up a call (line 8) and verify correct parameters (line 12). To make it work sinon must be installed from jspm.
+Browser other that Chrome and Opera would also need the whatwg-fetch package or similar</p>
+
+<p><code>bash
+jspm install npm:sinon npm:whatwg-fetch
+</code></p>
+
+<h3 id="lets-run-it">Let’s run it</h3>
+
+<p>With the first test in place I wanted to run it so that it becomes <a href="http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html"><strong><span style="color: red">red</span></strong></a>.</p>
+
+<p>I’ve recently found the <a href="https://github.com/testem/testem">Test’em</a> and it looked very promising with the super-easy CI integration and convenient
+command line UI. Unfortunately it turns out that it <a href="https://github.com/testem/testem/issues/784">doesn’t like system.js</a>.
+I’ve tried other solutions and eventually Karma worked.</p>
+
+<h4 id="setting-up-karma">Setting up karma</h4>
+
+<p>First, install karma, local npm packages and initialize karma</p>
+
+<p><code>bash
+npm install -g karma karma-jasmine jasmine-core
+npm install -g karma-chrome-launcher 
+npm install -g karma-systemjs systemjs
+karma init
+</code></p>
+
+<p>Second, set up systemjs so that karma can load TypeScript tests directly. This is possible thanks to the <a href="https://github.com/rolaveric/karma-systemjs">karma-systemjs</a>.
+To set it up add it as the <strong><em>first</em></strong> framework in karma and add systemjs configuration:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">config</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">frameworks</span><span class="o">:</span> <span class="p">[</span><span class="err">‘</span><span class="nx">systemjs</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="nx">jasmine</span><span class="err">’</span><span class="p">],</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>  <span class="s1">&#39;tests/*-spec.ts&#39;</span>
+</span><span class='line'><span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">systemjs</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">configFile</span><span class="o">:</span> <span class="s1">&#39;config.js&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">serveFiles</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s1">&#39;src/**/*.ts&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;jspm_packages/**/*&#39;</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>   <span class="p">})</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>The <code>systemjs</code> section reuses jspm configuration and sets up paths served by karma server.</p>
+
+<p>The <code>config.js</code> file should look similar to the one below. 
+Mind the <code>packages</code> and <code>transpiler</code> settings which make systemjs load selected typescript modules directly without upfront
+transpilation.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">System</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">baseURL</span><span class="o">:</span> <span class="err">“</span><span class="o">/</span><span class="err">”</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">defaultJSExtensions</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">transpiler</span><span class="o">:</span> <span class="err">“</span><span class="nx">typescript</span><span class="err">”</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">github</span><span class="o">:&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">jspm_packages</span><span class="o">/</span><span class="nx">github</span><span class="o">/&lt;</span><span class="err">/em&gt;”,</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">npm</span><span class="o">:&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">jspm_packages</span><span class="o">/</span><span class="nx">npm</span><span class="o">/&lt;</span><span class="err">/em&gt;”</span>
+</span><span class='line'>  <span class="p">},</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">packages</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">src</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="err">“</span><span class="nx">defaultExtension</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">ts</span><span class="err">”</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="err">“</span><span class="nx">tests</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="err">“</span><span class="nx">defaultExtension</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">ts</span><span class="err">”</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">map</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h4 id="lets-run-it-for-real-now">Let’s run it for real now</h4>
+
+<p>If followed the above instructions you should be able to run karma server and have it start Chrome</p>
+
+<p><code>bash
+karma start
+</code></p>
+
+<p>This should execute the first test and fail on missing implementation</p>
+
+<p><code>text
+Chrome 49.0.2623 (Windows 8.1 0.0.0) ERROR
+  Error: Error: XHR error (404 Not Found) loading E:/experiments/karma-ts/src/heracles.ts
+        Error loading E:/experiments/karma-ts/src/heracles.ts as "../src/heracles" from E:/experiments/karma-ts/tests/heracles-spec.ts
+</code></p>
+
+<h2 id="add-some-code">Add some code</h2>
+
+<p>Let’s fix the test by actually adding the first piece of code</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">Hydra</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">static</span> <span class="nx">load</span><span class="p">(</span><span class="nx">uri</span><span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">fetch</span><span class="p">(</span><span class="nx">uri</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>If you haven’t stopped the karma server it will notice the new file being added and rerun the test. The result should be 
+similar to</p>
+
+<p><code>text
+INFO [watcher]: Added file "E:/experiments/karma-ts/src/heracles.ts".
+Chrome 49.0.2623 (Windows 8.1 0.0.0): Executed 1 of 1 SUCCESS (0.009 secs / 0.005 secs)
+</code></p>
+
+<h2 id="summary">Summary</h2>
+
+<p><em>Et voilà</em>, this was pleasantly simple. There are no build/cleanup steps required to execute the test, because systemjs
+does the transpilation on the fly. Karma may not have the cool little terminal control panel and test summary but it is
+an established testing tool and integrates well with many IDEs</p>
+
+<h2 id="bonus---typings">Bonus - typings</h2>
+
+<p>Speaking of IDE, Webstorm coloured a lot of my code red, because it doesn’t recognize sinon and jasmin and fetch. To remedy
+that there are <a href="https://github.com/typings/typings">typings</a>.</p>
+
+<p><code>bash
+npm install -g typings
+</code></p>
+
+<p>Sinon and jasmine have an <em>official</em> typings package. There is also a repository with typings for <code>window.fetch</code>. They
+are not all installed the same way though:</p>
+
+<p><code>bash
+typings install sinon --save
+typings install jasmine --save --ambient
+typings install github:ryan-codingintrigue/typescript-fetch/fetch.js.d.ts --save --ambient 
+</code></p>
+
+<p>As you see jasmine and fetch typings are installed as <em>ambient</em>. This is because they populate the global scope (or window).
+Otherwise typings would wrap them in a named module. After all modules can be installed under an alias.</p>
+
+<p>Finally add a typings reference to you source and test files like</p>
+
+<p><code>js
+/// &lt;reference path="../typings/main.d.ts" /&gt;
+</code></p>
+
+<p>There you go, no there are far less source code errors and also some additional context help from the editor. And remember
+not to commit the <code>typings</code> folder. Instead commit the <code>typings.json</code> file and run <code>typings install</code> to restore them.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

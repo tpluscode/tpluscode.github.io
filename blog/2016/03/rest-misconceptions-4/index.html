@@ -1,0 +1,304 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>REST misconceptions part 4 - Resources are application state - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Given that resources are part of the application state, why not take advantage of that fact">
+    
+        <meta name="keywords" content="hypermedia, rest, rest mistakes">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/03/rest-misconceptions-4/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">REST Misconceptions Part 4 - Resources Are Application State</h1>
+	<div class="entry-content" itemprop="articleBody"><p>This part four (0-based) of my series about REST, the mistakes people often make and some ideas of mine. This post on 
+talks about taking advantage of resource representations in a javascript client. This is somewhat related to my <a href="/blog/2015/01/hateoas-as-if-you-meant-it/">other 
+REST post</a>, where I argue that when resources are <a href="/blog/2016/02/rest-misconceptions-1">properly identified</a> 
+and <a href="/blog/2016/03/rest-misconceptions-2">actually linked</a> is should be possible (and beneficial) to ditch client URL routing.</p>
+
+<!--more-->
+
+<p>In this series:</p>
+
+<ol>
+  <li><a href="/blog/2016/02/rest-misconceptions-0">Introduction</a></li>
+  <li><a href="/blog/2016/02/rest-misconceptions-1">Misuse of URIs</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-2">Not linked enough</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-3">Leaky business</a></li>
+  <li><strong>Resources are application state</strong></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-5">REST “documentation”</a></li>
+  <li><a href="/blog/2016/03/rest-misconceptions-6">Versioning</a></li>
+</ol>
+
+<h2 id="resource-based-ui">Resource-based UI</h2>
+
+<p>How do client applications decide what view to present? Most commonly used tool is a router, in which developers define
+URL patterns and their respective views/controllers/etc. I think this is a terrible idea. Instead I think we should be
+reusing the resource identifier whenever possible so that (part of) it becomes the client’s address. Period.</p>
+
+<p>Simplest thing would mean stripping part of the resource identifier and putting it in the address bar:</p>
+
+<p><img src="/uploads/2016/03/routing.png" alt="no routing routing" /></p>
+
+<p>And what if the address is not user-friendly? Add a permalink to the representation. There is even a very appropriate
+link relation:</p>
+
+<p><img src="/uploads/2016/03/permalink.png" alt="no routing routing with permalink" /></p>
+
+<p>Of course this is just a demonstration of a general idea. In a real system the user interface would likely be presenting
+multiple resource representations and so a complete solution should take that into account.</p>
+
+<h2 id="selecting-views">Selecting views</h2>
+
+<p>Now, the view could also be selected based on the resource currently being displayed. A big problem with the routing
+approach is unexpected data. What happens when the server returns some representation, which doesn’t ‘fit’ into the view
+mapped to the given route? A description of an error is one example. Of course, the client will have to take appropriate
+action and that means more (repeatable) code to maintain.</p>
+
+<p>Instead why not include enough information in the representation so that the client can decide what to render? You serve
+representations of books - make it clear in the representation.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">GET</span> <span class="nn">http://movies.sample/movie/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;type&quot;: &quot;Movie&quot;
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>I added a <strong><em>type relation</em></strong>, which the client will use to render the UI accordingly. How it is done is irrelevant and
+there likely are a number of possibilities like view template file conventions or a <a href="/blog/2015/02/declarative-ui/">declarative web component</a>.</p>
+
+<h2 id="no-warning-there-be-delnodel-dragons">(No) Warning: There be <del>no</del> dragons</h2>
+
+<p>Some reader familiar with the work of Roy Fielding may be familiar with what he <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">wrote</a> about <strong><em>typed resources</em></strong>:</p>
+
+<blockquote>
+  <p>A REST API should never have “typed” resources that are significant to the client. Specification authors may use resource
+types for describing server implementation behind the interface, but those types must be irrelevant and invisible to the
+client. The only types that are significant to a client are the current representation’s media type and standardized 
+relation names. <em>[Failure here implies that clients are assuming a resource structure due to out-of band information, 
+such as a domain-specific standard, which is the data-oriented equivalent to RPC’s functional coupling]</em></p>
+</blockquote>
+
+<p>However it does not apply in this context, because the meaning of typing is different. In an RPC style API a typed resource
+would mean that the client can expect a resource to show certain properties of behaviour. This is not the case. The type
+can be viewed simply as another property, whose meaning does not allow to draw any conclusions about the resource itself.
+To put it differently, the type I’m writing about would be viewed as the type of representation and not the resource in
+it’s programming model sense.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/03/rest-misconceptions-4/';
+        var disqus_url = 'http://t-code.pl/blog/2016/03/rest-misconceptions-4/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

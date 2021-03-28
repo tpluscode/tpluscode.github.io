@@ -1,0 +1,698 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Why RDF is struggling - the case of R2RML - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="I look into the world of R2RML implementations in the wild to give an example of a failed software maintenance and stewardship, and community- &hellip;">
+    
+        <meta name="keywords" content="rdf, r2rml, semantic web">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2020/07/rdf-struggling-case-of-r2rml/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Why RDF Is Struggling - the Case of R2RML</h1>
+	<div class="entry-content" itemprop="articleBody"><p>In 2012 I started my .NET implementation of <a href="https://www.w3.org/TR/r2rml/">R2RML</a> and <a href="https://www.w3.org/TR/rdb-direct-mapping/">RDB to RDF Direct mapping</a> which I called <a href="https://github.com/r2rml4net/r2rml4net">r2rml4net</a>. It never reached the maturity it should have but now, 8 years later, I have little choice but to polish it and use it for converting my database to triples. A task I had originally intended but never really completed.</p>
+
+<p>Why is it significant? Because all those years later the environment around R2RML as a standard is almost as broken, incomplete and sad as it was when I started. Let’s explore that as an example of what is wrong with RDF in general.</p>
+
+<!--more-->
+
+<h2 id="update-july-31st-2020">Update July 31st, 2020</h2>
+
+<p>It has been brought to my attention that Morph is in fact actiavely maintained. I’ve updated it’s details and evaluation.</p>
+
+<h2 id="intro-what-is-r2rml">Intro. What is R2RML?</h2>
+
+<p><strong>R2RML</strong> and <strong>Direct Mapping</strong> are two complementary W3C recommendation (specifications) which define language and algorithm respectively which are used to transform relation databases into RDF graphs. The first is a full blown, but not overly complicated RDF vocabulary which lets designers hand-craft the way in which relational tables are converted into RDF. Individual columns are either directly converted into values (taking their respective database types into consideration) or used within simple templates to produce compound values as literals, blank node and literal alike.</p>
+
+<p>Direct Mapping is a simpler approach, often using R2RML internally as the mapping model, which creates an automatic mapping from any given relational database into triples. The specification defines way in which tables, rows and values are meant to map into triples. It can be either executed standalone and then the resulting RDF would be refined, or an R2RML document can be produced so that it can be fine-tune before the actual transformation happens.</p>
+
+<p>Complementary to these two specs there are a two sets of test cases which can be exercised by implementors claiming compatibility and advertised at a central <a href="https://www.w3.org/TR/rdb2rdf-implementations/">RDB2RDF implementation report</a> page hosted by W3C.</p>
+
+<p>Related to R2RML, there is also a newer specification <a href="https://rml.io">RML.io</a> which extends it into supporting also other sources like XML and CSV.</p>
+
+<h2 id="why-is-it-important">Why is it important?</h2>
+
+<p>I had an interesting twitter exchange recently where I tried to present arguments why applying RDF selectively, without really using it in every layer of the application architecture is problematic.</p>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">You need to look at the big picture, entire stack of a single or multiple applications<br /><br />Polyglot persistence becomes a burden if you convert JSONs and relational data into RDF all the time<br /><br />If RDF is not your programming model then you&#39;re in for pain<br /><br />And no, JSON-LD is snake oil</p>&mdash; Tomasz Pluskiewicz (@tpluscode) <a href="https://twitter.com/tpluscode/status/1283701660552962048?ref_src=twsrc%5Etfw">July 16, 2020</a></blockquote>
+
+<p>In that case JSON-LD got the bashing but the bottom like here is that when building an application using RDF technologies it is worth using it in all software components. From the user interface all the way to the database. This is the only way which prevents constant tension between graph and non-graph models, such as the mentioned issue where JSON-LD hides the graphy nature of data. It is a similar problem which haunted software where relation data model is mapped into object complex models. For that I recommend the classic blog post by Jeff Atwood titled <a href="https://blog.codinghorror.com/object-relational-mapping-is-the-vietnam-of-computer-science/">Object-Relational Mapping is the Vietnam of Computer Science</a></p>
+
+<p>R2RML should be an important tool in the toolkit of any <em>Semantic Web development team</em> as it aims to provide an effective way for migrating existing datasets stored in SQL silos into RDF. This can be done by performing a one-time conversion as mentioned above but an alternative approach some take is running the mapping on-demand, for example by translating SPARQL queries into SQL without ever persisting the converted triples.</p>
+
+<hr />
+
+<p>You could think that surely, over the years we should have grown a vibrant ecosystem around this cornerstone piece of technology. Well, think again…</p>
+
+<h2 id="my-humble-requirements">My humble requirements</h2>
+
+<p>For my use case I have simple requirements. I need to perform a fairly simple mapping of a handful of tables into quads. That is, I want to partition the dataset into named graphs, mostly in a graph-per-entity fashion. Pretty standard as R2RML goes.</p>
+
+<p>My database is Azure SQL so MS SQL has to be supported.</p>
+
+<p>I expect also ease of use. Preferably a standalone CLI, easily installed and usable on CI.</p>
+
+<h2 id="r2rml-implementations-in-the-wild">R2RML implementations in the wild</h2>
+
+<p>The first logical place to look for R2RML software should be the <a href="https://www.w3.org/TR/rdb2rdf-implementations/">Implementation Report</a>. It lists 8 implementations, 4 out of which implement both R2RML and Direct mapping:</p>
+
+<ol>
+  <li><a href="https://metacpan.org/release/RDF-RDB2RDF">RDF-RDB2RDF</a> (both)</li>
+  <li><a href="https://github.com/semantalytics/xsparql">XSPARQL</a> (both)</li>
+  <li><a href="http://www.capsenta.com/">ultrawrap</a> (both)</li>
+  <li><a href="https://github.com/antidot/db2triples">db2triples</a> (both)</li>
+  <li><a href="http://d2rq.org/">D2RQ</a> (Direct Mapping)</li>
+  <li><a href="http://swobjects.svn.sourceforge.net/">SWObjects dm-materialize</a> (Direct Mapping)</li>
+  <li><a href="http://virtuoso.openlinksw.com/">OpenLink Virtuoso</a> (R2RML)</li>
+  <li><a href="https://github.com/oeg-upm/morph-rdb">morph</a> (R2RML)</li>
+</ol>
+
+<p>The listing is clearly not actively maintained (last updated in August 2012) so one would also try searching so the latest and greatest. Here’s what I found:</p>
+
+<ol>
+  <li><a href="https://ontop-vkg.org">Ontop</a></li>
+  <li><a href="https://github.com/usc-isi-i2/Web-Karma">Karma</a></li>
+  <li><a href="https://github.com/d2rq/r2rml-kit">d2rq/r2rml-kit</a></li>
+  <li><a href="https://github.com/chrdebru/r2rml">chrdebru/r2rml</a></li>
+  <li><a href="https://github.com/carml/carml">CARML</a> (RML)</li>
+  <li><a href="https://github.com/RMLio/rmlmapper-java">RML.io RMLMapper</a> (RML)</li>
+  <li><a href="https://github.com/SDM-TIB/SDM-RDFizer">SDM-RDFizer</a> (RML)</li>
+  <li><a href="https://github.com/semantifyit/RocketRML">RocketRML</a> (RML)</li>
+</ol>
+
+<p>Let’s take a closer look to check if they present a viable option. I’m only interested in R2RML so that eliminates D2RQ and SWObjects dm-materialize but let’s check them out either way.</p>
+
+<p>Of the RML implementations, CARML and RocketRML do not support SQL data source and SDM-RDFizer does not support SQL Server. That leaves RMLMapper.</p>
+
+<p>Finally, there are a bunch of commercial products which incorporate R2RML and other kinds of mappings and migrations from other data sources to semantic graphs. Names like Stardog or Anzo which are aimed at big corporate settings. They often don’t have free versions, require adopting their entire, integrated environment and cost big buck.</p>
+
+<h3 id="rdf-rdb2rdf">RDF-RDB2RDF</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>0.008</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2013-09-20</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Perl package manager</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>individual</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The project page is rather developer-centric. An <strong>INSTALL</strong> file linked in an <strong>Other files</strong> section says</p>
+
+<blockquote>
+  <p>Installing RDF-RDB2RDF should be straightforward.
+If you have cpanm, you only need one line:</p>
+</blockquote>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">% cpanm RDF::RDB2RDF</span></code></pre></td></tr></table></div></figure>
+
+<p>Looks simple, but I have no idea about PERL and <code>cpanm</code>. There is also a <code>README</code> file but the usage instructions are rather uninformative. I think this is only a library. Even if this gets the job done, there is no way I’m learning PERL for this 🙄</p>
+
+<h3 id="xsparql">XSPARQL</h3>
+
+<p>While the address linked from the implementation report is now dead, a quick google reveals its new home on GitHub.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>1.1.0</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2019-02-04</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td><code>.jar</code> download</td>
+      <td>🙄</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company (?)</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The R2RML feature is not well advertised but found in the wiki under <a href="https://github.com/semantalytics/xsparql/wiki/Working-with-RDBMS-SQL">Working with RDBMS SQL</a></p>
+
+<p>Configuration is provided using a <code>.properties</code> file. Awkward but doable. Unfortunately the project does not show an example of how to set it up.</p>
+
+<h3 id="ultrawrap">ultrawrap</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The linked company Capsenta redirects to <a href="https://data.world">https://data.world</a> and appears to be a commercial product. There is also a <strong>Community tier</strong> of what seems to be a SaaS offering.</p>
+
+<p>Not sure about this one.</p>
+
+<h3 id="db2triples">db2triples</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>2.2</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2019-08-02</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Build with maven</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This one looks promising. Sadly, it appears that the sources have to be built manually. No thank you. On the other hand the <code>format</code> parameter can be one of <code>'RDFXML', 'N3', 'NTRIPLES' or 'TURTLE'</code> so I guess no named graphs? 😢</p>
+
+<h3 id="d2rq">D2RQ</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>0.8.1</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2012-06-22</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Download from d2rq.org</td>
+      <td>🙄</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Universities</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Anyway, only Direct Mapping and unmaintained but if it works, it works…</p>
+
+<h3 id="swobjects-dm-materialize">SWObjects dm-materialize</h3>
+
+<p>❌ It’s dead Jim</p>
+
+<h3 id="openlink-virtuoso">OpenLink Virtuoso</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>7.2</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2018-08-15</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>Dedicated installers + a plugin</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Virtuoso is a well-known name in the RDF space. It is a commercial product and a triple store. Support for R2RML comes as an add-on and the overall setup looks super complicated and not at all standalone 👎. Sorry</p>
+
+<h3 id="morph">morph</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>3.12.5</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2019-09-20</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>JAR download</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Company</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Much outdated in the original 2012 implementation report, it turns out that Morph has seen much activity since and has been developed by a commercial company. Java-style setup using a JAR download and the awkward <code>.properties</code> file but definitely something to try out.</p>
+
+<h3 id="ontop">Ontop</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>4.0-rc1</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2020-06-08</td>
+      <td>🎉</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>JAR download</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>University</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Ontop is mainly a Virtual Graph endpoint, like d2rq, but comes with a CLI command <code>materialize</code> which takes a R2RML mapping graph and serializes the resulting triples to a file.</p>
+
+<p>Unfortunately, at the time of writing named graphs <a href="https://github.com/ontop/ontop/issues/343">are not supported</a>. The project is very actively maintained and that might change very soon.</p>
+
+<h3 id="karma">Karma</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>2.4</td>
+      <td>👍</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2020-06-03</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>GUI? <code>mvn exec:java</code>?</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>University</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Another super active but also quite complex tool. An installation page shows how to install a GUI tool. The README gives examples of commands running Maven within a clone of the original repository. Maybe I’m missing something but it does look like it falls into “easy of use” category.</p>
+
+<p>To do it justice, this definitely looks super useful as a</p>
+
+<blockquote>
+  <p>an information integration tool that enables users to quickly and easily integrate data from a variety of data sources</p>
+</blockquote>
+
+<p>as advertised in the repo. Not what I’m looking for though.</p>
+
+<h3 id="d2rqr2rml-kit">d2rq/r2rml-kit</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>N/A</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Last update</td>
+      <td>2019-06-19</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>scripts in repository</td>
+      <td>😕</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Individual (?)</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>r2rml-kit is an offshoot of D2RQ, based on its abandoned develop branch
+r2rml-kit is currently in pre-alpha stage.</p>
+</blockquote>
+
+<p>Not only is it <strong>pre-alpha</strong>, it is also not really maintained. Too bad…</p>
+
+<h3 id="chrdebrur2rml">chrdebru/r2rml</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>N/A</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Last update</td>
+      <td>2020-04-13</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>build sources</td>
+      <td>👎</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>Individual</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Another Java project which fails to even provide a pre-built JAR. This one has at least seen some development recent time and claims to support quad output formats. Maybe worth a go.</p>
+
+<h3 id="rmlmapper">RMLMapper</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>4.8.1</td>
+      <td>✨</td>
+    </tr>
+    <tr>
+      <td>Last release</td>
+      <td>2020-07-03</td>
+      <td>🎉</td>
+    </tr>
+    <tr>
+      <td>Installation</td>
+      <td>docker run</td>
+      <td>👌</td>
+    </tr>
+    <tr>
+      <td>Developed by</td>
+      <td>University</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The last RML implementation looks promising too. Actively maintained, supports SQL server, outputs quads, uses modern tooling. A definite candidate for success.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>For such a crucial piece of software it’s quite disappointing to see in what state the environment is and how little it has changed since 2012 when I first had a look at R2RML.</p>
+
+<p>The old implementations died off or became commercial products. C’est la vie.</p>
+
+<p>The surviving ones on the other hand mostly fail to provide a usable package. Why should I be interested in running Maven or even manually downloading a JAR to run. Where is the simplicity of package managers effortless installation one can find in JavaScript (<code>npm i -g hypothetical-r2rml</code>) or the latest .NET (<code>dotnet tool install -g hypothetical-r2rml</code>). Once installed it should simply create a global executable to run the transformation.</p>
+
+<p>And why are so many poorly documented? Again, I can mostly speak of JS and .NET ecosystems and there are plenty of examples of beautiful, detailed documentation pages and guides. How is it possible that most of those above fail on that front.</p>
+
+<p>Maybe I’m being unfair about that last point. Much software is poorly documented and I have been guilty of that myself in the past but for the RDF community at large it should be critical to provide working, well documented software in order for semantic technologies to achieve any wider recognition.</p>
+
+<p>Finally, I would have said in the past that universities are part of the problem and the Semantic Web has been long viewed as academic and impractical. It pleases me to see that but of the above, the more recent uni-managed packages actually stand out as being more modern and better maintained overall. 👍</p>
+
+<p>And I have not even looked at test coverage but I do not dare.</p>
+
+<h2 id="coming-next">Coming next</h2>
+
+<p>In the end, it’s still a little disappointing how limited the choice seems for someone looking for an unimposing but functional R2RML solution. In the two lists above I gathered 16 potential candidates out of which only a handful remain:</p>
+
+<ol>
+  <li><strong>XSPARQL</strong> (config is going to be a trial &amp; error thing)</li>
+  <li><strong>db2triples</strong> (only if the docs are inaccurate and named graphs are supported)</li>
+  <li><strong>morph</strong></li>
+  <li><strong>Ontop</strong> (no named graph but deserves a closer look)</li>
+  <li><strong>chrdebru/r2rml</strong></li>
+  <li><strong>RMLMapper</strong></li>
+</ol>
+
+<p>I initially intended to give more details about each of the promising implementation in this post but I decided that I should look in more detail and actually try running and comparing those most promising implementations to see if they can actually deliver. In a subsequent post I will take my mappings and try processing them with the 5 tools I selected.</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2020/07/rdf-struggling-case-of-r2rml/';
+        var disqus_url = 'http://t-code.pl/blog/2020/07/rdf-struggling-case-of-r2rml/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

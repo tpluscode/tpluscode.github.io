@@ -1,0 +1,468 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Mapping Enum to int with NHibernate - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Mapping Enum to Int With NHibernate I am pretty sure this subject has been raised numerous times already, but a quick google didn’t really give that &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2011/07/enum-int-custom-mapping-nhibernate/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Mapping Enum to Int With NHibernate</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I am pretty sure this subject has been raised numerous times already, but a quick google didn’t really give that many 
+results, hence this post.</p>
+
+<h2 id="is-there-a-problem-officer">Is there a problem officer?</h2>
+
+<p>Some time ago, while still newbie with <a href="http://www.nhforge.org">NHibernate</a> I struggled with the default way Enum 
+properties are mapped to database columns.</p>
+
+<!--more-->
+
+<p>The problem with NHibernate is that by default it maps enums as nvarchar columns. In my beginnings with NH this caused 
+me some data type mismatch related exceptions and to some extent minor frustration.</p>
+
+<p>Personally I wanted enum values mapped as integer, my rationale being space requirements and better performance, 
+especially if an index is applied over the column in question. As an example I will be using the minimalist mapping below:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;UserType&quot;</span> <span class="na">type=</span><span class="s">&quot;Example.UserTypeEnum&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now, as I metioned earlier, the above does not satisfy my expectations. In order to have the UserType property mapped to 
+an int column I implemented a custom <a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-types-custom">IUserType</a>.</p>
+
+<h2 id="the-solution-custom-value-type">The solution: Custom Value Type</h2>
+
+<p>The idea of a custom type is simple. Developers can get NHibernate to persist your property’s value to columns of types 
+not supported by the default persisters. It could even be used to persist a property to multiple columns, somewhat like 
+<a href="http://www.nhforge.org/doc/nh/en/index.html#mapping-declaration-component">components</a></p>
+
+<p>My solution is simpler than that though. Implementation consists of three classes:</p>
+
+<ol>
+  <li>abstract UserType class, extending IUserType interface,</li>
+  <li>generic EnumAsInt32 class,</li>
+  <li>finally, implementation of the above.</li>
+</ol>
+
+<p>The first class exists to simplify further implementations. The IUserType contains definitions for many more method than 
+are actually required to tackle the issue at hand.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">UserType</span> <span class="p">:</span> <span class="n">IUserType</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="cp">#region Implementation of IUserType</span>
+</span><span class="line">
+</span><span class="line">    <span class="kt">bool</span> <span class="n">IUserType</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="kt">object</span> <span class="n">x</span><span class="p">,</span> <span class="kt">object</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="nf">Equals</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="kt">int</span> <span class="nf">GetHashCode</span><span class="p">(</span><span class="kt">object</span> <span class="n">x</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">x</span> <span class="p">==</span> <span class="k">null</span> <span class="p">?</span> <span class="m">0</span> <span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">GetHashCode</span><span class="p">();</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">abstract</span> <span class="kt">object</span> <span class="nf">NullSafeGet</span><span class="p">(</span><span class="n">IDataReader</span> <span class="n">rs</span><span class="p">,</span> <span class="kt">string</span><span class="p">[]</span> <span class="n">names</span><span class="p">,</span> <span class="kt">object</span> <span class="n">owner</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">abstract</span> <span class="k">void</span> <span class="nf">NullSafeSet</span><span class="p">(</span><span class="n">IDbCommand</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">object</span> <span class="k">value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">virtual</span> <span class="kt">object</span> <span class="nf">DeepCopy</span><span class="p">(</span><span class="kt">object</span> <span class="k">value</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="k">value</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">virtual</span> <span class="kt">object</span> <span class="nf">Replace</span><span class="p">(</span><span class="kt">object</span> <span class="n">original</span><span class="p">,</span> <span class="kt">object</span> <span class="n">target</span><span class="p">,</span> <span class="kt">object</span> <span class="n">owner</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">original</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">virtual</span> <span class="kt">object</span> <span class="nf">Assemble</span><span class="p">(</span><span class="kt">object</span> <span class="n">cached</span><span class="p">,</span> <span class="kt">object</span> <span class="n">owner</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">cached</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">virtual</span> <span class="kt">object</span> <span class="nf">Disassemble</span><span class="p">(</span><span class="kt">object</span> <span class="k">value</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="k">value</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">/// &lt;summary&gt;</span>
+</span><span class="line">    <span class="c1">/// The SQL types for the columns mapped by this type.</span>
+</span><span class="line">    <span class="c1">/// &lt;/summary&gt;</span>
+</span><span class="line">    <span class="k">public</span> <span class="k">abstract</span> <span class="n">SqlType</span><span class="p">[]</span> <span class="n">SqlTypes</span><span class="p">{</span> <span class="k">get</span><span class="p">;}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">/// &lt;summary&gt;</span>
+</span><span class="line">    <span class="c1">/// The type returned by &lt;c&gt;NullSafeGet()&lt;/c&gt;</span>
+</span><span class="line">    <span class="c1">/// &lt;/summary&gt;</span>
+</span><span class="line">    <span class="k">public</span> <span class="k">abstract</span> <span class="n">Type</span> <span class="n">ReturnedType</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="kt">bool</span> <span class="n">IsMutable</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="k">false</span><span class="p">;</span> <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="cp">#endregion</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+<p>The EnumAsInt32 class overrides the abstract methods of UserType and requires one generic argument - the type of mapped Enum type.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">EnumAsInt32</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">UserType</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="cp">#region Overrides of UserType</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">override</span> <span class="kt">object</span> <span class="nf">NullSafeGet</span><span class="p">(</span><span class="n">IDataReader</span> <span class="n">rs</span><span class="p">,</span> <span class="kt">string</span><span class="p">[]</span> <span class="n">names</span><span class="p">,</span> <span class="kt">object</span> <span class="n">owner</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="kt">object</span> <span class="n">obj</span> <span class="p">=</span> <span class="n">NHibernateUtil</span><span class="p">.</span><span class="n">String</span><span class="p">.</span><span class="n">NullSafeGet</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="n">names</span><span class="p">);</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="n">obj</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Enum</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="n">obj</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">NullSafeSet</span><span class="p">(</span><span class="n">IDbCommand</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">object</span> <span class="k">value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">Debug</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">cmd</span> <span class="p">!=</span> <span class="k">null</span><span class="p">);</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="p">((</span><span class="n">IDataParameter</span><span class="p">)</span><span class="n">cmd</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">index</span><span class="p">]).</span><span class="n">Value</span> <span class="p">=</span> <span class="n">DBNull</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="k">else</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="p">((</span><span class="n">IDataParameter</span><span class="p">)</span><span class="n">cmd</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">index</span><span class="p">]).</span><span class="n">Value</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="k">value</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">override</span> <span class="n">SqlType</span><span class="p">[]</span> <span class="n">SqlTypes</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="n">SqlTypeFactory</span><span class="p">.</span><span class="n">Int32</span> <span class="p">};</span> <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">public</span> <span class="k">override</span> <span class="n">Type</span> <span class="n">ReturnedType</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cp">#endregion</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Implementation could end here, but with XML mappings, using generic types is pretty cumbersome. Personally I can never
+get the syntax right. For that reason it is easier to further extend EnumAsInt32.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="k">public</span> <span class="k">class</span> <span class="nc">UserTypeEnumAsInt32</span>
+</span><span class="line">    <span class="p">:</span> <span class="n">EnumAsInt32</span><span class="p">&lt;</span><span class="n">Example</span><span class="p">.</span><span class="n">UserTypeEnum</span><span class="p">&gt;</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Simple as that. Too simple even, but the result is cleaner XML mapping:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;UserType&quot;</span> <span class="na">type=</span><span class="s">&quot;UserTypeEnumAsInt32&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Of course the example lack namespaces, but otherwise it’s a fully functional code.</p>
+
+<p>Have fun coding! :)</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

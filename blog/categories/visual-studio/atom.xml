@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: visual studio | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/visual-studio/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Visual Studio must-have - Open Command Line (and Babun)]]></title>
+    <link href="http://t-code.pl/blog/2017/10/vs-must-have-open-command-line/"/>
+    <updated>2017-10-25T08:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2017/10/vs-must-have-open-command-line</id>
+    <content type="html"><![CDATA[<p>I’ve been using the <a href="https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine">Open Command Line</a>
+by Mads Kristensen for several months now. Recently I’ve finally figured out how to have it open <a href="http://babun.github.io">Babun</a> and
+decided to share.</p>
+
+<!--more-->
+
+<p>The extension is quite simple. It adds a menu item to folders in Solution Explorer and a shortcut which will open a new
+terminal window. By default it’s <code>Alt+Space</code>, which I haven’t felt like changing.</p>
+
+<p>Not only does it open that console, it will actually set the working directory based on the open file or selected item in
+Solution Explorer, whichever is focused.</p>
+
+<p><img src="/images/open-cmd.png" alt="open cmd" /></p>
+
+<p>Default settings include Developer Command Prompt but most importantly it let’s you set up a custom terminal to run.</p>
+
+<h2 id="setting-up-with-babun-the-right-way">Setting up with Babun the right way</h2>
+
+<p>In the past I had already set up Open Command Line to open Babun but it opened an ugly cygwin window which I didn’t like.
+It made me use the extension sparingly. With proper setup however I use it all the time.</p>
+
+<p>To set it up go to <code>Tools -&gt; Optiona -&gt; Command Line</code> and input these values</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">Friendly Name</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Default (Custom)</span>
+</span><span class='line'><span class="l-Scalar-Plain">Select preset</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Custom</span>
+</span><span class='line'><span class="l-Scalar-Plain">Command</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="err">%</span><span class="l-Scalar-Plain">UserProfile%.babun\cygwin\bin\mintty.exe</span>
+</span><span class='line'><span class="l-Scalar-Plain">Command arguments:&lt;br /&gt;</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">- /bin/env CHERE_INVOKING=1 /bin/zsh.exe</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><img src="/images/open-cmd-babun.png" alt="open cmd" /></p>
+
+<p>Oh, and guess what. <a href="https://github.com/madskristensen/OpenCommandLine/pull/60">Babun will become one of the default presets soon</a>.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

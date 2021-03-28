@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: c# | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/c-number/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hidden gem - easiest way to manage SqlLocalDB]]></title>
+    <link href="http://t-code.pl/blog/2018/05/hidden-gem-sqllocaldb/"/>
+    <updated>2018-05-06T18:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2018/05/hidden-gem-sqllocaldb</id>
+    <content type="html"><![CDATA[<p>SQL Server LocalDB is not something new to me. The ability quickly to run, and destroy a database without much
+hassle has been great aid in running test code which was meant to target a live SQL database. That said, it
+wasn’t always without any hassle at all. I tried various tools which make it a bit easier than the command line
+tool but nothing was perfect. Until recently, when I’ve discovered the humbly named <a href="https://www.nuget.org/packages/SqlLocalDb/">NuGet package</a> which
+is as simple as it gets.</p>
+
+<!--more-->
+
+<h2 id="what-is-sql-localdb">What is SQL LocalDB?</h2>
+
+<p>SQL Server LocalDB is a simple utility which ships with recent SQL Server editions (Express included). It let’s
+you create a temporary, yet full-featured database. It may not seem like much, after all it’s possible with SQL
+server itself to connect to <code>master</code> database, run <code>create database</code> and initialize it according to your needs.</p>
+
+<p>The difference is though that one doesn;t have to manage two connections and doesn’t have to share credentials
+to the <code>master</code> database or require Windows Authentication. Instead, an automatic instance is always available
+locally. However to run a fully isolated database it is necessary to create it, start it and eventually destroy.</p>
+
+<p><code>
+&gt; SqlLocalDB.exe create MyTestingDB
+&gt; SqlLocalDB.exe start MyTestingDB
+&gt; SqlLocalDB.exe stop MyTestingDB
+&gt; SqlLocalDB.exe delete MyTestingDB
+</code></p>
+
+<p>It is also possible to use a magic <code>Server=(LocalDB)\MSSQLLocalDB</code> connection string (also supports
+attaching to file db). Personally though I’ve had mixed results with using a connection string. To be honest
+I never fully understood how it’s supposed to be used ;).</p>
+
+<h2 id="managed-code-to-the-rescue">Managed code to the rescue</h2>
+
+<p>There are a number of C# libraries which aim at simplifying the use of SQL LocalDB. In a previous project
+we had integration tests run against a temporary database created in code yet the steps still followed the 
+same patter showed above:</p>
+
+<ol>
+  <li>Create LocalDB instance</li>
+  <li>Start the instance</li>
+  <li>Get its connection string</li>
+  <li>Create a ADO.NET connection</li>
+  <li>Stop the databse</li>
+  <li>Destroy it</li>
+</ol>
+
+<p>I had a feeling back then that it’s not as friendly as it could get and just this week, while migrating an
+old <a href="https://github.com/r2rml4net/r2rml4net">open source library of mine</a> to .NET Standard I discovered what has to be the most 
+hassle-free solution.</p>
+
+<h3 id="sqllocaldbnupkg">SqlLocalDb.nupkg</h3>
+
+<p>Turns out it’s not new but it somehow slipped under my radar the last time I was looking.</p>
+
+<p>It’s really dead simple to use it:</p>
+
+<p>```c#
+using(var database = new LocalDatabase())
+{
+    using (var connection = database.GetConnection())
+    {
+        connection.Open();</p>
+
+<pre><code>    // do your thing
+    // run your tests
+    // or whatever
+} } ``` 
+</code></pre>
+
+<p>No need to manage the LocalDB instances at all. The library will make sure that it’s created and then get
+rid of it once the <code>LocalDatabase</code> object is disposed. It’s as convenient as it gets.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[To [Decorate] or not to [Decorate]]]></title>
+    <link href="http://t-code.pl/blog/2016/03/to-attribute-or-not-to-attribute/"/>
+    <updated>2016-03-24T14:55:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/to-attribute-or-not-to-attribute</id>
+    <content type="html"><![CDATA[<p>Attributes are a very useful feature of many languages but I personally feel that they are used too often and in wrong
+circumstances. They’re primary shortcoming is the fact that attributes are set up at compile time. During code execution
+they can only be read but not modified.</p>
+
+<!--more-->
+
+<h2 id="how-i-use-attributes">How I use attributes</h2>
+
+<p>In <a href="http://github.com/wikibus/argolis">Argolis</a> I created a number of attributes to decorate classes which I want to expose in my <a href="http://hydra-cg.com">Hydra</a> API.
+I also reuse some attributes from Newtonsoft.Json and core libraries.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[SupportedClass(“http://example.api/vocab#Issue”)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Issue</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="na">    [Range(“http://purl.org/dc/terms/title”)]</span>
+</span><span class='line'><span class="na">    [Description(“Short description of the problem”)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">Title</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;[</span><span class="n">ReadOnly</span><span class="p">(</span><span class="k">true</span><span class="p">)]</span>
+</span><span class='line'><span class="na">[JsonProperty(&quot;date&quot;)]</span>
+</span><span class='line'><span class="k">public</span> <span class="n">DateTime</span> <span class="n">DateCreated</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>This is used to produce a machine-readable description of a <strong>supported class</strong> on the server, which ensures that the 
+client is always using the latest API.</p>
+
+<h2 id="when-i-dont-use-attributes">When I don’t use attributes</h2>
+
+<p>The above usage seems legit. After all this information is static: the identifiers don’t change at runtime, neither does
+the general contract.</p>
+
+<p><img src="/uploads/2016/03/puzzle.jpg" alt="puzzle" /></p>
+
+<p>The next piece of my API Documentation puzzle are operations on a resource. In the simplest form they can define whether
+given a resource <code>/users/tpluscode</code> it is possible to perform <code>PUT</code> or <code>POST</code> etc.</p>
+
+<p>However, unlike the contract, resource’s behaviour is likely to change depending on its state <em>(eg. it shouldn’t be possible
+to delete an Issue in progress)</em> or the current authorized user <em>(eg. only administrators and owners should be allowed to
+delete an issue)</em>. With this requirement in mind I decided that attributes are not a good choice, because I would have to
+somehow bind them with contextual behaviour. That behaviour would live in another type, be passed to the attribute instance
+and somehow have to be combined at runtime. (Forgive the hideous class name <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" />)</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[SupportsDeleteOperation(typeof(OnlyIfUserIsAdminOrOwner))]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Issue</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>I don’t like the code above, because it pollutes the static nature of attributes. I fear this solution would also lead to
+coupling with a higher layer framework - Nancy in my case. Instead I created a basic interface, which is used to gather
+information about the available operations and can work nicely with dependency injection inside Nancy or Web API. In
+addition I prepared a simple base class, where operation can be wired up and some per-request context injected by the DI
+container.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">IssueSupportedOperations</span> <span class="p">:</span> <span class="n">SupportedOperations</span><span class="p">&lt;</span><span class="n">Issue</span><span class="p">&gt;,</span> <span class="n">ISupportedOperations</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">IssueSupportedOperations</span><span class="p">(</span><span class="n">NancyContextWrapper</span> <span class="n">current</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Class</span><span class="p">.</span><span class="n">SupportsGet</span><span class="p">();&lt;/</span><span class="n">Issue</span><span class="p">&gt;&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span>    <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="p">.</span><span class="n">Context</span><span class="p">.</span><span class="n">CurrentUser</span><span class="p">.</span><span class="n">HasClaim</span><span class="p">(</span><span class="s">&quot;Admin&quot;</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Class</span><span class="p">.</span><span class="n">SupportsDelete</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Property</span><span class="p">(</span><span class="n">issue</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">issue</span><span class="p">.</span><span class="n">ProjectId</span><span class="p">).</span><span class="n">SupportsGet</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<h2 id="to-decorate-or-not-to-decorate">To <code>[Decorate]</code> or not to <code>[Decorate]</code></h2>
+
+<p><img src="/uploads/2016/03/roads-split.jpg" alt="puzzle" /></p>
+
+<p>I must say I feel quite dirty nonetheless, because by mixing to solution to complementary features of my library I caused
+some sort of duality - part of the API is to use attributes and part is to implement a base class, which the infrastructure
+discovers at runtime.</p>
+
+<p>I’m on edge here. It’s like mixing <a href="http://nhibernate.info/doc/nhibernate-reference/mapping-attributes.html">NHibernate attributes</a>
+and <a href="https://github.com/jagregory/fluent-nhibernate">Fluent mappings</a> in the same project. I’d like to hear if people do
+also find it a smell or is it acceptable.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Cautious with implicit cast operators in structs]]></title>
+    <link href="http://t-code.pl/blog/2016/03/struct-implcit-cast/"/>
+    <updated>2016-03-19T22:55:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/struct-implcit-cast</id>
+    <content type="html"><![CDATA[<p>I find overloading operators a very powerful tool in a programmer’s arsenal, yet it seems a very rare practice among C#
+developers. I’ve just got bitten by a simple scenario where an explicit cast operator is a questionable idea.</p>
+
+<!--more-->
+
+<p>In my code I have an <code>IriRef</code> class. It’s basically a string or Uri wrapped in a structure, which adds semantics required
+by my library <a href="http://github.com/wikibus/jsonld.entities">JsonLd.Entities</a> to properly serialize objects to <a href="http://json-ld.org">JSON-LD</a>. Here’s a excerpt, with 
+other stuff removed.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">struct</span> <span class="nc">IriRef</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">IriRef</span><span class="p">(</span><span class="kt">string</span> <span class="k">value</span><span class="p">)</span> <span class="p">{</span> <span class="n">Value</span> <span class="p">=</span> <span class="k">value</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">IriRef</span><span class="p">(</span><span class="n">Uri</span> <span class="k">value</span><span class="p">)</span> <span class="p">{</span> <span class="n">Value</span> <span class="p">=</span> <span class="k">value</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span> <span class="p">}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;[</span><span class="n">JsonProperty</span><span class="p">(</span><span class="n">JsonLdKeywords</span><span class="p">.</span><span class="n">Id</span><span class="p">)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">Value</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>As you see it can be constructed from <code>string</code> and <code>Uri</code> instances. However I don’t want to call these constructors every
+time so I added two cast operators.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">struct</span> <span class="nc">IriRef</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">implicit</span> <span class="k">operator</span> <span class="nf">IriRef</span><span class="p">(</span><span class="n">Uri</span> <span class="n">uri</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">IriRef</span><span class="p">(</span><span class="n">uri</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">explicit</span> <span class="k">operator</span> <span class="n">IriRef</span><span class="p">(</span><span class="kt">string</span> <span class="n">uriString</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nf">IriRef</span><span class="p">(</span><span class="n">uriString</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>See the difference? <code>Uri</code> can be casted implicitly so</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">// this works</span>
+</span><span class='line'><span class="n">IriRef</span> <span class="n">iriRef</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Uri</span><span class="p">(</span><span class="err">“</span><span class="n">http</span><span class="p">:</span><span class="c1">//example.com”);&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="c1">// this doesn’t</span>
+</span><span class='line'><span class="n">IriRef</span> <span class="n">iriRef</span> <span class="p">=</span> <span class="err">“</span><span class="n">http</span><span class="p">:</span><span class="c1">//example.com”;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>I didn’t want two <code>implicit</code> operator, because while ear Uri will be a valid <code>IriRef</code> the same cannot be said about
+simple string. Casting a string to <code>IriRef</code> must be a conscious decision and the compiler will help a little.</p>
+
+<h2 id="heres-how-this-decision-bit-me">Here’s how this decision bit me</h2>
+
+<p>The problem arose when I first used a <code>Nullable&lt;IriRef&gt;</code>. The problem is that the implicit cast automatically converts
+null values into into an <code>IriRef</code>, which means that <code>IriRef?</code> will never be null.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">IriRef</span><span class="p">?</span> <span class="n">willThisBeNull</span> <span class="p">=</span> <span class="k">null</span><span class="p">;&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="c1">// this will fail</span>
+</span><span class='line'><span class="n">Assert</span><span class="p">.</span><span class="n">IsNull</span><span class="p">(</span><span class="n">willThisBeNull</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Very interesting lesson indeed :)</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Living documentation with Literate Programming]]></title>
+    <link href="http://t-code.pl/blog/2014/12/literate-documentation/"/>
+    <updated>2014-12-05T20:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2014/12/literate-documentation</id>
+    <content type="html"><![CDATA[<p>Two months ago, at the <a href="http://wrocnet.github.io/2014/09/16/69-spotkanie-wroclawskiej-grupy-net.html">Wrocław .NET User Group</a>, <a href="http://lucabolognese.wordpress.com/">Luca Bolognese</a> talked about Literate Programming.</p>
+
+<p>For those who don’t know, Luca Bolognese is best known for being the father of Microsoft’s functional language <strong>F#</strong>.
+He currently works for Credit Suisse - the Swiss-American investment bank where he implements uber-geek algorithms for
+counting a lot of money :).</p>
+
+<!--more-->
+
+<p><strong>EDIT</strong>: I’ve update the <code>.csproj</code> snippet, because previous code put all markdowns into project root. See <a href="https://github.com/tpluscode/tpluscode.github.io/commits/source/source/_posts/2014-11-28-literate-documentation.markdown">diff here</a></p>
+
+<h2 id="literate-programming">Literate programming</h2>
+
+<p>Describe in early 80’s by Donald Knuth, <em>Literate Programing</em> where the program itself is mixed with it’s description in
+natural language. The idea is that a program is written like a book, where descriptions and code are subsequent chapters,
+so to speak:</p>
+
+<ol>
+  <li>Write some thoughts about code about to be written</li>
+  <li>Write the aforementioned code</li>
+  <li>Go to 1</li>
+</ol>
+
+<p>This must not be confused, as <a href="http://en.wikipedia.org/wiki/Literate_programming#Contrast_with_documentation_generation">wikipedia explains</a>, with documentation generated from code annotations such as
+Java Doc od XML doc. Where documentation usually describes the API (and also usually quite poorly), literate programming
+means that code descriptions, the natural language parts, describe not only the implementation but also the writer’s
+thoughts, which led to the given implementations. Typical XML doc in C# could look like this:</p>
+
+<p><code>c#
+/// &lt;summary&gt;
+/// This method adds two numbers
+/// &lt;/summary&gt;
+/// &lt;returns&gt;the result&lt;/returns&gt;
+public decimal Add(int x, int y)
+{
+   return x + y;
+}
+</code></p>
+
+<p>Basically this is redundant repetition of what can already be inferred from the method’s signature and bear little extra
+information. Instead on could write:</p>
+
+<p>``` c#
+/**
+I needed a method to add two integer numbers.
+It may seem weird that I return decimal but I’ve noticed
+that colleagues find me smart if I do
+**/</p>
+
+<p>public decimal Add(int x, int y)
+{
+   return x + y;
+}
+```</p>
+
+<p>This way the developer’s thoughts are transferred into the source code. Usually this kind of information is lost and
+shared only verbally as <em>tribal knowledge</em>. And more often than not such knowledge is completely lost, especially in
+teams which often change.</p>
+
+<h3 id="literate-programming-meet-real-life">Literate programming, meet real life</h3>
+
+<p>I’ve not exactly wrapped my head around literate programming an entire .NET application. For once real-life code consists
+of multiple source code file, which are not ordered in any particular way. I guess it would be possible to somehow
+organize namespaces into “chapters” and compose them of sections for each class/interface or maybe source code file.
+There are however additional obstacles such as various refactoring techniques. For example a method could be extracted.
+It could be necessary to “refactor” the prose part of the source file. A non-trivial task, especially if the description
+was written by another person.</p>
+
+<p>And of course there is a complete lack of tooling to accomplish a task of generating sensible “book” from a large project.</p>
+
+<h2 id="literate-documentation">Literate documentation</h2>
+
+<p>It may be not so simple to implement an entire program with literate programming but I personally find it very useful
+for creating living documentation. Usually code samples exist in one of two forms. Either as sample project, which shows
+how a library/program is used through examples. Even if documented with code comments, such samples are hardly reader-friendly.
+Very often (more often?) code samples are distributed as HTML or other documents with embedded code blocks, such as in
+this blog posting. However unlike blog postings, documentation should be kept up-to-dat, which rarely the case. Once
+created, static documentation is never updated in the future and quickly becomes outdated both in terms of the descriptions
+and code snippets.</p>
+
+<p>Alas, meticulously updated documentation suffers from an opposite problem, where users of older versions of a library
+only get the latest documentation available on a project wiki. Even if such wiki is source controlled, such as with
+GitHub or BitBucket, it’s not immediately possible to reach an appropriate historical revision.</p>
+
+<p>This is where literate programming comes handy but is not overwhelming. It takes the good from both approaches: you
+create runnable code, which demonstrate the usage of a given feature. This ensures that any API changes force the code
+to be update. With natural language description of the code, formatted in some kind of markup, stuffed between code
+pieces it is possible to automatically generate beautiful markup documents, which are always up to date. It should be
+even possible to convert them to PDF or RTF thanks to tools like <a href="http://johnmacfarlane.net/pandoc/">pandoc</a>.</p>
+
+<h3 id="can-do-that-in-net">Can do that in .NET?</h3>
+
+<p>I’ve created living documentation for two of my latest projects: <a href="https://github.com/MakoLab/RomanticWeb.Sample">Romantic Web</a> and <a href="https://github.com/wikibus/JsonLD.Entities/">JSON-LD Entities</a>.</p>
+
+<p>The first is a sample program, which uses the Romantic Web library. It is a standalone solution slash project, which
+builds to a Windows executable file.</p>
+
+<p>In the second project, a small serialization library, I took an alternate approach. I created a separate project in the
+solution for documentation. In that project I add literate unit tests. This allows me not only to keep my documentation
+updated, but also boost code coverage. The code can be downloaded an debugged but learners just the same</p>
+
+<p>In both cases I can continuously integrate. I can tag the repository to align the code sample with changes in the
+library and so users of different version don’t get confused when they are using an older incarnation of the code.</p>
+
+<h3 id="so-how-do-you-do-it">So how do you do it?</h3>
+
+<p>Luca Bolognese create a small tool, called LLite, which processes a single code file in C#, F#, C or Java and simply
+turns the code “inside out” by unwrapping literate comment blocks and wrapping code in specified markers os simply indenting,
+thus creating a markdown or similar document. The tool’s code is <a href="http://github.com/lucabol/LLite">available on GitHub</a>. No binary is readily
+available so if you have trouble building (it’s F#), go ahead and grab the exe from the repositories mentioned above.
+And of course LLite is itself written in the literate programming style!</p>
+
+<p>Here’s what I do to convert a file to markdown with C# code blocks</p>
+
+<p><code>
+llite.exe Program.cs -co "</code> c#” -cc “<code>" -o readme.md
+</code></p>
+
+<p>Simple as that you can put it in your build pipeline to produce a markdown doc for each code file in your project. Here’s
+my documentation target in MSBuild</p>
+
+<p>``` xml</p>
+<ItemGroup>
+  <Compile Include="Readme.cs" />
+</ItemGroup>
+<Target Name="Generate Doc" AfterTargets="Build">
+  <Exec Command="$(path)\llite.exe %(Compile.FullPath) -l csharp -co &quot;``` c#&quot; -cc ```" WorkingDirectory="%(Compile.RelativeDir)" />
+</Target>
+<p>```</p>
+
+<p>This way each source code file added to the <code>.csproj</code> is processed. It could be then committed into the library or
+automatically extracted and pushed to a wiki repository.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[The data source '...&rsquo; does not support sorting with IEnumerable data]]></title>
+    <link href="http://t-code.pl/blog/2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data/"/>
+    <updated>2011-11-21T10:01:57-05:00</updated>
+    <id>http://t-code.pl/blog/2011/11/the-data-source-does-not-support-sorting-with-ienumerable-data</id>
+    <content type="html"><![CDATA[<p>We are currently refactoring a web application, which uses ObjectDataSources extensively. There are places in our app, 
+where they are used for sorting grids, but there is a problem. We switched from DataTables to collections and now an 
+exception occurs:</p>
+
+<p><code>
+The data source &amp;lsquo;ods_DataSource&amp;rsquo; does not support sorting with IEnumerable data.
+Automatic sorting is only supported with DataView, DataTable, and DataSet.
+</code></p>
+
+<!--more-->
+
+<p>As Pradeem wrote on his <a href="http://technoesis.wordpress.com/2008/03/03/solution-to-error-the-data-source-ods_datasource-does-not-support-sorting-with-ienumerable-data-automatic-sorting-is-only-supported-with-dataview-datatable-and-dataset/">blog</a> there are two solutions to the above issue:</p>
+
+<ol>
+  <li>Implement custom sorting</li>
+  <li>Change IEnumerable datatype into one of these datatypes.</li>
+</ol>
+
+<p>Eventually we would implement the former, but for the time being Pradeem gives a solution. There is however something 
+wrong with his code so below I give you his snippet slightly modified to be an Extension method.</p>
+
+<p><code>c#
+public static class Util
+{
+   public static DataTable ToDataTable&lt;T&gt;(this IEnumerable&lt;T&gt; varlist)
+   {
+      DataTable dtReturn = new DataTable();
+      // column names
+      PropertyInfo[] oProps = null;
+      // Could add a check to verify that there is an element 0
+      foreach (T rec in varlist)
+      {
+         // Use reflection to get property names, to create table,
+         // Only first time, others will follow
+         if (oProps == null)
+         {
+            oProps = ((Type)rec.GetType()).GetProperties();
+            foreach (PropertyInfo pi in oProps)
+            {
+               // Note that we must check a nullable type
+               // else method will throw and error
+               Type colType = pi.PropertyType;
+               if ((colType.IsGenericType) &amp;amp;&amp;amp;
+                   (colType.GetGenericTypeDefinition() == typeof(Nullable)))
+               {
+                  // Since all the elements have same type
+                  // you can just take the first element and get type
+                  colType = colType.GetGenericArguments()[0];
+               }
+               dtReturn.Columns.Add(new DataColumn(pi.Name, colType));
+            }
+         }
+         DataRow dr = dtReturn.NewRow();
+         // Iterate through each property in PropertyInfo
+         foreach (PropertyInfo pi in oProps)
+         {
+            // Handle null values accordingly
+            dr[pi.Name] = pi.GetValue(rec, null) == null
+                          ? DBNull.Value
+                          : pi.GetValue(rec, null);
+         }
+         dtReturn.Rows.Add(dr);
+      }
+      return (dtReturn);
+   }
+}
+</code></p>
+
+<p>So now instead of having a data source method</p>
+
+<p><code>c#
+public IList&lt;Model&gt; GetData()
+{
+   return DAL.GetData();
+}
+</code></p>
+
+<p>You would have:</p>
+
+<p><code>c#
+public DataTable GetData()
+{
+   return DAL.GetData().ToDataTable();
+}
+</code></p>
+
+]]></content>
+  </entry>
+  
+</feed>

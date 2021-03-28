@@ -1,0 +1,489 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Hydra and SHACL - a perfect couple - part 1 - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="I propose patterns for using Hydra and SHACL together in order to create dynamic user interfaces according to Linked Data principles">
+    
+        <meta name="keywords" content="rdf, hypermedia apis, hydra, semantic web">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2020/12/hydra-shacl-interoperability/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Hydra and SHACL - a Perfect Couple - Part 1</h1>
+	<div class="entry-content" itemprop="articleBody"><p><a href="http://www.hydra-cg.com/spec/latest/core/">Hydra Core</a> is a community-driven specification for describing hypermedia APIs in a machine readable form so that client applications can discover the resources at runtime. On its own, however, it is not expressible enough to describe any arbitrary resource representation.
+<a href="https://www.w3.org/TR/shacl/">SHACL</a>, or Shapes Constraint Language, on the other hand is a beautifully extensible schema-like language which offers great power and flexibility in describing graph data structures.
+Combined, they provide a complete solution for building hypermedia applications driven by RDF.</p>
+
+<!--more-->
+
+<h2 id="tldr-i-want-some-action">TL;DR; I want some action!</h2>
+
+<p>Click the image to open Shaperone Playground, which demonstrates a working example of a form generated from a SHACL shape which dynamically loads Wikidata resources using SPARQL.</p>
+
+<p>At the bottom of this post you will see how to configure <a href="https://github.com/hypermedia-app/shaperone">shaperone</a> this way.</p>
+
+<p><a href="https://forms.hypermedia.app/playground?resource=%7B%0A++%22%40context%22%3A+%7B%0A++++%22rdf%22%3A+%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%2C%0A++++%22rdfs%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%22%2C%0A++++%22xsd%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%0A++++%22schema%22%3A+%22http%3A%2F%2Fschema.org%2F%22%2C%0A++++%22foaf%22%3A+%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%22%2C%0A++++%22vcard%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2006%2Fvcard%2Fns%23%22%2C%0A++++%22dcat%22%3A+%22http%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%22%0A++%7D%2C%0A++%22%40id%22%3A+%22http%3A%2F%2Fexample.com%2Fjohn-doe%22%2C%0A++%22%40type%22%3A+%22schema%3APerson%22%2C%0A++%22schema%3Aname%22%3A+%22John+Doe%22%0A%7D&amp;selectedResource=http%3A%2F%2Fexample.com%2Fjohn-doe&amp;shapes=%40prefix+sh%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fshacl%23%3E+.%0A%40prefix+schema%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E+.%0A%40prefix+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E+.%0A%40prefix+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E+.%0A%40prefix+dash%3A+%3Chttp%3A%2F%2Fdatashapes.org%2Fdash%23%3E+.%0A%40prefix+hydra%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fhydra%2Fcore%23%3E+.%0A%40prefix+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E+.%0A%40prefix+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E+.%0A%0A%40prefix+ex%3A+%3Chttp%3A%2F%2Fexample.com%2F%3E+.%0A%0Aschema%3APerson%0A++a+rdfs%3AClass%2C+sh%3ANodeShape+%3B%0A++rdfs%3Alabel+%22Register%22+%3B%0A++sh%3Aproperty+ex%3ANameProperty+%2C+ex%3ACountryProperty+%3B%0A.%0A%0Aex%3ANameProperty%0A++sh%3Apath+schema%3Aname+%3B%0A++sh%3Aname+%22Name%22+%3B%0A++sh%3Adatatype+xsd%3Astring+%3B%0A++dash%3AsingleLine+true+%3B%0A++sh%3AmaxCount+1+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3Aorder+10+%3B%0A.%0A%0Aex%3ACountryProperty%0A++a+sh%3APropertyShape+%3B%0A++sh%3Aname+%22Country%22+%3B%0A++sh%3Aclass+wd%3AQ6256+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++sh%3Apath+wdt%3AP27+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++hydra%3Acollection+%3Chttps%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3Dprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcountry%2520.%250A%2520%2520%253Fcountry%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%250A%2520%2520%253Fcountry%2520wdt%253AP31%2520wd%253AQ6256%2520%253B%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%3E+%3B%0A++sh%3Aorder+20+%3B%0A.%0A&amp;disableEditorChoice=true&amp;components=vaadin"><img src="/images/shaperone/hydra-collection.png" alt="shaperone playground" /></a></p>
+
+<h2 id="hydra-http-request-descriptions">Hydra HTTP request descriptions</h2>
+
+<p>The Hydra vocabulary defines a term <code>hydra:Operation</code> which represents a HTTP request which a server advertises as being supported by specific resources, either by a specific instance or entire class of resources.</p>
+
+<p>For the sake of this blog post, let’s consider a hypothetical API which describes a registration request:</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra">
+   <script type="text/turtle">
+base <http://example.app/api#>
+prefix schema: <http://schema.org/>
+prefix hydra:  <http://www.w3.org/ns/hydra/core#>
+prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+<UsersCollection>
+  a hydra:Class ;
+  rdfs:subClassOf hydra:Collection ;
+  hydra:supportedOperation <RegisterUser> .
+
+<RegisterUser>
+  a hydra:Operation , schema:CreateAction ;
+  hydra:method "POST" ;
+  hydra:expects <User> ;
+.
+
+<User> a hydra:Class .
+   </script>
+</rdf-snippet>
+
+<p>The above snippet, excerpt from the API’s <a href="http://www.hydra-cg.com/spec/latest/core/#documenting-a-web-api">Documentation resource</a>, declares that the clients will come across a collection of users (<code>rdf:type &lt;UserCollection&gt;</code>) against which a POST request will be possible to create a new resource. That operation will require a representation of the <code>&lt;User&gt;</code> class.</p>
+
+<p>While Hydra Core vocabulary does have a basic set of terms which can describe the user class, it may not be enough to cater for rich client-server interactions as well as a UI building block. Neither will be RDFS, and OWL, although quite powerful, is a little complex and seriously lacks tooling support and widespread recognition.</p>
+
+<p>Enter, SHACL.</p>
+
+<h2 id="using-shacl-to-describe-api-payloads">Using SHACL to describe API payloads</h2>
+
+<p>SHACL is another RDF vocabulary, which describes data graphs by constraining properties and values of precisely targeted nodes in an RDF graph. It could be used to complement the API Documentation graph above by providing the required shape of instances of the <code>&lt;User&gt;</code> class. This is easiest done by turning it into an <a href="https://www.w3.org/TR/shacl/#implicit-targetClass">implicitly targeted</a> <a href="https://www.w3.org/TR/shacl/#node-shapes"><code>sh:NodeShape</code></a>.</p>
+
+<p>In this example let’s require users to provide exactly one name (using <code>schema:name</code>) and exactly one country of citizenship (using said Wikidata property <a href="https://www.wikidata.org/wiki/Property:P27">P27</a>)</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="schema,hydra,sh,dash">
+   <script type="text/turtle">
+prefix hydra:  <http://www.w3.org/ns/hydra/core#>
+prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+prefix sh:     <http://www.w3.org/ns/shacl#>
+prefix schema: <http://schema.org/>
+prefix dash:   <http://datashapes.org/dash#>
+prefix wdt:    <http://www.wikidata.org/prop/direct/>
+prefix wd:     <http://www.wikidata.org/entity/>
+prefix xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+<User>
+  a hydra:Class , rdfs:Class , sh:NodeShape ;
+  sh:property [
+    a sh:PropertyShape ;
+    sh:path schema:name ;
+    sh:name "Name" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 3 ;
+    sh:order 10 ;
+    dash:singleLine true ;
+  ] , [
+    a sh:PropertyShape ;
+    sh:name "Country" ;
+    sh:class wd:Q6256 ;
+    sh:path wdt:P27 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 20 ;
+    dash:editor dash:InstancesSelectEditor ;
+  ] ;
+.
+   </script>
+</rdf-snippet>
+
+<p>Hopefully this is quite self-explanatory so far.</p>
+
+<ol>
+  <li>The objects of <code>sh:property</code> require that any instance of <code>&lt;User&gt;</code> have exactly one of each property, declared using <code>sh:path</code>. That is achieved using <code>sh:minCount</code> and <code>sh:maxCount</code></li>
+  <li>Name must be at least 3 characters long string</li>
+  <li>Country must be an instance of Wikidata Country class <code>wd:Q6256</code></li>
+  <li>Exactly one country is allowed</li>
+  <li><code>sh:order</code> is a UI hint for organising inputs in a form</li>
+  <li><code>dash:singleLine</code> is a form builder hint which ensures that the text field does not allow line breaks (ie. no <code>&lt;textarea&gt;</code>)</li>
+  <li><code>dash:editor</code> instructs the form builder to create an input component with a selection of instances of the desired RDF type</li>
+</ol>
+
+<p>SHACL is quite wonderful in that shapes are useful for many purposes. Check the <a href="https://www.w3.org/TR/shacl-ucr/">SHACL Use Cases and Requirements</a> note for a host of examples. In the presented scenario, a rich client can use to dynamically produce a form to have users input the data, and the server will run validations to check that requests payloads satisfy the SHACL constraints.</p>
+
+<p>There is one piece missing however: <strong>where do the Country instances come from?</strong> 🤨</p>
+
+<h2 id="circling-back-to-hydra">Circling back to Hydra</h2>
+
+<p>Out of the box, a SHACL processor would assume that any instances would be part the <a href="https://www.w3.org/TR/shacl/#data-graph">Data Graph</a>. While this works for validation inside of TopBraid it is not feasible to build a browser application that way. For example, at the time of writing there are 171 instances of Country in Wikidata. Combined with a multitude of labels in various languages that is total of over 40 thousand triples. It’s hardly a good idea to push that proactively to the client up front.</p>
+
+<p>Instead, I propose to connect the Shape back with the API using Hydra Core term <code>hydra:collection</code>. It is defined modestly:</p>
+
+<blockquote>
+  <p>Collections somehow related to this resource.</p>
+</blockquote>
+
+<p>It also does not have and <code>rdfs:range</code> or <code>rdfs:domain</code> making it a good candidate for linking a property shape directly with its data source:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="diff"><span class="line">prefix hydra: &lt;http://www.w3.org/ns/hydra/core#&gt;
+</span><span class="line">prefix sh: &lt;http://www.w3.org/ns/shacl#&gt;
+</span><span class="line">prefix wdt: &lt;http://www.wikidata.org/prop/direct/&gt;
+</span><span class="line">prefix wd: &lt;http://www.wikidata.org/entity/&gt;
+</span><span class="line">
+</span><span class="line">&lt;User&gt;
+</span><span class="line">  sh:property [
+</span><span class="line">    a sh:PropertyShape ;
+</span><span class="line">    sh:class wd:Q6256 ;
+</span><span class="line">    sh:path wdt:P27 ;
+</span><span class="line"><span class="gi">+   hydra:collection &lt;https://example.app/countries&gt; ;</span>
+</span><span class="line">  ] ;
+</span><span class="line">.
+</span></code></pre></td></tr></table></div></figure>
+
+<p>By adding this property a UI component can load the countries by dereferencing a <code>hydra:Collection</code> whose representation would look somewhat like this:</p>
+
+<rdf-snippet formats="application/ld+json,application/n-quads" prefixes="hydra">
+   <script type="text/turtle">
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix wd:    <http://www.wikidata.org/entity/>
+prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+<https://example.app/countries>
+  a hydra:Collection ;
+  hydra:member wd:Q36 , wd:Q183 , wd:Q145 ;
+  hydra:totalItems 171 ;
+.
+
+wd:Q36 rdfs:label "Poland"@en , "Polska"@pl , "Polen"@de .
+wd:Q183 rdfs:label "Germany"@en , "Niemcy"@pl , "Deutschland"@de .
+wd:Q145 rdfs:label "United Kingdom"@en , "Zjednoczone Królestwo"@pl , "Vereinigtes Königreich"@de .
+   </script>
+</rdf-snippet>
+
+<h2 id="apis-are-dead-long-live-linked-data-apis">APIs are dead; Long live (Linked Data) APIs!</h2>
+
+<p><img src="https://hydra.t-code.pl/img/linked_data.jpg" alt="linked data mug" /></p>
+
+<p>So far the subject was APIs, but the web is more than just servers returning data, even if that data is RDF. You see, the hypothetical registration form above actually references a third party dataset, which is Wikidata. All of this data is already on the web and use standard formats. By using a simple SPARQL query the countries can be <a href="https://w.wiki/rsz">fetched directly from their source</a>; without even adding the <code>/countries</code> resource to your API. Heck, the client appication would not need a dedicated API at all!</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="sparql"><span class="line"><span class="c"># wd: and wdt: are implicitly added by wikidata&#39;s SPARQL endpoint</span><span class="w"></span>
+</span><span class="line"><span class="k">prefix</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="w"> </span><span class="nl">&lt;http://www.w3.org/ns/hydra/core#&gt;</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="k">CONSTRUCT</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="k">a</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">Collection</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?col</span><span class="w"> </span><span class="nn">hydra</span><span class="p">:</span><span class="nt">member</span><span class="w"> </span><span class="nv">?country</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?country</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+</span><span class="line"><span class="p">}</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="k">BIND</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nl">&lt;https://example.app/countries&gt;</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nv">?col</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="w">  </span><span class="c"># wdt:P31 - &quot;instance of&quot;</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="c"># wd:Q6256 - &quot;country&quot;</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="nv">?country</span><span class="w"> </span><span class="nn">wdt</span><span class="p">:</span><span class="nt">P31</span><span class="w"> </span><span class="nn">wd</span><span class="p">:</span><span class="nt">Q6256</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="nn">rdfs</span><span class="p">:</span><span class="nt">label</span><span class="w"> </span><span class="nv">?label</span><span class="w"></span>
+</span><span class="line">
+</span><span class="line"><span class="w">  </span><span class="c"># only request labels in a handful of languages</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="c"># to dramatically reduce response size</span><span class="w"></span>
+</span><span class="line"><span class="w">  </span><span class="k">FILTER</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">lang</span><span class="p">(</span><span class="nv">?label</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&#39;en&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;de&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;fr&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;pl&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;es&#39;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+</span><span class="line"><span class="p">}</span><span class="w"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This query can be directly encoded in a URL to GET the countries and populate a dropdown component. You can see that in the <a href="https://forms.hypermedia.app/playground?resource=%7B%0A++%22%40context%22%3A+%7B%0A++++%22rdf%22%3A+%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%2C%0A++++%22rdfs%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%22%2C%0A++++%22xsd%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%0A++++%22schema%22%3A+%22http%3A%2F%2Fschema.org%2F%22%2C%0A++++%22foaf%22%3A+%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%22%2C%0A++++%22vcard%22%3A+%22http%3A%2F%2Fwww.w3.org%2F2006%2Fvcard%2Fns%23%22%2C%0A++++%22dcat%22%3A+%22http%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%22%0A++%7D%2C%0A++%22%40id%22%3A+%22http%3A%2F%2Fexample.com%2Fjohn-doe%22%2C%0A++%22%40type%22%3A+%22schema%3APerson%22%2C%0A++%22schema%3Aname%22%3A+%22John+Doe%22%0A%7D&amp;selectedResource=http%3A%2F%2Fexample.com%2Fjohn-doe&amp;shapes=%40prefix+sh%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fshacl%23%3E+.%0A%40prefix+schema%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E+.%0A%40prefix+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E+.%0A%40prefix+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E+.%0A%40prefix+dash%3A+%3Chttp%3A%2F%2Fdatashapes.org%2Fdash%23%3E+.%0A%40prefix+hydra%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fhydra%2Fcore%23%3E+.%0A%40prefix+wdt%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E+.%0A%40prefix+wd%3A+%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E+.%0A%0A%40prefix+ex%3A+%3Chttp%3A%2F%2Fexample.com%2F%3E+.%0A%0Aschema%3APerson%0A++a+rdfs%3AClass%2C+sh%3ANodeShape+%3B%0A++rdfs%3Alabel+%22Register%22+%3B%0A++sh%3Aproperty+ex%3ANameProperty+%2C+ex%3ACountryProperty+%3B%0A.%0A%0Aex%3ANameProperty%0A++sh%3Apath+schema%3Aname+%3B%0A++sh%3Aname+%22Name%22+%3B%0A++sh%3Adatatype+xsd%3Astring+%3B%0A++dash%3AsingleLine+true+%3B%0A++sh%3AmaxCount+1+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3Aorder+10+%3B%0A.%0A%0Aex%3ACountryProperty%0A++a+sh%3APropertyShape+%3B%0A++sh%3Aname+%22Country%22+%3B%0A++sh%3Aclass+wd%3AQ6256+%3B%0A++dash%3Aeditor+dash%3AInstancesSelectEditor+%3B%0A++sh%3Apath+wdt%3AP27+%3B%0A++sh%3AminCount+1+%3B%0A++sh%3AmaxCount+1+%3B%0A++hydra%3Acollection+%3Chttps%3A%2F%2Fquery.wikidata.org%2Fsparql%3Fquery%3Dprefix%2520hydra%253A%2520%253Chttp%253A%252F%252Fwww.w3.org%252Fns%252Fhydra%252Fcore%2523%253E%250A%250ACONSTRUCT%2520%257B%250A%2520%2520%253Fcol%2520a%2520hydra%253ACollection%2520.%250A%2520%2520%253Fcol%2520hydra%253Amember%2520%253Fcountry%2520.%250A%2520%2520%253Fcountry%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%257D%2520WHERE%2520%257B%250A%2520%2520BIND%2520%2528%2520%253Curn%253Acontry%253Acollection%253E%2520as%2520%253Fcol%2520%2529%250A%250A%2520%2520%253Fcountry%2520wdt%253AP31%2520wd%253AQ6256%2520%253B%2520rdfs%253Alabel%2520%253Flabel%2520.%250A%250A%2520%2520filter%2520%2528%2520lang%2528%253Flabel%2529%2520IN%2520%2528%2520%2527en%2527%252C%2520%2527de%2527%252C%2520%2527fr%2527%252C%2520%2527pl%2527%252C%2520%2527es%2527%2520%2529%2520%2529%250A%257D%3E+%3B%0A++sh%3Aorder+20+%3B%0A.%0A&amp;disableEditorChoice=true&amp;components=vaadin">playground</a>, mentioned in the beginning.</p>
+
+<p>All possible thanks to web standards 🤘</p>
+
+<h2 id="implementation-notes">Implementation notes</h2>
+
+<p>Shaperone makes building a Hydra-aware form like this easy:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="ts"><span class="line"><span class="kr">import</span> <span class="o">*</span> <span class="kr">as</span> <span class="nx">components</span> <span class="nx">from</span> <span class="s1">&#39;@hydrofoil/shaperone-wc/NativeComponents&#39;</span>
+</span><span class="line"><span class="c1">// OR import * as components from &#39;@hydrofoil/shaperone-wc-material/components&#39;</span>
+</span><span class="line"><span class="c1">// OR import * as components from &#39;@hydrofoil/shaperone-wc-vaadin/components&#39;</span>
+</span><span class="line"><span class="c1">// OR roll your own rendering components</span>
+</span><span class="line"><span class="kr">import</span> <span class="o">*</span> <span class="kr">as</span> <span class="nx">configure</span> <span class="nx">from</span> <span class="s1">&#39;@hydrofoil/shaperone-wc/configure&#39;</span>
+</span><span class="line"><span class="kr">import</span> <span class="p">{</span> <span class="nx">instancesSelector</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@hydrofoil/shaperone-hydra/components&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// register UI component which will do the rendering</span>
+</span><span class="line"><span class="nx">configure</span><span class="p">.</span><span class="nx">components</span><span class="p">.</span><span class="nx">pushComponents</span><span class="p">(</span><span class="nx">components</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// add Hydra extension to dash:InstancesSelectEditor</span>
+</span><span class="line"><span class="nx">configure</span><span class="p">.</span><span class="nx">editors</span><span class="p">.</span><span class="nx">decorate</span><span class="p">(</span><span class="nx">instancesSelector</span><span class="p">.</span><span class="nx">matcher</span><span class="p">)</span>
+</span><span class="line"><span class="nx">configure</span><span class="p">.</span><span class="nx">components</span><span class="p">.</span><span class="nx">decorate</span><span class="p">(</span><span class="nx">instancesSelector</span><span class="p">.</span><span class="nx">decorator</span><span class="p">())</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The <code>@hydrofoil/shaperone-hydra</code> package extends the default behaviour to have <code>hydra:collection</code> dereferenced rather than looking for the instance data locally.</p>
+
+<h2 id="next-steps">Next steps</h2>
+
+<p>In future posts I will present how to:</p>
+
+<ol>
+  <li>use Hydra descriptions to find collections without <code>hydra:collection</code> directly</li>
+  <li><code>hydra:search</code> URI Templates can be used to:
+    <ul>
+      <li>create forms with dependent fields, so that users first select a country which is then used to narrow down a selection of country’s secondary administrative division and so on <strong><a href="/blog/2020/12/hydra-shacl-templates">POST</a></strong></li>
+      <li>improve performance by filtering resources on the data source</li>
+    </ul>
+  </li>
+</ol>
+
+<script src="/components/rdf-snippet.js"></script>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2020/12/hydra-shacl-interoperability/';
+        var disqus_url = 'http://t-code.pl/blog/2020/12/hydra-shacl-interoperability/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

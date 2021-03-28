@@ -1,0 +1,379 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Living documentation with Literate Programming - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Practical application of the Literate Programming idea">
+    
+        <meta name="keywords" content="c#, literate programming, visual studio, documentation">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2014/12/literate-documentation/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Living Documentation With Literate Programming</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Two months ago, at the <a href="http://wrocnet.github.io/2014/09/16/69-spotkanie-wroclawskiej-grupy-net.html">Wrocław .NET User Group</a>, <a href="http://lucabolognese.wordpress.com/">Luca Bolognese</a> talked about Literate Programming.</p>
+
+<p>For those who don’t know, Luca Bolognese is best known for being the father of Microsoft’s functional language <strong>F#</strong>.
+He currently works for Credit Suisse - the Swiss-American investment bank where he implements uber-geek algorithms for
+counting a lot of money :).</p>
+
+<!--more-->
+
+<p><strong>EDIT</strong>: I’ve update the <code>.csproj</code> snippet, because previous code put all markdowns into project root. See <a href="https://github.com/tpluscode/tpluscode.github.io/commits/source/source/_posts/2014-11-28-literate-documentation.markdown">diff here</a></p>
+
+<h2 id="literate-programming">Literate programming</h2>
+
+<p>Describe in early 80’s by Donald Knuth, <em>Literate Programing</em> where the program itself is mixed with it’s description in
+natural language. The idea is that a program is written like a book, where descriptions and code are subsequent chapters,
+so to speak:</p>
+
+<ol>
+  <li>Write some thoughts about code about to be written</li>
+  <li>Write the aforementioned code</li>
+  <li>Go to 1</li>
+</ol>
+
+<p>This must not be confused, as <a href="http://en.wikipedia.org/wiki/Literate_programming#Contrast_with_documentation_generation">wikipedia explains</a>, with documentation generated from code annotations such as
+Java Doc od XML doc. Where documentation usually describes the API (and also usually quite poorly), literate programming
+means that code descriptions, the natural language parts, describe not only the implementation but also the writer’s
+thoughts, which led to the given implementations. Typical XML doc in C# could look like this:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="c1">/// &lt;summary&gt;</span>
+</span><span class="line"><span class="c1">/// This method adds two numbers</span>
+</span><span class="line"><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class="line"><span class="c1">/// &lt;returns&gt;the result&lt;/returns&gt;</span>
+</span><span class="line"><span class="k">public</span> <span class="kt">decimal</span> <span class="nf">Add</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">   <span class="k">return</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Basically this is redundant repetition of what can already be inferred from the method’s signature and bear little extra
+information. Instead on could write:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm">I needed a method to add two integer numbers.</span>
+</span><span class="line"><span class="cm">It may seem weird that I return decimal but I&#39;ve noticed</span>
+</span><span class="line"><span class="cm">that colleagues find me smart if I do</span>
+</span><span class="line"><span class="cm">**/</span>
+</span><span class="line">
+</span><span class="line"><span class="k">public</span> <span class="kt">decimal</span> <span class="nf">Add</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">   <span class="k">return</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This way the developer’s thoughts are transferred into the source code. Usually this kind of information is lost and
+shared only verbally as <em>tribal knowledge</em>. And more often than not such knowledge is completely lost, especially in
+teams which often change.</p>
+
+<h3 id="literate-programming-meet-real-life">Literate programming, meet real life</h3>
+
+<p>I’ve not exactly wrapped my head around literate programming an entire .NET application. For once real-life code consists
+of multiple source code file, which are not ordered in any particular way. I guess it would be possible to somehow
+organize namespaces into “chapters” and compose them of sections for each class/interface or maybe source code file.
+There are however additional obstacles such as various refactoring techniques. For example a method could be extracted.
+It could be necessary to “refactor” the prose part of the source file. A non-trivial task, especially if the description
+was written by another person.</p>
+
+<p>And of course there is a complete lack of tooling to accomplish a task of generating sensible “book” from a large project.</p>
+
+<h2 id="literate-documentation">Literate documentation</h2>
+
+<p>It may be not so simple to implement an entire program with literate programming but I personally find it very useful
+for creating living documentation. Usually code samples exist in one of two forms. Either as sample project, which shows
+how a library/program is used through examples. Even if documented with code comments, such samples are hardly reader-friendly.
+Very often (more often?) code samples are distributed as HTML or other documents with embedded code blocks, such as in
+this blog posting. However unlike blog postings, documentation should be kept up-to-dat, which rarely the case. Once
+created, static documentation is never updated in the future and quickly becomes outdated both in terms of the descriptions
+and code snippets.</p>
+
+<p>Alas, meticulously updated documentation suffers from an opposite problem, where users of older versions of a library
+only get the latest documentation available on a project wiki. Even if such wiki is source controlled, such as with
+GitHub or BitBucket, it’s not immediately possible to reach an appropriate historical revision.</p>
+
+<p>This is where literate programming comes handy but is not overwhelming. It takes the good from both approaches: you
+create runnable code, which demonstrate the usage of a given feature. This ensures that any API changes force the code
+to be update. With natural language description of the code, formatted in some kind of markup, stuffed between code
+pieces it is possible to automatically generate beautiful markup documents, which are always up to date. It should be
+even possible to convert them to PDF or RTF thanks to tools like <a href="http://johnmacfarlane.net/pandoc/">pandoc</a>.</p>
+
+<h3 id="can-do-that-in-net">Can do that in .NET?</h3>
+
+<p>I’ve created living documentation for two of my latest projects: <a href="https://github.com/MakoLab/RomanticWeb.Sample">Romantic Web</a> and <a href="https://github.com/wikibus/JsonLD.Entities/">JSON-LD Entities</a>.</p>
+
+<p>The first is a sample program, which uses the Romantic Web library. It is a standalone solution slash project, which
+builds to a Windows executable file.</p>
+
+<p>In the second project, a small serialization library, I took an alternate approach. I created a separate project in the
+solution for documentation. In that project I add literate unit tests. This allows me not only to keep my documentation
+updated, but also boost code coverage. The code can be downloaded an debugged but learners just the same</p>
+
+<p>In both cases I can continuously integrate. I can tag the repository to align the code sample with changes in the
+library and so users of different version don’t get confused when they are using an older incarnation of the code.</p>
+
+<h3 id="so-how-do-you-do-it">So how do you do it?</h3>
+
+<p>Luca Bolognese create a small tool, called LLite, which processes a single code file in C#, F#, C or Java and simply
+turns the code “inside out” by unwrapping literate comment blocks and wrapping code in specified markers os simply indenting,
+thus creating a markdown or similar document. The tool’s code is <a href="http://github.com/lucabol/LLite">available on GitHub</a>. No binary is readily
+available so if you have trouble building (it’s F#), go ahead and grab the exe from the repositories mentioned above.
+And of course LLite is itself written in the literate programming style!</p>
+
+<p>Here’s what I do to convert a file to markdown with C# code blocks</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="c#"><span class="line"><span class="n">llite</span><span class="p">.</span><span class="n">exe</span> <span class="n">Program</span><span class="p">.</span><span class="n">cs</span> <span class="p">-</span><span class="n">co</span> <span class="s">&quot;``` c#&quot;</span> <span class="p">-</span><span class="n">cc</span> <span class="s">&quot;```&quot;</span> <span class="p">-</span><span class="n">o</span> <span class="n">readme</span><span class="p">.</span><span class="n">md</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Simple as that you can put it in your build pipeline to produce a markdown doc for each code file in your project. Here’s
+my documentation target in MSBuild</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Compile</span> <span class="na">Include=</span><span class="s">&quot;Readme.cs&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class="line"><span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;Generate Doc&quot;</span> <span class="na">AfterTargets=</span><span class="s">&quot;Build&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;$(path)\llite.exe %(Compile.FullPath) -l csharp -co &amp;quot;``` c#&amp;quot; -cc ```&quot;</span>
+</span><span class="line">        <span class="na">WorkingDirectory=</span><span class="s">&quot;%(Compile.RelativeDir)&quot;</span><span class="nt">/&gt;</span>
+</span><span class="line"><span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>This way each source code file added to the <code>.csproj</code> is processed. It could be then committed into the library or
+automatically extracted and pushed to a wiki repository.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2014/12/literate-documentation/';
+        var disqus_url = 'http://t-code.pl/blog/2014/12/literate-documentation/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,494 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Hypermedia API vs complex processes - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Do Hypermedia APIs need to describe entire processes?">
+    
+        <meta name="keywords" content="hypermedia, rest">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2015/12/hypermedia-maturity-model/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Hypermedia API vs Complex Processes</h1>
+	<div class="entry-content" itemprop="articleBody"><p>I the process of preparing my talk at <a href="http://boilingfrogs.pl/schedule/hateoas-as-if-you-meant-it/">Boiling Frogs conference</a> in Wrocław I’ve been reading a lot about REST 
+and Hypermedia APIs. Just today I came across two interesting <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-i-hypermedia-ness/">blog</a> <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-ii-the-missing-links/">posts</a> by <a href="https://twitter.com/apihandyman">Arnaud Lauret aka API handyman</a>, 
+who proposes a <strong>Hypermedia API Maturity Model</strong> (HAMM). A concept similar to the <a href="http://martinfowler.com/articles/richardsonMaturityModel.html">Richardson Maturity Model</a>, but 
+applicable only to Level 3 REST APIs. I’d like to share my thoughts on some of the proposal.</p>
+
+<!--more-->
+
+<p>The model proposes a bit-flag scale, which defines a total hypermedia score of any media type</p>
+
+<ul>
+  <li><strong><em>01: where can you go</em></strong>, where API defines links</li>
+  <li><strong><em>02: what can you do</em></strong>, where API defines link methods</li>
+  <li><strong><em>04: what you need to do things</em></strong>, where API describes operation inputs</li>
+  <li><strong><em>08: what can’t you do and why</em></strong>, where API gives reason why operation is not available</li>
+  <li><strong><em>16: how you do things</em></strong>, where API describes processes, which consist of multiple actions</li>
+</ul>
+
+<p>The first three are dead simple and no one should argue about them. The fourth is also useful, although it is possible
+that not all APIs out there would really need that capability. The last however I think is not necessary. I even consider
+the <strong><em>how you do things</em></strong> criteria, or rather what the media type must include, to be disguised out-of-band information.</p>
+
+<h2 id="why-define-a-process-in-hypermedia">Why define a process in hypermedia?</h2>
+
+<p>Isn’t that clear? Business processes are complex. Oftentimes it is necessary to perform multiple steps to accomplish a
+task. API handyman gives a simple example of Twitter’s API, where it is possible to tweet with some media attachment 
+(image, video, etc.). It seems logical to do as proposed by defining a “process” link, which describes the steps necessary
+to tweet with an attachment and the step, which the client is currently at. Here’s the sample interaction as proposed by
+Arnaud</p>
+
+<ol>
+  <li>GET https://api.twitter.com/1.1/</li>
+  <li>discover that to “tweet with media” you must “upload media” (<em>current step</em>) and “update status” (two HTTP POST requests)</li>
+  <li>POST https://twitter.com/1.1/media/upload.json</li>
+  <li>in response discover that current step is “update status”</li>
+  <li>POST https://api.twitter.com/1.1/statuses/update.json with media_id in body</li>
+</ol>
+
+<p>You can have a look at the sample payload excerpts on the <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-ii-the-missing-links/">original post</a>.</p>
+
+<h3 id="whats-wrong-with-this-approach">What’s wrong with this approach?</h3>
+
+<p>I think that there are a number of potential problems with this whole idea.</p>
+
+<blockquote>
+  <p>What is the actual representation of the <code>uploadMedia</code> step?</p>
+</blockquote>
+
+<p>The example shows the <code>_links</code> but I’m not entirely sure what the representation would actually be. The post mentions 
+that the process is initially included with the entrypoint’s representation.</p>
+
+<blockquote>
+  <p>What if I want to upload media but use them for other purpose (ie. in other process)?</p>
+</blockquote>
+
+<p>Again, this is superficially simple. After all, all that needs doing is include the <code>https://twitter.com/1.1/media/upload.json</code>
+link in multiple processes. But, what representation would the server return? After all the <code>upload.json</code> endpoint doesn’t
+<em>know</em> what process it is part of. That information would have to be included in the endpoint URL or as parameter. For
+example <code>https://twitter.com/1.1/media/upload.json?process={process}</code>, where the process variable would be replaced by
+<code>tweetWithMedia</code> or whatever the server accepts. I find this needlessly RPC-like.</p>
+
+<p>Oh, and not to mention that it’s easy to imagine APIs where upload is a standalone operation.</p>
+
+<blockquote>
+  <p>How would I model a more complex process?</p>
+</blockquote>
+
+<p>I mean, why does the process start with POSTing to an <code>upload.json</code> resource anyway? Sure, it is the first step of a business
+process. But what if we wanted to upload a media to tweet but instead of updating status, save a draft for later?</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">uploadMedia ─┬─────────────────────┬─ updateStatus
+</span><span class="line">             │                     │
+</span><span class="line">             └───── saveDraft ─────┘</span></code></pre></td></tr></table></div></figure>
+
+<p>Uh oh, process with branches. Workflow territory warning <img class="emoji" title=":warning:" alt=":warning:" src="https://assets.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20" align="absmiddle" />. Does it mean that a complete implementation of such 
+media type would have to include a DSL for complex workflows? I fear such endeavour would quickly grow out of proportion.</p>
+
+<h3 id="process-as-resource">Process as resource</h3>
+
+<p>Roy Fielding <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven#comment-743">wrote in another context</a></p>
+
+<blockquote>
+  <p>If you find yourself in need of a batch operation,
+then most likely you just haven’t defined enough resources.</p>
+</blockquote>
+
+<p>I think this is very much applicable to the above example of a process. Unarguably the Twitter API is not RESTful so the
+source of inspirations may be poor and my criticism misplaced. Anyhow, this particular, simple process can be modelled 
+in a RESTful way without requiring the <strong><em>how you do things</em></strong> hypermedia requirement from media type. This approach also
+overcomes the problems I described above.</p>
+
+<h2 id="how-i-would-model-a-process">How I would model a process</h2>
+
+<h3 id="way-1-follow-your-nose">Way 1: follow your nose</h3>
+
+<p>Instead of defining a process and its steps an API should advertise possible state transitions. Each interaction returns
+another representation, which has more hypermedia attached.</p>
+
+<p>On way that comes to my mind as an alternative to the above process is to provide link for both simple tweet and tweet
+with attached media. Here’s my pseudo-Hydra sample.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">GET</span> <span class="nn">/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;tweets&quot;: {
+</span><span class="line">    &quot;@id&quot;: &quot;/tweets&quot;,
+</span><span class="line">    &quot;operations&quot;: [{
+</span><span class="line">      &quot;method&quot;: &quot;POST&quot;,
+</span><span class="line">      &quot;parameters: [ /* tweet text, etc. */ ]
+</span><span class="line">   }]
+</span><span class="line">  }, {
+</span><span class="line">    &quot;@id&quot;: &quot;/tweetAttachments&quot;,
+</span><span class="line">    &quot;operations&quot;: [{
+</span><span class="line">      &quot;method&quot;: &quot;POST&quot;,
+</span><span class="line">      &quot;mediaType&quot;: &quot;multipart/form-data&quot;
+</span><span class="line">    }]
+</span><span class="line">  }
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Tweeting is simple as 01 10 11.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">POST</span> <span class="nn">/tweets</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line"><span class="na">Content-type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span class="line">
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;my tweet text&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="err">=&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="err">HTTP</span> <span class="mi">201</span> <span class="err">Created</span>
+</span><span class="line"><span class="err">Location:</span> <span class="err">/tweets/</span><span class="mi">7</span><span class="err">bed</span><span class="mi">7868</span><span class="err">-ee</span><span class="mi">90-43</span><span class="err">d</span><span class="mi">0</span><span class="err">-a</span><span class="mi">94</span><span class="err">c</span><span class="mi">-2062746</span><span class="err">c</span><span class="mi">4668</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>To tweet with attachment we post to the other resource</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">POST</span> <span class="nn">/tweetAttachments</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">// file content here
+</span></code></pre></td></tr></table></div></figure>
+
+<p>=&gt;</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;@id&quot;: &quot;/tweetdrafts/222c5081-b9ca-4b42-b146-42eb3112c49a&quot;,
+</span><span class="line">  &quot;attachments&quot;: {
+</span><span class="line">    &quot;@id&quot;: &quot;/tweetdrafts/222c5081-b9ca-4b42-b146-42eb3112c49a/attachments&quot;,
+</span><span class="line">    &quot;attachments&quot;: [{
+</span><span class="line">      &quot;@id&quot;: &quot;/tweetdrafts/222c5081-b9ca-4b42-b146-42eb3112c49a/attachments/my-uploaded-file&quot;,
+</span><span class="line">      &quot;operations&quot;: [{
+</span><span class="line">        &quot;method&quot;: &quot;DELETE&quot;
+</span><span class="line">      }]
+</span><span class="line">    }],
+</span><span class="line">    &quot;operations&quot;: [{
+</span><span class="line">      &quot;method&quot;: &quot;POST&quot;,
+</span><span class="line">      &quot;mediaType&quot;: &quot;multipart/form-data&quot;
+</span><span class="line">    }]
+</span><span class="line">  },
+</span><span class="line">  &quot;operations&quot;: [{
+</span><span class="line">    &quot;method&quot;: &quot;PUT&quot;
+</span><span class="line">    &quot;parameters&quot;: [ /* tweet text like above */]
+</span><span class="line">  }]
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Deeply nested representation like this may not be easy on the eye. The general idea is tha the client posts to <code>/tweetAttachments</code>
+and server responds with a freshly created yet unfinished tweet, which has the uploaded media attached. This example 
+representation provides the client with various hypermedia controls to delete the attachment, upload another or finally
+update the status.</p>
+
+<h3 id="way-2-server-advertises-a-next-tweet-resource">Way 2: server advertises a ‘next tweet’ resource</h3>
+
+<p>Alternatively I would have the server prepare identifiers for the next tweet and attachment upload resources.</p>
+
+<figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="http"><span class="line"><span class="nf">GET</span> <span class="nn">/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span class="line">
+</span><span class="line">{
+</span><span class="line">  &quot;nextTweet&quot;: {
+</span><span class="line">    &quot;@id&quot;: &quot;/tweet/d56336e0-48ea-453c-848f-1e38525c5859&quot;,
+</span><span class="line">    &quot;attachments&quot;: &quot;/tweet/d56336e0-48ea-453c-848f-1e38525c5859/attachments&quot;
+</span><span class="line">  }
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure>
+
+<p>I’m leaving affordances out for brevity. With the above, to change status the client <code>PUT</code>s the <code>nextTweet</code> resource.
+To tweet with an attachment the client must first <code>POST</code> to the <code>attachments</code> link and <code>PUT</code> afterwards. Of course before
+either <code>GET</code> would respond with 404.</p>
+
+<h2 id="rest-client-is-a-state-machine">REST client is a state machine</h2>
+
+<p>You could image a very complex data flow designed in this fashion. Every client’s operation returns the next representation
+with more possible actions. Simple as that unlike describing all possible paths in the form of a workflow. This is best
+put by Roy Fielding himself:</p>
+
+<blockquote>
+  <p>The model application is therefore an engine that moves from one state to the next 
+by examining and choosing from among the alternative state transitions
+in the current set of representations</p>
+</blockquote>
+
+<p>Lastly, the client doesn’t really have to know that any given request is part of larger process. It also doesn’t require any 
+broader knowledge about the process itself. That information could be useful for building a rich UI but I don’t think it
+should be part of a hypermedia maturity model, because it implies that a good hypermedia media type should provide that.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2015/12/hypermedia-maturity-model/';
+        var disqus_url = 'http://t-code.pl/blog/2015/12/hypermedia-maturity-model/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

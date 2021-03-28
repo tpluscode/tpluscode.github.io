@@ -1,0 +1,525 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Dec 28th, 2020 12:00 am apis, hypermedia, rdf, semantic web Hydra and SHACL - Part 2 - IRI Templates In the previous post I presented the simplest &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2020-12-28'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2020</span></span> <span class='time'>12:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/apis/'>apis</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rdf/'>rdf</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2020/12/hydra-shacl-templates/" itemprop="url">Hydra and SHACL - Part 2 - IRI Templates</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In the <a href="/blog/2020/12/hydra-shacl-interoperability">previous post</a> I presented the simplest functionality of loading remote form contents by having <a href="https://www.w3.org/TR/shacl/">SHACL</a> property shape reference a <a href="http://www.hydra-cg.com/spec/latest/core/">Hydra Core</a> collection.</p>
+
+<p>In the second part I will extend that example to create a form with multiple connected dropdowns, where each one is only populated when other(s) have been selected, which is a common scenario seen in (web) applications.</p>
+
+
+		
+		<a href="/blog/2020/12/hydra-shacl-templates/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2020-12-20'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2020</span></span> <span class='time'>12:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/apis/'>apis</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rdf/'>rdf</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2020/12/hydra-shacl-interoperability/" itemprop="url">Hydra and SHACL - a Perfect Couple - Part 1</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><a href="http://www.hydra-cg.com/spec/latest/core/">Hydra Core</a> is a community-driven specification for describing hypermedia APIs in a machine readable form so that client applications can discover the resources at runtime. On its own, however, it is not expressible enough to describe any arbitrary resource representation.
+<a href="https://www.w3.org/TR/shacl/">SHACL</a>, or Shapes Constraint Language, on the other hand is a beautifully extensible schema-like language which offers great power and flexibility in describing graph data structures.
+Combined, they provide a complete solution for building hypermedia applications driven by RDF.</p>
+
+
+		
+		<a href="/blog/2020/12/hydra-shacl-interoperability/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2020-07-24'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2020</span></span> <span class='time'>12:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/r2rml/'>r2rml</a>, <a class='category' href='/blog/categories/rdf/'>rdf</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2020/07/rdf-struggling-case-of-r2rml/" itemprop="url">Why RDF Is Struggling - the Case of R2RML</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In 2012 I started my .NET implementation of <a href="https://www.w3.org/TR/r2rml/">R2RML</a> and <a href="https://www.w3.org/TR/rdb-direct-mapping/">RDB to RDF Direct mapping</a> which I called <a href="https://github.com/r2rml4net/r2rml4net">r2rml4net</a>. It never reached the maturity it should have but now, 8 years later, I have little choice but to polish it and use it for converting my database to triples. A task I had originally intended but never really completed.</p>
+
+<p>Why is it significant? Because all those years later the environment around R2RML as a standard is almost as broken, incomplete and sad as it was when I started. Let’s explore that as an example of what is wrong with RDF in general.</p>
+
+
+		
+		<a href="/blog/2020/07/rdf-struggling-case-of-r2rml/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2019-06-27T12:15:00+00:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>12:15 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/api/'>api</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/testing/'>testing</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2019/06/testing-hypermedia-api/" itemprop="url">Testing APIs Hypermedia-style</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>One would expect the task of (REST) API testing to be a well-researched subject. After all, REST has been formulated over a
+decade ago and the number of APIs being built keeps growing exponentially. Yet, it seems that the art of testing APIs hasn’t
+changed much from the approaches used in testing RPC-style APIs or non-API code.</p>
+
+<p>In this post I’d like to propose a different approach to defining and executing tests of a truly RESTful, hypermedia-driven API.</p>
+
+
+		
+		<a href="/blog/2019/06/testing-hypermedia-api/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2018-08-11T12:15:00+00:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>12:15 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/storybook/'>storybook</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2018/08/storybook-markdown-inline/" itemprop="url">Writing Storybook Inlined With Markdown</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>What good are stories if you’re not actually telling them? Storybook is a fantastic and versatile tool
+to create runnable showrooms of elements written in a number of javascript libraries. It presents live
+examples of components but lack in plain old storytelling - the prose. There are addons but they are not 
+presentable enough (<a href="https://github.com/storybooks/storybook/blob/master/addons/notes">addon-notes</a>) or do not support all targets (<a href="https://github.com/storybooks/storybook/blob/master/addons/info">addon-info</a>).</p>
+
+<p>Here I present a different approach, using <a href="https://polymer.github.io/lit-html/">lit-html</a> and a markdown <a href="https://developers.google.com/web/fundamentals/web-components/customelements">custom element</a>. It works
+well with my web components but hopefully could be adapted to handle any supported framework.</p>
+
+
+		
+		<a href="/blog/2018/08/storybook-markdown-inline/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2018-05-06T18:20:00+00:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>6:20 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/alcaeus/'>alcaeus</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2018/05/js-living-docs/" itemprop="url">Maintaining Documentation of JS Library in Lockstep With Code</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’ve long been aware of GitBook.com as a way to easily author documentation pages. What I did not know before
+was that it also comes with a robust tooling for building the book locally and building as a static website.
+Works great with GitHub Pages, albeit needing some specific setup to run from the <code>/docs</code> folder. In itself
+though it may just be a good-looking alternative to other static page generators or documentation builders.
+The difference however is the abundance of plugins, and one plugin in particular useful for documenting JS
+code.</p>
+
+
+		
+		<a href="/blog/2018/05/js-living-docs/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2018-05-06T18:20:00+00:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>6:20 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net-framework/'>.net framework</a>, <a class='category' href='/blog/categories/c-number/'>c#</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2018/05/hidden-gem-sqllocaldb/" itemprop="url">Hidden Gem - Easiest Way to Manage SqlLocalDB</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>SQL Server LocalDB is not something new to me. The ability quickly to run, and destroy a database without much
+hassle has been great aid in running test code which was meant to target a live SQL database. That said, it
+wasn’t always without any hassle at all. I tried various tools which make it a bit easier than the command line
+tool but nothing was perfect. Until recently, when I’ve discovered the humbly named <a href="https://www.nuget.org/packages/SqlLocalDb/">NuGet package</a> which
+is as simple as it gets.</p>
+
+
+		
+		<a href="/blog/2018/05/hidden-gem-sqllocaldb/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2018-03-26T21:15:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>9:15 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/lit-html/'>lit-html</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2018/03/storybook-with-lit-html-and-polymer-3/" itemprop="url">How to Set Up Storybook to Play Nice With Lit-html-based Element</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’d like to share a few tips which might help you set up <a href="https://www.npmjs.com/package/@storybook/polymer">@storybook/polymer</a> with a JS-only elements. The
+core issue was importing a base mixin class from Polymer 3, which causes the default babel configuration to 
+transpile into an unusable bundle.</p>
+
+
+		
+		<a href="/blog/2018/03/storybook-with-lit-html-and-polymer-3/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2017-10-25T08:00:00+00:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>8:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/visual-studio/'>visual studio</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2017/10/vs-must-have-open-command-line/" itemprop="url">Visual Studio Must-have - Open Command Line (and Babun)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’ve been using the <a href="https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine">Open Command Line</a>
+by Mads Kristensen for several months now. Recently I’ve finally figured out how to have it open <a href="http://babun.github.io">Babun</a> and
+decided to share.</p>
+
+
+		
+		<a href="/blog/2017/10/vs-must-have-open-command-line/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2017-08-29T22:45:00+00:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>10:45 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/webcomponents/'>webcomponents</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2017/08/lego-templates-with-template-literals/" itemprop="url">Building UI Like LEGO (With String Template Literals)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Some time ago I experimented and <a href="/blog/2016/04/hypermedia-driven-ui/">wrote</a> about building composable UI using Polymer and <code>&lt;template&gt;</code> was my
+main building block. I used it to declare building blocks for my pages which I would dynamically interchange depending on
+the displayed content. Unfortunately I’ve hit a number of roadblocks but I think I’ve just recently found a solution.</p>
+
+
+		
+		<a href="/blog/2017/08/lego-templates-with-template-literals/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+    
+        <a href="/blog/posts/2" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

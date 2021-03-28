@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: wordpress | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/wordpress/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How I chose WordPress. Part 1]]></title>
+    <link href="http://t-code.pl/blog/2011/06/how-i-chose-wordpress-part-1/"/>
+    <updated>2011-06-25T21:57:24-04:00</updated>
+    <id>http://t-code.pl/blog/2011/06/how-i-chose-wordpress-part-1</id>
+    <content type="html"><![CDATA[<p>Finally my blog is up. It took me ages to start it. OK, it’s not only a blog but also a small CV/portfolio kind of site. 
+And setting it up wasn’t quite as easy as I has hoped.</p>
+
+<p>I’ve tried a few content management systems lately and I am very much disappointed! Most of the option I tried are 
+advertised to work out of the box…</p>
+
+<!--more-->
+
+<h2 id="out-of-the-box-my-a">Out of the box my a**</h2>
+
+<p>OK. Let’s point one thing out. I have been trying to install all of my CMS of choice using Microsoft’s Web Platform 
+Installer. Maybe it would have been different, had I just downloaded the files and tried installing manually. That I do 
+not know. Still my impression is, CMS platforms for .NET simply don’t work as expected. At least not those I chose.</p>
+
+<p>In the next posts I will be sharing my thoughts and problems with my chosen and failed options:</p>
+
+<ul>
+  <li>Umbraco CMS</li>
+  <li>Kentico CMS</li>
+  <li>n2 CMS</li>
+  <li>DotNetNuke Community Edition</li>
+  <li>Composite C1</li>
+  <li>WordPress</li>
+</ul>
+
+<p>Please note once again. I tried installing each of the above using the Microsoft Web Platform Installer. And failed.
+Eventually I downloaded WordPress, set up a MySQL databse according to the 5-minute installation tutorial and voila!!
+It simply works. Maybe except the need to manually set up directory write permissions but that was easy ;)</p>
+
+<p>Thank you  WordPress!</p>
+]]></content>
+  </entry>
+  
+</feed>

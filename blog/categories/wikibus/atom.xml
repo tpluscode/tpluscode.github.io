@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: wikibus | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/wikibus/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Solitary event storming to discover application domain]]></title>
+    <link href="http://t-code.pl/blog/2016/03/wikibus-event-storming/"/>
+    <updated>2016-03-30T10:55:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/wikibus-event-storming</id>
+    <content type="html"><![CDATA[<p>Inspired by recent training sessions on <a href="http://www.meetup.com/drugpl/events/228508826/">DRUG Software Craftmanship</a> and
+another on the following week on <a href="http://www.meetup.com/DDD-WRO/events/229281801/">DDD Wro meetup</a> I decided that it would
+be best for me to explore the wikibus.org domain by conducting a solitary <a href="http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html"><strong>event storming</strong></a>.</p>
+
+<!--more-->
+
+<p>I took a stack of small post-its for marking book pages and a document folder to stick them ont. At first I wasn’t very
+much convinced that it was such a good idea. For one, the application is seemingly just simple CRUD but quickly storming
+through some events that came to my mind confirmed that there may be more complexity that meets the eye. Also some events
+helped me discover possible aggregate roots and entities and relationships between them.</p>
+
+<p><a href="/uploads/2016/03/wikibus-events-large.jpg"><img src="/uploads/2016/03/wikibus-events-small.jpg" alt="events on small post-its" /></a></p>
+
+<ul>
+  <li>
+    <p><strong>Datasheet added for classification</strong></p>
+
+    <p>It is easy to think about vehicles as a whole and keep them in the database as such. However due to the variety of 
+ makes and models I decided that it will be better to keep technical details as a separate entity.</p>
+  </li>
+  <li><strong>Datasheet added to Vehicle</strong></li>
+  <li>
+    <p><strong>Datasheet moved between Vehicles</strong></p>
+
+    <p>This way it will be easier to treat a <em>Vehicle</em> as the sum of its <em>Datasheets</em> and if necessary any Vehicle it would
+ be possible to split a vehicle in two</p>
+  </li>
+  <li>
+    <p><strong>Datasheet Source added</strong></p>
+
+    <p>Given my brochure and book collection I want to keep track of where the <em>Datasheet</em> comes from. Sources would also have
+ to include simple link for example to wikipedia.</p>
+  </li>
+  <li><strong>Engine extracted from Datasheet</strong></li>
+  <li>
+    <p><strong>Gearbox extracted from Datasheet</strong></p>
+
+    <p><em>Datasheets</em> often contain additional structured information about internal components like engine, gearbox and axles.
+ I would like to be able to keep a separate structured representation and not only textual description</p>
+  </li>
+  <li><strong>Vehicle created</strong></li>
+  <li>
+    <p><strong>Vehicle marked as defunct</strong></p>
+
+    <p>I’m unsure about this one. It should be possible to infer that information from production end date. However that may
+ not always be available, so maybe there is some merit.</p>
+  </li>
+  <li><strong>Added external link to Vehicle/Manufacturer/Brand</strong></li>
+  <li><strong>Brand created</strong></li>
+  <li><strong>Manufacturer created</strong></li>
+  <li>
+    <p><strong>Manufacturer Merger added</strong></p>
+
+    <p>Lastly there is <em>Manufacturer</em> and <em>Brand</em>. The distinction is important, because a Manufacturer can own multiple
+brands (for example <a href="https://en.wikipedia.org/wiki/Fabrika_automobila_Priboj">FAP</a>, which produced under own brand and
+marketed some buses under the <a href="https://en.wikipedia.org/wiki/FAS_Sanos">Sanos</a> name) and it is even possible that same
+brand name is used by different manufacturers (such <a href="https://en.wikipedia.org/wiki/Ikarus_Bus">Ikarus from Hungary</a> and
+<a href="https://en.wikipedia.org/wiki/Ikarbus#Products">Ikarbus</a>, which used the name Ikarus for some time)</p>
+  </li>
+  <li>
+    <p><strong>Manufacturer Transformation added</strong></p>
+
+    <p>Also it is not uncommon for a brand to close and continue under a different name. This is the case for example with
+Britain’s <a href="https://en.wikipedia.org/wiki/Optare">Optare</a>, which for a time operated as <a href="https://en.wikipedia.org/wiki/North_American_Bus_Industries">NABI</a></p>
+  </li>
+  <li><strong>Vehicles grouped as Series</strong></li>
+  <li><strong>Vehicle hierarchy changed</strong></li>
+  <li>
+    <p><strong>Relationship between Vehicles created</strong></p>
+
+    <p>Vehicles can form simple hierarchies and series, such as subsequent modernizations of a specific model, but also more
+complex relations are possible. For example a city bus can be tha basis for a twin trolleybus. Compare <a href="https://en.wikipedia.org/wiki/Solaris_Urbino_12">Solaris Urbino
+12</a> and <a href="https://pl.wikipedia.org/wiki/Solaris_Trollino_12">Solaris Trollino 12</a></p>
+  </li>
+  <li><strong>Influential Person added to Manufacturer</strong></li>
+  <li>
+    <p><strong>Interesting Fact/Date added</strong></p>
+
+    <p>These are relatively unrelated to the core concepts.</p>
+  </li>
+  <li>
+    <p><strong>Manufacturer marked as defunct</strong></p>
+
+    <p>Finally this one I never thought about before. This is similar to marking a <em>Vehicle</em> as no longer in production</p>
+  </li>
+</ul>
+
+<h2 id="insight">Insight</h2>
+
+<p>I was pleasantly surprised with even a solo event storming. It helped me look at a slightly different angle on the problem
+space and determine some domain object boundaries and possible functionalities. I will definitely do that again in this
+or other projects.</p>
+
+<p>For more about event storming you should click these links</p>
+
+<ol>
+  <li><a href="http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html">http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html</a></li>
+  <li><a href="http://www.slideshare.net/ziobrando/event-storming-recipes">http://www.slideshare.net/ziobrando/event-storming-recipes</a></li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Technology side of wikibus.org]]></title>
+    <link href="http://t-code.pl/blog/2016/03/wikibus-real-technology-details/"/>
+    <updated>2016-03-17T15:35:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/wikibus-real-technology-details</id>
+    <content type="html"><![CDATA[<p>I just noticed that I forgot to change the permalink of my <a href="/blog/2016/03/wikibus-technology-details/">last post</a>. I intended to write about tech, but ended up writing
+about buses only. Too bad, but I’m not going to change that now. I this post I will write a little bit more about what
+I’m actually implementing for wikibus.org</p>
+
+<!--more-->
+
+<p>Implementing all of it may be a daunting task. Because I want to build an entire website and API I’m aiming for the 
+full-stack. On top of that I want to actually do something cool <img class="emoji" title=":sunglasses:" alt=":sunglasses:" src="https://assets.github.com/images/icons/emoji/unicode/1f60e.png" height="20" width="20" align="absmiddle" />, which for developers mean using a really
+cutting-edge technology or publishing a reusable package.</p>
+
+<p>And so my goals here are quite ambitious. I am</p>
+
+<ul>
+  <li>using RDF for as my data structures,</li>
+  <li>want to implement the domain CQRS-style as event-sourced async models,</li>
+  <li>use Nancy to serve data from the server because Web API sucks balls,</li>
+  <li>hope to create a <strong><em>real</em></strong> REST API with the help of <a href="http://hydra-cg.com">Hydra</a>,</li>
+  <li>intend to use Web Components and Polymer in the browser to consume my API.</li>
+</ul>
+
+<h2 id="divide-and-conquer">Divide and conquer</h2>
+
+<p>Because there’s a lot of pieces to this bus-lovers’ puzzle, I created a <a href="http://github.com/wikibus">wikibus organization</a>, where I keep
+separate repositories for each element. Except the dedicated front and back end I intend to keep the other libraries as
+independent as possible so that they can be reused in other projects. I for one will be publishing my reusable code on
+<a href="http://nuget.org">NuGet</a>.</p>
+
+<p>I will be gradually mentioning all of the below in future blog posts.</p>
+
+<h3 id="wikibus-backendback"><a href="http://github.com/wikibus/wikibus-backend">wikibus backend</a></h3>
+
+<p>This is the main API and server side, where all the Nancy code and data-access will live. I will need a number of components 
+to make it happen. Not all of it is available as open-source packages just yet, so I’m left with no choice but to implement
+some <img class="emoji" title=":shit:" alt=":shit:" src="https://assets.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle" /> myself.</p>
+
+<p>Currently I’ve just hit a 0.1 mark with an updated a deployable database of brochures. In a short future I will publish
+a post where I share some details about how I convert my data from SQL Server to RDF and test the results.</p>
+
+<p>The main interest of wikibus.org will of course be the <a href="/2016/03/wikibus-technology-details/">knowledge about public transport</a>. Because of the complexity 
+I probably will use a form of CQRS with eventually consistent RDF models. This will hopefully buy me flexibility in adapting to
+changes in how I want to process raw data. We’ll see.</p>
+
+<h3 id="jsonldentitiesjsonldentities"><a href="http://github.com/wikibus/JsonLD.Entities">JsonLD.Entities</a></h3>
+
+<p><img src="https://raw.githubusercontent.com/wikibus/JsonLD.Entities/master/assets/icon.png" alt="json-ld entities logo" /></p>
+
+<p>First component I’ve built as a reusable library is a simple serializer, which can convert POCO object to <a href="http://json-ld.org">JSON-LD</a>
+and vice versa. It is basically an extension of the immensely popular <a href="http://json.net">Newtonsoft.Json</a> package. I wanted
+too keep JsonLD.Entities as simple as possible and so most of it works by convention.</p>
+
+<p>There are some <a href="https://github.com/wikibus/JsonLD.Entities/tree/master/src/Documentation">examples</a> and this package is
+the first wikibus library already available on <a href="https://www.nuget.org/packages/JsonLd.Entities/">nuget</a>.</p>
+
+<h3 id="nancyrdfnancy-rdf"><a href="http://github.com/wikibus/nancy.rdf">Nancy.Rdf</a></h3>
+
+<p><img src="https://raw.githubusercontent.com/wikibus/Nancy.Rdf/master/assets/icon_21532.png" alt="nancy.rdf icon" /></p>
+
+<p>Second part that I find missing for a .NET REST API, which would serve RDF data are serializers of RDF media types. I love
+Nancy and so I wrap it is my weapon of choice for building a RESTful web service. On top of Nancy I am building a set of
+response processors, which will be able to serve POCO classes serialized to RDF formats. Unsurprisingly I’m using the
+library I introduced above combined with <a href="http://dotnetrdf.org">dotNetRDF</a> so that I can return not only JSON-LD but also
+most other RDF formats: RDF/XML, Turtle, n-triples and more.</p>
+
+<p>Once the code stabilizes, first step will be to add some documentation. Then I may consider breaking concrete dependency
+on dotNetRDF and offer a <a href="https://rdfsharp.codeplex.com/">RDFSharp</a> alternative package. Finally I shall add support for low-level RDF objects,
+that is raw graphs, datasets and SPARQL results.</p>
+
+<h3 id="argolisargolis"><a href="http://github.com/wikibus/Argolis">Argolis</a></h3>
+
+<p><img src="https://raw.githubusercontent.com/HydraCG/hydra-cg.com/master/img/logo.png" width="100" title="hydra logo" ></p>
+
+<p>The newest member of the wikibus.org crowd is called Argolis, which further extends Nancy.Rdf above to add support for
+<a href="http://hydra-cg.com">Hydra</a>, which is a vocabulary for hypermedia-driven applications. It means that hydra is the means to describe
+the API in a way where the client is actually driven by hypermedia</p>
+
+<p>I named it after the <a href="https://en.wikipedia.org/wiki/Regions_of_ancient_Greece#Argolis">mythical</a> (and <a href="https://en.wikipedia.org/wiki/Argolis">modern</a>) part of Greece. I chose that name, because it
+is where the mythical beast Hydra originates from.</p>
+
+<p><img src="/uploads/2016/03/hydra.gif" alt="Hydra drawing by Andrew Jian" /></p>
+
+<p>Hydra drawing by <a href="https://www.flickr.com/photos/andrew_jian/">Andrew Jian</a>.</p>
+
+<p>Similarly as with Nancy.Rdf, this is very new stuff.The goal for both Argolis and Nancy.Rdf is to provide a 
+<a href="https://github.com/NancyFx/Nancy/wiki/Introduction#the-super-duper-happy-path">supper-duper-happy-path</a> so that the usage is as simple as possible. I’m still ironing out some details and as soon 
+as I’m happy with the API and features I will add some documentation and publish a NuGet package.</p>
+
+<h3 id="wwwwikibusorgwwwwikibusorg"><a href="http://github.com/wikibus/www.wikibus.org">www.wikibus.org</a></h3>
+
+<p>Lastly here’s the main front-end library. I’ve purchased a bootstrap template ages ago and started some work on that ages
+ago but there is a lot I want to accomplish in this space too:</p>
+
+<ul>
+  <li>use Polymer (styling will be tricky with Shadow DOM)</li>
+  <li>consume <a href="http://hydra-cg.com">Hydra</a> - I hope to use an existing library; maybe <a href="https://github.com/n-fuse/hyjax">hyjax</a></li>
+  <li>end result: be really RESTful (thanks to <a href="http://hydra-cg.com">Hydra</a>)</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Why I like buses - more about wikibus.org]]></title>
+    <link href="http://t-code.pl/blog/2016/03/wikibus-technology-details/"/>
+    <updated>2016-03-07T22:40:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/wikibus-technology-details</id>
+    <content type="html"><![CDATA[<p>Previously, in my first <a href="/2016/03/dajsiepoznac-wikibus/">#dajsiepoznać post</a>, I wrote about how I’ve been <em>trying</em> to create wikibus.org, the
+public transport encyclopedia. Sadly, Most of that <em>development</em> has been more of blind technology exploration, learning
+and very little delivery. Now, I’m going forward with renewed strength, and I’d like to share more details about the
+idea behind the project.</p>
+
+<!--more-->
+
+<h2 id="business-domain-of-public-transport">Business domain of public transport</h2>
+
+<p>Public transport is complex. By that I mean just the technology, and not even how it is organized. For the sak of this
+post let’s focus on buses. To most people buses are somewhat similar. To me however they are a whole world of complex 
+relations and classifications.</p>
+
+<h3 id="what-bus-am-i-looking-at">What bus am I looking at?</h3>
+
+<p>There are many aspects, which characterize a bus.</p>
+
+<ul>
+  <li>Size, typically divided into subclasses by length and capacity
+    <ul>
+      <li>MINI</li>
+      <li>MIDI</li>
+      <li>MAXI</li>
+      <li>MEGA</li>
+    </ul>
+  </li>
+  <li>Purpose
+    <ul>
+      <li>City bus</li>
+      <li>Suburban bus</li>
+      <li>Intercity bus</li>
+      <li>Coach/Tourist bus</li>
+      <li>Airport bus</li>
+      <li>Other</li>
+    </ul>
+  </li>
+  <li>Drive
+    <ul>
+      <li>Diesel</li>
+      <li>Petrol</li>
+      <li>Liquid gas</li>
+      <li>Ethanol</li>
+      <li>Electric</li>
+      <li>Hybrid</li>
+    </ul>
+  </li>
+  <li>Single or double deck</li>
+  <li>Articulated or not</li>
+</ul>
+
+<p>And the list above doesn’t include obvious characteristics such as physical dimensions, design details and performance. 
+And there are also trolleybuses, which often share similarities in terms of common design.</p>
+
+<h3 id="so-what-do-i-call-this-bus-again">So what do I call this bus, again?</h3>
+
+<p>There is also another problem, especially with old designs. Historically buses were built as separate chassis and body.
+In the early days chassis were mostly modified lorry version and only later specialized bus-only designs emerged. And so
+a single type of chassis could receive a wide variety of bodies, often with very distinct design. And the same body would
+be used on a number of chassis by various manufacturers.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/East_Kent_WJG_470J.JPG/640px-East_Kent_WJG_470J.JPG" alt="Plaxton panorama" /></p>
+
+<p>Above is a <a href="https://en.wikipedia.org/wiki/Plaxton_Panorama_Elite">Plaxton Panorama</a>, which can be built on many chassis by many manufacturers. Common examples would
+include <a href="http://dbpedia.org/resource/Volvo_B58">Volvo B58</a>, <a href="http://dbpedia.org/resource/Leyland_Leopard">Leyland Leopard</a>
+or <a href="http://dbpedia.org/resource/AEC_Reliance">AEC Reliance</a>. At the same time other bodies were available for each of those
+chassis. This is a surprisingly complex graph structure. To add to the mix is that each combination of the two would be
+called either after the body or the chassis depending on who you ask and the context.</p>
+
+<h2 id="buses-are-just-the-tip-of-the-iceberg">Buses are just the tip of the iceberg</h2>
+
+<p>As I said. There is much more to public transport that buses. I’m interested in all of that.
+I hope that this should give you a glimpse in why I’m interested in this subject, find it interesting. My best case
+scenario goal is a comprehensive database where all these intricate details and relations can be explored and discovered.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[wikibus.org and the &#35;dajsiepoznac competition]]></title>
+    <link href="http://t-code.pl/blog/2016/03/dajsiepoznac-wikibus/"/>
+    <updated>2016-03-02T20:30:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/dajsiepoznac-wikibus</id>
+    <content type="html"><![CDATA[<p>My colleague <a href="https://twitter.com/j_stadnicki">Jarek Stadnicki</a> convinced me to join the competition called <strong><em><a href="http://www.maciejaniserowicz.com/daj-sie-poznac/">Daj się poznać</a></em></strong> 
+(Polish for <em>Let them get to know you</em>). Here are a few words about that and what I will be doing</p>
+
+<!--more-->
+
+<h2 id="the-competition-user-story">The competition user story</h2>
+
+<blockquote>
+  <p>As a developer<br />
+I want to create stuff and write about it<br />
+So that people get to know me</p>
+</blockquote>
+
+<p>It’s the second edition of the competition for Polish bloggers (first took place in 2010 AFAIK) ran by <a href="http://twitter.com/maniserowicz">Maciej Aniserowicz</a>,
+a popular dev, speaker and blogger. The main goal is to encourage developers to actively work on something they find 
+interesting so that they can learn coding, improve their writing and leave a permanent mark of their existence, which 
+can be very beneficial for their future. Also most people who persevere will likely continue to blog regularly.</p>
+
+<p>The rules are simple:</p>
+
+<ol>
+  <li>Write <strong>code</strong></li>
+  <li>Host that code on <strong>GitHub</strong></li>
+  <li><strong>Twice a week</strong> document the coding process on a blog</li>
+  <li>Repeat for three months (or <strong>10 weeks</strong>)</li>
+</ol>
+
+<p>Simple and hard at the same time and I hear that most people are expected to quit before May. After all it’s ~~<strong>200</strong>~~ 
+<strong>20 blog posts</strong> that each contender must write.</p>
+
+<h2 id="my-project---wikibusorg">My project - wikibus.org</h2>
+
+<p>Most people don’t care about buses and can’t tell one from another. Public transport is the means for commuting in the
+city and that’s all the need to know. I on the other hand have been keenly interested in that subject for many years now.
+That is buses, coaches, trams, trolleybuses. Anything related to public transport. Unfortunately it also consumes a lot of
+money, because I have amassed a significant amount of books, magazines and promotional brochures. I can literally measure
+all of that in <strong>kilograms</strong>!</p>
+
+<p>Ever since I started collecting books and brochures I had that idea for a <strong><em>bus encyclopedia</em></strong>. I even started a private
+MediaWiki once upon a time, but it didn’t really catch on and customizing that is a pain.</p>
+
+<blockquote>
+  <p>On a side I’m truly amazed by the success of Wikipedia judging by the programming effort MediaWiki requires!</p>
+</blockquote>
+
+<p>And so I have developed that huge <a href="http://jessicaabel.com/2016/01/27/idea-debt/">idea debt</a>, where I fantasize and imagine the glorious future of a project.
+Every now and then I would sit down and write some code and then real life comes back hard on you. And so instead of 
+actually delivering (<em>the MediaWiki episode is ironically a noble exception</em>) I kept discovering new technologies, 
+techniques and learning a lot.</p>
+
+<p>Don’t get me wrong though. That is not necessarily a bad thing. Having just started work toward my second iteration (or 
+maybe <strong>reboot</strong> is the proper term?) of Wikibus I bought a book titled <a href="http://www.amazon.com/gp/product/0123740347">Unleashing Web 2.0: From Concepts to Creativity</a>,
+from which I learned about the <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a>.</p>
+
+<p>And that’s when all hell broke loose. Instead of working at some goals or milestones I started learning all the intricacies
+of RDF, and SPARQL, and contributed a singinficant amount of my time to an open source project <a href="http://www.dotnetrdf.org/">dotNetRDF</a>,
+and created a <a href="http://r2rml.net">R2RML library</a> for converting data from SQL to RDF. <strong>And it was great</strong>. Knowledge of RDF even 
+got me a job once, but wikibus.org got sidetracked.</p>
+
+<h2 id="goal-for-dajsiepoznac">Goal for #dajsiepoznac</h2>
+
+<p>Last year I rebooted for the third time and then again I lost some steam after having discovered <a href="http://webcomponents.org/">Web Components</a> and
+trying to use fancy techniques like DDD or CQRS. I want the competition to be a motivating force, which will keep me focused
+on progress. Which does not mean that I will be sacrificing learning in favour of delivery.</p>
+
+<blockquote>
+  <p>I’d rather improve my skills that follow the path of least resistance</p>
+</blockquote>
+
+<p>Wish me luck…</p>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,1217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: dajsiepoznac | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/dajsiepoznac/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Consuming hypermedia - declarative UI]]></title>
+    <link href="http://t-code.pl/blog/2016/04/hypermedia-driven-ui/"/>
+    <updated>2016-04-30T22:25:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/04/hypermedia-driven-ui</id>
+    <content type="html"><![CDATA[<p>I’ve been going on about hypermedia for a long time now. I’ve touched both client and server side in terms of processing
+resource representations. There is however a big missing piece in how developers should build user interfaces. Personally
+I have been hooked on the idea of <a href="http://webcomponents.org/">Web Components</a> and I’ve had some success experimenting with using a declarative
+way for defining User Interface building blocks.</p>
+
+<!--more-->
+
+<h2 id="declarative-views-for-resource-representations">Declarative views for resource representations</h2>
+
+<p>Assuming the use of RDF (<a href="https://www.w3.org/RDF/">Resource Description Framework</a>), the user interface can be defined by creating a template
+for given RDF class or data type. A few examples can include: <img class="emoji" title=":one:" alt=":one:" src="https://assets.github.com/images/icons/emoji/unicode/0031-20e3.png" height="20" width="20" align="absmiddle" /> a dedicated custom element for displaying a person,
+<img class="emoji" title=":two:" alt=":two:" src="https://assets.github.com/images/icons/emoji/unicode/0032-20e3.png" height="20" width="20" align="absmiddle" /> a lightbox element for images typed as <code>schema:ImageObject</code> or <img class="emoji" title=":three:" alt=":three:" src="https://assets.github.com/images/icons/emoji/unicode/0033-20e3.png" height="20" width="20" align="absmiddle" /> custom datepicker for <code>xsd:date</code>.</p>
+
+<p>My idea for such syntax is to extend the <code>&lt;template&gt;</code> tag so that whenever it is added to DOM, it somehow registers itself
+for use in specific case. Because the template tag itself is quite dumb I would take advantage of <a href="http://polymer-project.org">Polymer</a> data
+binding features and <a href="http://t-code.pl/blog/2015/08/polymer-templatizer/"><code>Polymer.templatizer</code></a> so that developers can define dynamic templates.</p>
+
+<p>At the top level, I envision a generic <code>&lt;object-view&gt;</code> element. It would inspect the given resource and choose among the
+available specialized or generic templates (see further down).</p>
+
+<p>``` html</p>
+<object-view id="top-view"></object-view>
+
+<script>
+    var objectView = document.getElementById('top-view');
+    
+    objectView.object = {
+        "@type": "http://example.com/vocab#Person",
+        "@id": "http://example.com/tomasz",
+        "http://example.com/vocab#name": { 
+            "@value": "Tomasz Pluskiewicz" 
+        },
+        "http://example.com/vocab#website": { 
+            "@value": "http://t-code.pl" 
+        },
+        "http://example.com/vocab#avatar": {
+            "@type": "http://schema.org/ImageObject",
+            "http://schema.org/caption": { 
+                "@value": "Me in Kraków" 
+            },
+            "http://schema.org/contentUrl": { 
+                "@value": "http://example.com/tomasz/avatar-large.jpg" 
+            },
+            "http://schema.org/thumbnail": {
+                "http://schema.org/contentUrl": { 
+                    "@value": "http://example.com/tomasz/avatar-small.jpg" 
+                }
+            }
+        }
+    };
+</script>
+
+<p>```</p>
+
+<p>By setting the <code>objectView.resource</code> property the element would then look for template dedicated to the <code>ex:Person</code> class
+(example <img class="emoji" title=":one:" alt=":one:" src="https://assets.github.com/images/icons/emoji/unicode/0031-20e3.png" height="20" width="20" align="absmiddle" />):</p>
+
+<p>``` html</p>
+<template is="resource-view-template" type="http://example.com/vocab#Person" as="person" compact-with="{ &quot;@vocab&quot;: &quot;http://example.com/vocab#&quot; }">
+    <h2>
+        [[person.name]]
+    </h2>
+    <div class="details">
+        <a href="[[person.website]]">My website</a>
+    </div>
+    <div class="avatar">
+        <object-view object="[[person.avatar]]"></object-view>
+    </div>
+</template>
+<p>```</p>
+
+<p>See the <code>&lt;object-view&gt;</code> used again for <code>person.avatar</code>? This way it would be possible to create composable user interface
+with specialized building blocks. Here’s how a template for <code>schema:ImageObject</code> can be rendered as a kind of a lightbox
+(example <img class="emoji" title=":two:" alt=":two:" src="https://assets.github.com/images/icons/emoji/unicode/0032-20e3.png" height="20" width="20" align="absmiddle" />):</p>
+
+<p>``` html</p>
+<template is="resource-view-template" type="http://schema.org/ImageObject" as="img" compact-with="{ &quot;@vocab&quot;: &quot;http://schema.org&quot; }">
+    <a title="[[img.caption]]" href="[[img.contentUrl]]">
+        <img src="[[img.thumbnail.contentUrl]]" alt="[[img.caption]]" />
+    </a>
+</template>
+<p>```</p>
+
+<p>A simple proof of concept is available <a href="http://plnkr.co/edit/pQ6NOd">on Plunker</a></p>
+
+<h3 id="template-selection-api">Template selection API</h3>
+
+<p>Further extensions could introduce new ways for selecting a template based on the resource content, based on the predicate
+(<em>for example to use different template for property <code>ex:husband</code> vs property <code>ex:wife</code>)</em> or to be able to create templates
+not only for resources but also for literals (<em>for example to select templates based on language tag?</em>)</p>
+
+<h2 id="common-elements-for-hydra-core-types">Common elements for Hydra Core types</h2>
+
+<p>Building on top of the API above it would be possible to created predefined common elements for <a href="http://hydra-cg.com">Hydra Core</a> resources
+returned by <a href="http://github.com/wikibus/heracles">heracles</a>. The most obvious idea is to build a reusable template for a <code>hydra:Collection</code>:</p>
+
+<p>``` html
+<!-- first template for collection elements --></p>
+<template is="resource-view-template" type="https://www.w3.org/ns/hydra/core#Collection" as="collection" compact-with="http://www.w3.org/ns/hydra/context.jsonld">
+          
+    <template is="dom-repeat" items="[[collection.member]]" as="member">
+        <object-view object="[[member]]"></object-view>
+    </template>
+    
+    <div class="pager">
+        <object-view object="[[collection.view]]"></object-view>
+    </div>
+</template>
+
+<!-- views can have specialized templates -->
+<!-- the current spec defines the PartialCollectionView type -->
+<template is="resource-view-template" type="https://www.w3.org/ns/hydra/core#PartialCollectionView" as="view">
+    <a href="[[view.first]]">First</a>
+    <a href="[[view.previous]]">Previous</a>
+    <a href="[[view.next]]">Next</a>
+    <a href="[[view.last]]">Last</a>
+</template>
+<p>```</p>
+
+<p>See how again the <code>&lt;object-view&gt;</code> is used to delegate the decision on what template to render.</p>
+
+<p>Obviously real life Hydra templates will need to be much more sophisticated. Template for <code>hydra:PartialCollectionView</code>
+would definitely want to hide unnecessary link. Template for <code>hydra:Collection</code> would likely display a different view for
+collection member from the view displaying the same object outside a collection. This could be a feature of the <code>&lt;object-view&gt;</code>
+element though.</p>
+
+<h2 id="distributing-templates">Distributing templates</h2>
+
+<p>Finally one wouldn’t want to declare these templates every time in an application. I imagine that a package containing
+reusable Hydra Core elements would be simply wired up by a single element:</p>
+
+<p>``` html
+<!-- drop this on a page, and the above templates would be --> 
+<!-- available for <object-view> elements --></p>
+<hydra-core-templates></hydra-core-templates>
+<p>```</p>
+
+<p>Similar element could be offered by data publishers somewhat satisfying the REST’s code-on-demand constraint.</p>
+
+<p>It is unclear however how it would be possible to customize behaviour of those templates/elements. Overriding the selected
+template could be an easy way out though…</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Third labour of hypermedia - extensible media types]]></title>
+    <link href="http://t-code.pl/blog/2016/04/hypermedia-must-be-extensible/"/>
+    <updated>2016-04-24T16:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/04/hypermedia-must-be-extensible</id>
+    <content type="html"><![CDATA[<p>Most hypermedia media types like [HAL][HAL] or [SIREN][SIREN] are some sort of extension of JSON, which is understandable.
+JSON is a natural choice because it already is the most common data interchange format for APIs. However JSON as syntax 
+is by design simple and it doesn’t support vital part - <strong>links</strong>. To plug that hole these media types are intrusive in
+that they impose a very specific structure of documents. Instead of extending the meaning of representations they hijack
+the syntax and structure.</p>
+
+<p>Personally I’m biased towards [Hydra Core Vocabulary][hydra] because, unlike all other I have come across, it is based on
+RDF. Why is it important?</p>
+
+<!--more-->
+
+<h2 id="extending-json-creates-rigid-structures">Extending JSON creates rigid structures</h2>
+
+<p>Consider this sample from HAL specification website (excerpt).</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">“_links”:</span> <span class="err">{</span>
+</span><span class='line'>        <span class="err">“self”:</span> <span class="err">{</span> <span class="err">“href”:</span> <span class="err">“/orders”</span> <span class="p">}</span><span class="err">,</span>
+</span><span class='line'>        <span class="err">“curies”:</span> <span class="p">[{</span> <span class="err">“name”:</span> <span class="err">“ea”,</span> <span class="err">“href”:</span> <span class="err">“http://example.com/docs/rels/{rel</span><span class="p">}</span><span class="err">”</span><span class="p">,</span> <span class="err">“templated”:</span> <span class="kc">true</span> <span class="err">}</span><span class="p">]</span><span class="err">,</span>
+</span><span class='line'>        <span class="err">“next”:</span> <span class="p">{</span> <span class="err">“href”:</span> <span class="err">“/orders?page=2”</span> <span class="p">}</span><span class="err">,</span>
+</span><span class='line'>        <span class="err">“ea:find”:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="err">“href”:</span> <span class="err">“/orders{?id</span><span class="p">}</span><span class="err">”,</span>
+</span><span class='line'>            <span class="err">“templated”:</span> <span class="kc">true</span>
+</span><span class='line'>        <span class="err">},</span>
+</span><span class='line'>        <span class="err">“ea:admin”:</span> <span class="p">[{</span>
+</span><span class='line'>            <span class="err">“href”:</span> <span class="err">“/admins/2”,</span>
+</span><span class='line'>            <span class="err">“title”:</span> <span class="err">“Fred”</span>
+</span><span class='line'>        <span class="p">}]</span>
+</span><span class='line'>    <span class="err">},</span>
+</span><span class='line'>    <span class="err">“currentlyProcessing”:</span> <span class="mi">14</span><span class="err">,</span>
+</span><span class='line'>    <span class="err">“shippedToday”:</span> <span class="mi">20</span><span class="err">,</span>
+</span><span class='line'>    <span class="err">“_embedded”:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">“ea:order”:</span> <span class="err">[{</span>
+</span><span class='line'>            <span class="err">“_links”:</span> <span class="err">{</span>
+</span><span class='line'>                <span class="err">“self”:</span> <span class="err">{</span> <span class="err">“href”:</span> <span class="err">“/orders/123”</span> <span class="p">}</span>
+</span><span class='line'>            <span class="err">},</span>
+</span><span class='line'>            <span class="err">“total”:</span> <span class="mf">30.00</span><span class="err">,</span>
+</span><span class='line'>            <span class="err">“currency”:</span> <span class="err">“USD”,</span>
+</span><span class='line'>            <span class="err">“status”:</span> <span class="err">“shipped”</span>
+</span><span class='line'>        <span class="err">}]</span>
+</span><span class='line'>    <span class="err">}</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>What is all that business with <code>_links</code> and <code>_embedded</code>? Also would you prefer to serve or consume XML for some reason?
+Well, that will not be possible because most other media types above, except Hydra, HAL is JSON-based. Hence the need for
+that convoluted document structure.</p>
+
+<p>JSON also suffers from another deficiency - key ambiguity. It would be very easy to bump into clashes if we were to enrich
+such representations with custom extensions.</p>
+
+<h2 id="rdf-is-not-syntax">RDF is not syntax</h2>
+
+<p>I wrote that Hydra Core is RDF-based. Unlike JSON RDF is a standard way to describe data structures and not syntax. It is
+possible to write the very same piece of data in a multitude of ways yet still retaining the exact same meaning. First
+there are [<strong>n-triples</strong>][nt]. Let’s state that my name is <em>Tomasz</em> and my friend can be downloaded from <code>http://t-code.pl/tomasz/friends</code>.</p>
+
+<p><code>text
+&lt;http://t-code.pl/tomasz&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; "Tomasz" .
+&lt;http://t-code.pl/tomasz&gt; &lt;http://t-code.pl/api#friends&gt; &lt;http://t-code.pl/tomasz/friends&gt; .
+</code></p>
+
+<p>As you see almost everything is an URI. This solves the ambiguity problem. This is however very verbose and redundant and
+will waste a lot od bandwidth for large response. Fortunately there are other media types, which can represent the same
+information in different form. There is the compacted flavour of n-triples called [<strong>Turtle</strong>][ttl] and it’s similar twin
+[<strong>Notation3</strong>][n3].</p>
+
+<p>``` text
+@base <a href="http://t-code.pl/">http://t-code.pl/</a> .
+@prefix foaf: <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a> .
+@prefix api: <a href="http://t-code.pl/api#">http://t-code.pl/api#</a> .</p>
+
+<tomasz> foaf:name "Tomasz" ;
+         api:friends &lt;tomasz/friends&gt; .
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>There is also the old school XML-based format called [**RDF/XML**][rdfxml].
+</span></code></pre></td></tr></table></div></figure> xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:api="http://t-code.pl/api#">
+  <rdf:Description rdf:about="http://t-code.pl/tomasz">
+    <api:friends rdf:resource="http://t-code.pl/tomasz/friends" />
+    <foaf:name>Tomasz</foaf:name>
+  </rdf:Description>
+</rdf:RDF>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>And finally there are multiple JSON-based formats, the most prominent example being [**JSON-LD**][ld] which does a great
+</span><span class='line'>job pretending it is not really RDF.
+</span><span class='line'>
+</span><span class='line'><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span><span class="p">{</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="nt">&quot;@base&quot;</span><span class="p">:</span> <span class="s2">&quot;http://t-code.pl/&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;http://xmlns.com/foaf/0.1/name&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="nt">&quot;friends&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>            <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://t-code.pl/api#friends&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>            <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;@id&quot;</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="p">}</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="p">},</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;friends&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz/friends&quot;</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>
+</span><span class='line'>## Hydra extends meaning not syntax
+</span><span class='line'>
+</span><span class='line'>What Hydra core does is essentially extend the data (**not the syntax**) with various hint for the clients so that they
+</span><span class='line'>can discover how to perform more requests. For example let's add a hypermedia control stating that the above resource
+</span><span class='line'>`&lt;tomasz&gt;` can be updated with a `PUT` request.
+</span><span class='line'>
+</span><span class='line'><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span><span class="p">{</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;@context&quot;</span><span class="p">:</span> <span class="s2">&quot;http://same.as.above/but/remote&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tomasz&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;friends&quot;</span><span class="p">:</span> <span class="s2">&quot;tomasz/friends&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="nt">&quot;http://www.w3.org/ns/hydra/core#operation&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="nt">&quot;http://www.w3.org/ns/hydra/core#method&quot;</span><span class="p">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="nt">&quot;http://www.w3.org/ns/hydra/core#expects&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>            <span class="nt">&quot;@id&quot;</span><span class="p">:</span> <span class="s2">&quot;http://t-code.pl/api#Person&quot;</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>        <span class="p">}</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>    <span class="p">}</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="err">&lt;/span&gt;&lt;span</span> <span class="err">class=&#39;line&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>
+</span><span class='line'>You could still convert this between various RDF serailizations and retain the meaning!
+</span><span class='line'>
+</span><span class='line'>For a Hydra-based API to be complete there must be a lot of information provided by the server. The above is the tip of
+</span><span class='line'>the iceberg. The body of the described `PUT` request must conform the definition of the `http://t-code.pl/api#Person` type.
+</span><span class='line'>
+</span><span class='line'>&gt; But where is this definition? And how detailed can this definition be? 
+</span><span class='line'> 
+</span><span class='line'>Hydra core is served as a runtime API documentation, linked with a specific Link header relation. This documentation can
+</span><span class='line'>contain a number of simple definitions such as required fields, expected data types etc. It can also be extended so that
+</span><span class='line'>clients aware of the extension can adapt better to the API. For example a server can annotate a field as being a password,
+</span><span class='line'>so that an appropriate control is presented on the website.
+</span><span class='line'>
+</span><span class='line'>This is where the first really big hurdle stands. 
+</span><span class='line'>
+</span><span class='line'>&gt; Where are these aware clients? And where are the servers? 
+</span><span class='line'>
+</span><span class='line'>## We need the tooling
+</span><span class='line'>
+</span><span class='line'>I've started creating both a server and client tools to produce and consume Hydra-based hypermedia. The server side is 
+</span><span class='line'>implemented as a .NET Library for Nancy called [Argolis][Argolis]. The client side is a JavsScript library called 
+</span><span class='line'>[heracles][heracles]. I'm also experimenting with a way to produce a dynamic yet customizable UI with Web Components.
+</span><span class='line'>
+</span><span class='line'>I will be showing usage examples and discussing ideas in future blog posts.
+</span><span class='line'>
+</span><span class='line'>[HAL]: http://stateless.co/hal_specification.html
+</span><span class='line'>[coll]: http://amundsen.com/media-types/collection/
+</span><span class='line'>[SIREN]: https://github.com/kevinswiber/siren
+</span><span class='line'>[narwhl]: http://www.narwhl.com/
+</span><span class='line'>[hydra]: http://hydra-cg.com/spec/latest/core/
+</span><span class='line'>[nt]: https://www.w3.org/2001/sw/RDFCore/ntriples/
+</span><span class='line'>[n3]: https://www.w3.org/TeamSubmission/n3/
+</span><span class='line'>[ld]: http://json-ld.org
+</span><span class='line'>[ttl]: https://www.w3.org/TR/2014/REC-turtle-20140225/
+</span><span class='line'>[rdfxml]: https://www.w3.org/TR/2014/REC-rdf-syntax-grammar-20140225/
+</span><span class='line'>[heracles]: http://github/com/wikibus/heracles
+</span><span class='line'>[Argolis]: http://github/com/wikibus/Argolis
+</span><span class='line'>&lt;/tomasz&gt;&lt;/tomasz&gt;
+</span><span class='line'>]]&gt;&lt;/content&gt;
+</span><span class='line'>  &lt;/entry&gt;
+</span><span class='line'>  
+</span><span class='line'>  &lt;entry&gt;
+</span><span class='line'>    &lt;title type="html"&gt;&lt;![CDATA[The labours of hypermedia]]&gt;&lt;/title&gt;
+</span><span class='line'>    &lt;link href="http://t-code.pl/blog/2016/04/labours-of-hypermedia/"/&gt;
+</span><span class='line'>    &lt;updated&gt;2016-04-24T15:40:00+00:00&lt;/updated&gt;
+</span><span class='line'>    &lt;id&gt;http://t-code.pl/blog/2016/04/labours-of-hypermedia&lt;/id&gt;
+</span><span class='line'>    &lt;content type="html"&gt;&lt;![CDATA[&lt;p&gt;Going full-on with hypermedia takes some preparations and to convince the masses will require some tooling and examples.
+</span><span class='line'>Especially tooling. The ability to produce rich developer experience is the determinant of many successful technologies. 
+</span><span class='line'>Another crucial factor are real-life uses cases solved by the technology in question. I would like to focus on the former.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;As much as the industry has bought into lightweight Web APIs, often inappropriately called RESTful, there has been an uphill
+</span><span class='line'>battle to have real hypermedia gain traction.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;!--more--&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2 id="why-hasnt-hypermedia-gone-mainstream"&gt;Why hasn’t hypermedia gone mainstream?&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;I’m still not sure what are the main factors which contribute to the slow adoption of real, unadulterated hypermedia. It
+</span><span class='line'>seems that a lot of people find hypermedia hard. Just look at all those question on StackOverflow. There are also a number
+</span><span class='line'>of proponents of &lt;em&gt;pragmatic REST&lt;/em&gt;. In my opinion that mostly means throwing the baby out with bath water. Pragmatic approach
+</span><span class='line'>to REST is seen everywhere.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;At the worse end there are for example &lt;a href="/blog/2016/03/rest-misconceptions-5"&gt;REST documentation&lt;/a&gt; and &lt;a href="/blog/2016/03/rest-misconceptions-6"&gt;flawed methods of
+</span><span class='line'>API versioning&lt;/a&gt;. To my despair it seems that too many supporters of such practices
+</span><span class='line'>completely neglect hypertext and best practices around &lt;a href="/blog/2016/02/rest-misconceptions-1"&gt;URIs&lt;/a&gt; and &lt;a href="/blog/2016/02/rest-misconceptions-2"&gt;links&lt;/a&gt;.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;A slightly brighter shade of &lt;em&gt;pragmatic REST&lt;/em&gt; are the various media types, which actually do put the emphasis on runtime
+</span><span class='line'>discoverability. This is not something I will disagree with. Not every API is made equal and not every media type needs
+</span><span class='line'>all the features necessary for a complete hypertext-driven interaction. With links to begin with (think &lt;a href="http://stateless.co/hal_specification.html"&gt;HAL&lt;/a&gt;),
+</span><span class='line'>through forms (supported by &lt;a href="http://amundsen.com/media-types/collection/"&gt;Collection+JSON&lt;/a&gt; for example) all the way to rich (&lt;a href="https://github.com/kevinswiber/siren"&gt;SIREN&lt;/a&gt; or &lt;a href="http://www.narwhl.com/"&gt;NARWHL&lt;/a&gt;)
+</span><span class='line'>and extensible (&lt;a href="http://hydra-cg.com/spec/latest/core/"&gt;Hydra Core&lt;/a&gt;) hypermedia.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;An optimistic person could envision a proliferation of cool media types and servers using them. Is this so far from the
+</span><span class='line'>truth! I think that there are still a number of puzzles missing which hinders adoption of proper hypermedia.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2 id="the-labours-of-hypermedia"&gt;The labours of hypermedia&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Hypermedia has still a long way to go. To make it happen for real there has to be an active community which understands
+</span><span class='line'>its benefits and will produce all the necessary moving parts.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;ol&gt;
+</span><span class='line'>  &lt;li&gt;We must raise &lt;strong&gt;awareness&lt;/strong&gt; of the benefits of hypermedia&lt;/li&gt;
+</span><span class='line'>  &lt;li&gt;We must define &lt;strong&gt;best practices&lt;/strong&gt; around the shady parts of REST such as versioning&lt;/li&gt;
+</span><span class='line'>  &lt;li&gt;We need powerful and &lt;strong&gt;extensible media types&lt;/strong&gt;&lt;/li&gt;
+</span><span class='line'>  &lt;li&gt;We must create the &lt;strong&gt;tooling&lt;/strong&gt; around these media types for both server and client side&lt;/li&gt;
+</span><span class='line'>  &lt;li&gt;We need a new paradigm for creating &lt;strong&gt;adaptive user interfaces&lt;/strong&gt; both of autonomous and bespoke clients&lt;/li&gt;
+</span><span class='line'>&lt;/ol&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;In future posts I will try to address these labours and show some of my recipes for actual hypermedia-ness.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>]]&gt;&lt;/content&gt;
+</span><span class='line'>  &lt;/entry&gt;
+</span><span class='line'>  
+</span><span class='line'>  &lt;entry&gt;
+</span><span class='line'>    &lt;title type="html"&gt;&lt;![CDATA[Heracles resources vs JSON-LD compaction - enumerable js properties]]&gt;&lt;/title&gt;
+</span><span class='line'>    &lt;link href="http://t-code.pl/blog/2016/04/heracles-compacting-resources/"/&gt;
+</span><span class='line'>    &lt;updated&gt;2016-04-20T08:45:00+00:00&lt;/updated&gt;
+</span><span class='line'>    &lt;id&gt;http://t-code.pl/blog/2016/04/heracles-compacting-resources&lt;/id&gt;
+</span><span class='line'>    &lt;content type="html"&gt;&lt;![CDATA[&lt;p&gt;In my &lt;a href="/blog/2016/04/introducing-heracles/"&gt;previous post&lt;/a&gt; I presented the first incarnation of Heracles, the Hydra Core
+</span><span class='line'>client library. While trying to replace my makeshift client I’d implemented for an in-house training project at &lt;a href="http://pgs-soft.com"&gt;PGS&lt;/a&gt;
+</span><span class='line'>I quickly decided that I’m going to need a way to compact my resources. It wasn’t that hard but there was one simple
+</span><span class='line'>hurdle to overcome.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;!--more--&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2 id="tldr-with-heracles-you-can-do-this"&gt;&lt;strong&gt;TL;DR; with Heracles you can do this:&lt;/strong&gt;&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">&lt;</span><span class="sr">/span&gt;&lt;span class=&#39;line&#39;&gt;Hydra.Resource.load(‘http:/</span><span class="o">/</span><span class="nx">my</span><span class="p">.</span><span class="nx">api</span><span class="o">/</span><span class="nx">my</span><span class="o">/</span><span class="nx">resource</span><span class="err">’</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/span&gt;&lt;span class=&#39;line&#39;&gt;    .then(res =&amp;gt; {</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/span&gt;&lt;span class=&#39;line&#39;&gt;        return jsonld.promises.compact(res, context);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/span&gt;&lt;span class=&#39;line&#39;&gt;    })</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/span&gt;&lt;span class=&#39;line&#39;&gt;    .then(compacted =&amp;gt; {</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/span&gt;&lt;span class=&#39;line&#39;&gt;        /</span><span class="o">/</span> <span class="k">do</span> <span class="nx">something</span> <span class="kd">with</span> <span class="nx">the</span> <span class="nx">compacted</span> <span class="nx">resource</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/span&gt;&lt;span class=&#39;line&#39;&gt;    });</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/span&gt;&lt;span class=&#39;line&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2 id="uri-properties-are-a-nuisance"&gt;URI properties are a nuisance&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Just as in heracles, in my proof of concept code I too mostly worked with expanded JSON-LD objects. This has the downside
+</span><span class='line'>that any time I needed to access the properties full property identifiers must be used. Also it is not possible with
+</span><span class='line'>&lt;a href="https://www.polymer-project.org/"&gt;Polymer&lt;/a&gt; to use the indexer notation for declarative data binding:&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;``` html
+</span><span class='line'>&lt;!-- Such markup is not valid data binding syntax in Polymer --&gt;
+</span><span class='line'>&lt;span&gt;{{myObject[‘http://xmlns.com/foaf/0.1/name’]}}&lt;/span&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;!-- Databound object's properties must be accessed with the dot notation --&gt;
+</span><span class='line'>&lt;p&gt;&lt;span&gt;{{myObject.name}}&lt;/span&gt;</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>This is precisely what JSON-LD compaction algorithm is for. It translates URI keys in a compacted JSON object. This 
+translation is defined in a <code>@context</code> object.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// before</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">original</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//xmlns.com/foaf/0.1/name’: ‘Tomasz Pluskiewicz’</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// after</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">compacted</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">‘@</span><span class="nx">context</span><span class="err">’</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">‘</span><span class="nx">name</span><span class="err">’</span><span class="o">:</span> <span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//xmlns.com/foaf/0.1/’</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="err">‘</span><span class="nx">name</span><span class="err">’</span><span class="o">:</span> <span class="err">‘</span><span class="nx">Tomasz</span> <span class="nx">Pluskiewicz</span><span class="err">’</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>There are many tricks up compaction’s sleeve, which can help turning ugly JSON-LD into a digestive form. Have a look at
+<a href="http://www.slideshare.net/lanthaler/building-next-generation-web-ap-is-with-jsonld-and-hydra/23">this presentation</a> by <a href="https://twitter.com/markuslanthaler">Markus Manthaler</a> for some more examples.</p>
+
+<h2 id="my-code-before">My code before</h2>
+
+<p>In my code I used compaction to get rid of long URI keys so that I can take advantage of Polymer’s data binding without
+verbose methods like <a href="https://www.polymer-project.org/1.0/docs/devguide/properties.html#computed-properties">computed properties</a> or wrapping the object in a view model class.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">getAuthors</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">“@</span><span class="nx">vocab</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//wykop.pgs-soft.com/vocab#WeeksLink/”,</span>
+</span><span class='line'>        <span class="err">“</span><span class="nx">member</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//www.w3.org/ns/hydra/core#member”,</span>
+</span><span class='line'>        <span class="err">“</span><span class="nx">links</span><span class="err">”</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="err">“@</span><span class="nx">id</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//wykop.pgs-soft.com/vocab#WeeksLinksBySubmitter/links”,</span>
+</span><span class='line'>            <span class="err">“@</span><span class="nx">container</span><span class="err">”</span><span class="o">:</span><span class="err">”@</span><span class="nx">set</span><span class="err">”</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="err">“</span><span class="nx">submitter</span><span class="err">”</span><span class="o">:</span> <span class="err">“</span><span class="nx">http</span><span class="o">:</span><span class="c1">//wykop.pgs-soft.com/vocab#WeeksLinksBySubmitter/submitter”</span>
+</span><span class='line'>    <span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">jsonld</span><span class="p">.</span><span class="nx">promises</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">context</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">model</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">compactedModel</span> <span class="o">=</span> <span class="nx">model</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>This is simple, the jsonld.js library takes care of the heavy lifting and produces a compacted object which is data binding
+friendly.</p>
+
+<h2 id="enter-heracles">Enter heracles</h2>
+
+<p>How is this relevant to the heracles library? In my previous post I showed the <code>Operation</code> type (and other parts of the
+ApiDocumentation classes) can be compacted so that working with them is easier.</p>
+
+<p>Resources however are a little different. They are always returned expanded and thus should be ready for being compacted.
+I was surprised to see that <code>jsonld.promises.compact</code> throws a stack overflow error. The reason is that JSON-LD algorithms
+are not designed to work with cyclical object graphs. It simply loops until the call stack runs out.</p>
+
+<h3 id="the-resource-class">The Resource class</h3>
+
+<p>In my code I have this <code>PartialCollectionView</code> class (excerpt):</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">private</span> <span class="nx">_collection</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">_collection</span> <span class="o">=</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get</span> <span class="nx">collection</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_collection</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>See the <code>collection</code> getter? This is where I had a cycle (collection -&gt; view -&gt; collection …). There was also another
+cycle inside the <code>apiDocumentation</code> getter in the base <code>Resource</code> class. There are actually two thing going on here. The
+first and obvious culprit is the <em>private field</em>. Of course this is just TypeScript sugar, because it will become just a
+typical field in the compiled JavaScript. JavaScript has no such notion of private members.</p>
+
+<h2 id="solution">Solution</h2>
+
+<p>The first step was to get rid of the field. There is no perfect way to do that but a friend of mine sent me <a href="http://davidvujic.blogspot.com/2015/03/what-wait-really-oh-no-a-post-about-es6-classes-and-privacy.html">this post</a>,
+which presents the use of <code>WeakMap</code> as a possible solution. With that I changed my code so that it no longer contains
+unwanted fields. <em>(actual code is actually a little different but you get the drift)</em></p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_collection</span> <span class="o">=</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get</span> <span class="nx">collection</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>Unfortunately the compaction algorithm still entered the vicious cycle and failed. Why is that? Because <a href="https://developer.mozilla.org/pl/docs/Web/JavaScript/Enumerability_and_ownership_of_properties">enumerable 
+properties</a>. jsonld.js <a href="https://github.com/digitalbazaar/jsonld.js/blob/master/js/jsonld.js#L6594">iterates over the object</a> using simple <code>for (var i in obj)</code> loop, which also
+returns all getters by default. One way is to use the native <code>Object.defineProperty</code> method instead of ES6 <code>get x()</code> 
+syntax but it breaks TypeScript code analysis and generally smells. There is a better way though.</p>
+
+<h3 id="solution-part-two">Solution part two</h3>
+
+<p>Luckily TypeScript has the decorators and there is a decorator, which does precisely what I wanted. Instead of writing</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_collection</span> <span class="o">=</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">get</span><span class="o">:</span> <span class="p">()</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<p>I can simply install the <a href="https://www.npmjs.com/package/core-decorators">core-decorators package</a> from jspm (npm) and 
+decorate the property with <code>@nonenumerable</code></p>
+
+<p><code>bash
+jpsm install npm:core-decorators
+</code></p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">nonenumerable</span> <span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">core</span><span class="o">-</span><span class="nx">decorators</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PartialCollectionView</span> <span class="kr">extends</span> <span class="nx">Resource</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="o">:</span><span class="nx">IApiDocumentation</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">super</span><span class="p">(</span><span class="nx">actualResource</span><span class="p">,</span> <span class="nx">apiDoc</span><span class="p">,</span> <span class="nx">incomingLinks</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_collection</span> <span class="o">=</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">findCollection</span><span class="p">(</span><span class="nx">incomingLinks</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nx">nonenumerable</span>
+</span><span class='line'><span class="nx">get</span> <span class="nx">collection</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</code></pre>
+
+<h3 id="one-caveat">One Caveat</h3>
+
+<p>Of course this will still fail if there are actual cycles in the object graph. I’m hoping though that it won’t be the
+case all too often. And for the rare occasion a library like <a href="https://www.npmjs.com/package/circular-json">circular-json</a> can be used as suggested in <a href="https://github.com/digitalbazaar/jsonld.js/issues/97">this github
+issue</a>. It will make sure that there are no reference cycles. Unfortunately it is a only replacement for
+<code>JSON.stringify</code> and so to use it with jsonld.js it’s necessary to deserialize and serialize every time:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">CircularJSON</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">circular</span><span class="o">-</span><span class="nx">json</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">serialized</span> <span class="o">=</span> <span class="nx">CircularJSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">object</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">jsonLd</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">serialized</span><span class="p">);</span>
+</span><span class='line'><span class="nx">jsonld</span><span class="p">.</span><span class="nx">promises</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">jsonLd</span><span class="p">,</span> <span class="nx">context</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="cm">/* … */</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>This is because jsonld.js wants to treat a string parameter as URI.</p>
+
+<p>Please let me know if there is a better way for handling cyclical objects…</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing heracles - Hydra Core hypermedia client]]></title>
+    <link href="http://t-code.pl/blog/2016/04/introducing-heracles/"/>
+    <updated>2016-04-16T15:20:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/04/introducing-heracles</id>
+    <content type="html"><![CDATA[<p>Lately I’ve been working on a library to consume <a href="http://hydra-cg.com/spec/latest/core/">Hydra Core</a> hypermedia-rich APIs. This is something I’ve been
+planning for a long time now and given that the <a href="https://github.com/wikibus/argolis">Argolis</a> server-side component pretty much works it was about
+time I started working on consuming the API Documentation.</p>
+
+<p>In this post I showcase the simplest usage of heracles and describe some design decisions. I guess I should write about
+Argolis too in the near future.</p>
+
+<!--more-->
+
+<p>The source code of heracles is <em>naturally</em> on <a href="https://github.com/wikibus/heracles">GitHub</a>. It is written in TypeScript and bundled as an AMD
+format package.</p>
+
+<p><a href="https://commons.wikimedia.org/wiki/File:Antonio_Pollaiuolo_002.jpg"><img src="/uploads/2016/04/427px-Antonio_Pollaiuolo_002.jpg" title="Heracles defeating the Hydra" ></a></p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<h3 id="installation">Installation</h3>
+
+<p>To start using heracles first download it using JSPM package manager.</p>
+
+<p><code>bash
+jspm install wikibus/heracles
+</code></p>
+
+<h3 id="basic-usage">Basic usage</h3>
+
+<p>Now you are ready to start using the library. It is as simple as importing and executing the static <code>load</code> function. It
+returns a promise of a resource.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">Hydra</span><span class="p">}</span> <span class="nx">from</span> <span class="err">‘</span><span class="nx">wikibus</span><span class="o">/</span><span class="nx">heracles</span><span class="err">’</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">Hydra</span><span class="p">.</span><span class="nx">loadResource</span><span class="p">(</span><span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//my.api/my/resource’)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// do something with the resource</span>
+</span><span class='line'>    <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>The returned model will always be expanded although in the future I could consider adding an optional <code>@context</code> parameter.</p>
+
+<p>Every time a resource is loaded the <code>Link</code>ed Hydra API Documentation will be fetched as well to discover possible operations
+for the resource(s). Here’s an example of a documentation.</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">“@context”:</span> <span class="err">[</span>
+</span><span class='line'>        <span class="err">“http://www.w3.org/ns/hydra/context.jsonld”,</span>
+</span><span class='line'>        <span class="err">{</span>
+</span><span class='line'>            <span class="err">“vocab”:</span> <span class="err">“http://my.api/vocab#”,</span>
+</span><span class='line'>            <span class="err">“foaf”:</span> <span class="err">http://xmlns.com/foaf/0.1/”</span>
+</span><span class='line'>         <span class="p">}</span>
+</span><span class='line'>    <span class="err">],</span>
+</span><span class='line'>    <span class="err">“supportedClass”:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="err">“@id”:</span> <span class="err">“vocab:Person”,</span>
+</span><span class='line'>            <span class="err">“supportedOperation”:</span> <span class="err">[</span>
+</span><span class='line'>                <span class="err">{</span>
+</span><span class='line'>                    <span class="err">“method”:</span> <span class="err">“GET”,</span>
+</span><span class='line'>                    <span class="err">“expects”:</span> <span class="err">“owl:Nothing”,</span>
+</span><span class='line'>                    <span class="err">“returns”:</span> <span class="err">“vocab:Person”</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span><span class="err">,</span>
+</span><span class='line'>            <span class="err">“supportedProperty”:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="err">“readable”:</span> <span class="err">true,</span>
+</span><span class='line'>                    <span class="err">“writable”:</span> <span class="err">false,</span>
+</span><span class='line'>                    <span class="err">“required”:</span> <span class="err">false,</span>
+</span><span class='line'>                    <span class="err">“property”:</span> <span class="err">{</span>
+</span><span class='line'>                        <span class="err">“@id”:</span> <span class="err">“vocab:pets”</span>
+</span><span class='line'>                    <span class="p">},</span>
+</span><span class='line'>                    <span class="err">“supportedOperation”:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="err">“method”:</span> <span class="err">“POST”,</span>
+</span><span class='line'>                            <span class="err">“expects”:</span> <span class="err">“vocab:Pet”,</span>
+</span><span class='line'>                            <span class="err">“returns”:</span> <span class="err">“owl:Nothing”</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="err">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="err">},</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="err">“@id”:</span> <span class="err">“vocab:Pet”,</span>
+</span><span class='line'>            <span class="err">“supportedProperty”:</span> <span class="err">[</span>
+</span><span class='line'>                <span class="err">{</span>
+</span><span class='line'>                    <span class="err">“readable”:</span> <span class="err">true,</span>
+</span><span class='line'>                    <span class="err">“writable”:</span> <span class="err">true,</span>
+</span><span class='line'>                    <span class="err">“required”:</span> <span class="err">true,</span>
+</span><span class='line'>                    <span class="err">“property”:</span> <span class="err">“foaf:name”</span>
+</span><span class='line'>               <span class="p">}</span>
+</span><span class='line'>           <span class="err">]</span>
+</span><span class='line'>        <span class="err">}</span>
+</span><span class='line'>    <span class="err">]</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>The above states a number of facts about the API:</p>
+
+<blockquote>
+  <p>The server is known to return resources of the type <code>vocab:Person</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p>A <code>GET</code> request is known to be supported for resources of types <code>vocab:Person</code></p>
+</blockquote>
+
+<blockquote>
+  <p>The <code>vocab:Person</code> class can be expected to include a <code>vocab:pets</code> link to another resource</p>
+</blockquote>
+
+<blockquote>
+  <p>That other, linked resource can be requested using <code>POST</code> with an instance of class <code>vocab:Pet</code></p>
+</blockquote>
+
+<blockquote>
+  <p>A valid instance of <code>vocab:Pet</code> must include the <code>foaf:name</code> property</p>
+</blockquote>
+
+<p>All this information can be accessed from resources loaded using the <code>Hydra.Resource.load</code> method above. Given a representation
+of the resource <code>http://my.api/Tomasz</code></p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">“@context”:</span> <span class="err">{</span>
+</span><span class='line'>        <span class="err">“vocab”:</span> <span class="err">“http://my.api/vocab#”,</span>
+</span><span class='line'>        <span class="err">“foaf”:</span> <span class="err">“http://xmlns.com/foaf/0.1/”</span>
+</span><span class='line'>    <span class="p">}</span><span class="err">,</span>
+</span><span class='line'>    <span class="err">“@id”:</span> <span class="err">“http://my.api/Tomasz”,</span>
+</span><span class='line'>    <span class="err">“@type”:</span> <span class="err">“vocab:Person”,</span>
+</span><span class='line'>    <span class="err">“vocab:pets”:</span> <span class="p">{</span> <span class="err">“@id”:</span> <span class="err">http://my.api/Tomasz/pets”</span> <span class="p">}</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>It is possible to discover operations available for any of the instances</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// assume loaded earlier with Hydra.Resource.load(‘http://my.api/Tomasz’)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">resource</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">resource</span><span class="p">.</span><span class="nx">getOperations</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="nx">ops</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// will return the GET operation supported by the vocab:Person class</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">resource</span><span class="p">[</span><span class="err">‘</span><span class="nx">http</span><span class="o">:</span><span class="c1">//my.api/vocab#pets’].getOperations().then(ops =&amp;gt; {</span>
+</span><span class='line'>    <span class="c1">// will return the POST operation supported by the link type</span>
+</span><span class='line'>    <span class="nx">expect</span><span class="p">(</span><span class="nx">ops</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">method</span><span class="p">)</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2 id="important-bits-and-pieces">Important bits and pieces</h2>
+
+<p>There are some decisions I made, which may influence how the server and client must act. Most notably</p>
+
+<h3 id="resources-are-expanded">Resources are expanded</h3>
+
+<p>First of all, as I’ve stated above, the loaded resource representation is expanded by default. This is because otherwise
+it would be quite difficult to process them. This is true for example for inspecting the resource <code>@type</code>.</p>
+
+<h3 id="load-returns-object-with-matching-id"><code>load</code> returns object with matching <code>@id</code></h3>
+
+<p>If a resource representation is a larger graph of objects, the <code>load</code> function will always look for that identifier and
+return that object even if it was not the root of the JSON-LD document. For example, the current design of collections in
+Hydra is that each collection can be partitioned into views (for example for the purpose of paging). Requesting a resource
+<code>http://my.api/Tomasz/pets?page=2</code> could return something similar to:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">“@context”:</span> <span class="err">“http://my.api/some/context”,</span>
+</span><span class='line'>    <span class="err">“@id”:</span> <span class="err">“http://my.api/Tomasz/pets”,</span>
+</span><span class='line'>    <span class="err">“@type”:</span> <span class="err">“hydra:Collection”,</span>
+</span><span class='line'>    <span class="err">“hydra:member”:</span> <span class="err">[</span> <span class="err">]</span>
+</span><span class='line'>    <span class="err">“hydra:view”:</span> <span class="err">{</span>
+</span><span class='line'>        <span class="err">“@id”:</span> <span class="err">“http://my.api/Tomasz/pets?page=2”,</span>
+</span><span class='line'>        <span class="err">“@type”:</span> <span class="err">“hydra:PartialCollectionView”,</span>
+</span><span class='line'>        <span class="err">“hydra:previous”:</span> <span class="err">“http://my.api/Tomasz/pets”,</span>
+</span><span class='line'>        <span class="err">“hydra:next”:</span> <span class="err">“http://my.api/Tomasz/pets?page=3”</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>As you see the requested resource is not the root of the representation tree. Still the <code>load</code> promise will resolve with
+that object and not <code>http://my.api/Tomasz/pets</code>. This may be counterintuitive in the case of simple JSON-LD documents but
+considering that the server could be returning <a href="https://www.w3.org/TR/json-ld-api/#expansion">expanded</a> or <a href="https://www.w3.org/TR/json-ld-api/#flattening">flattened</a> documents it seems the only logical
+way. Not to mention that other RDF media type could be requested by the client in which case, there would no obvious root
+object.</p>
+
+<p>Each common case from Hydra Core vocabulary like the <code>PartialCollectionView</code> (possible any object of the <code>hydra:view</code>
+property) will be enriched with a link to the parent collection. Otherwise it wouldn’t be possible to access it from the
+returned object.</p>
+
+<h3 id="hydra-documentation-objects-are-compacted">Hydra documentation objects are compacted</h3>
+
+<p>For convenience elements of the Hydra Core vocabulary are compacted with the default hydra <code>@context</code> so that on can write
+<code>op.method</code> instead of <code>op['https://www.w3.org/ns/hydra/core#method']</code>. If the object contained any non-standard content,
+such as <code>SHACL</code> constraints for a supported property, it is possible to recompact with a custom context:</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">operation</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">myContext</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">compacted</span> <span class="o">=&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// access the properties as you see fit</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2 id="going-further">Going further</h2>
+
+<p>A rich interaction with the loaded resource isn’t possible just yet. As you see above currently only the basic metadata
+about operations is available. I’ve also started work on accessing supported properties. In the future I plan a number
+of facilities to ease invoking operations, handling common Hydra objects in specific ways, easier extensions, improved
+error handling, etc.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,533 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Apr 16th, 2016 3:20 pm dajsiepoznac, heracles, hydra, hypermedia Introducing Heracles - Hydra Core Hypermedia Client Lately I’ve been working on a &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/posts/3/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-16T15:20:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:20 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/heracles/'>heracles</a>, <a class='category' href='/blog/categories/hydra/'>hydra</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/introducing-heracles/" itemprop="url">Introducing Heracles - Hydra Core Hypermedia Client</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Lately I’ve been working on a library to consume <a href="http://hydra-cg.com/spec/latest/core/">Hydra Core</a> hypermedia-rich APIs. This is something I’ve been
+planning for a long time now and given that the <a href="https://github.com/wikibus/argolis">Argolis</a> server-side component pretty much works it was about
+time I started working on consuming the API Documentation.</p>
+
+<p>In this post I showcase the simplest usage of heracles and describe some design decisions. I guess I should write about
+Argolis too in the near future.</p>
+
+
+		
+		<a href="/blog/2016/04/introducing-heracles/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-11T09:35:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:35 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/typescript/'>typescript</a>, <a class='category' href='/blog/categories/unit-tests/'>unit tests</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/test-typescript-with-typescript/" itemprop="url">Fight TypeScript With TypeScript</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Given that I’m fairly satisfied with the state of my server-side <a href="http://hydra-cg.org">Hydra</a> library for <a href="http://github.com/nancyfx/nancy">NancyFx</a> called
+<strong>Argolis</strong> it is now time to write some client-side library to consume it. I did some spiking in another small project
+and it was now time to do it properly. I’ve already had some experience with TypeScript and JSPM so I decided to give
+these two a go.</p>
+
+<p>Unfortunately getting the project setup right was harder than I’d hoped. Here’s how I managed to get my first test to pass.</p>
+
+
+		
+		<a href="/blog/2016/04/test-typescript-with-typescript/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-10T20:30:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:30 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/gherkin/'>gherkin</a>, <a class='category' href='/blog/categories/specflow/'>specflow</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/specflow-database-testing/" itemprop="url">Testing Database Access With SpecFlow and NDbUnit and LocalDb</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I know that some people will hate me for mixing the words <strong>testing database with gherkin</strong> all in one sentence, but I’ve
+found that it’s a quite nice combination. <a href="https://github.com/cucumber/cucumber/wiki/Gherkin">Gherkin</a>’s <a href="https://cucumber.io/docs/reference#data-tables">table feature</a> (<a href="http://www.specflow.org/">SpecFlow</a> in my
+case) allow for very nice test definitions, with <a href="https://github.com/NDbUnit/NDbUnit">NDbUnit</a> it is quite simple to populate the database, and
+thanks to <a href="https://msdn.microsoft.com/pl-pl/library/hh510202%28v=sql.110%29.aspx">LocalDb</a> the tests are beautifully portable.</p>
+
+
+		
+		<a href="/blog/2016/04/specflow-database-testing/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-04-08T22:45:00+00:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:45 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/nancy/'>nancy</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/04/nancy-registration-gotchas/" itemprop="url">Nancy Registrations Class Gotchas</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I <a href="/blog/2016/03/strategy-pattern-nancy/">recently wrote</a> about the <code>Registrations</code> class of NancyFx. It is a great tool
+for implementing reusable Nancy packages, which define all their DI requirements and does that with no dependency on any
+concrete DI container.</p>
+
+<p>Unfortunately every rose has its thorns and there are some limitations and the exact behaviour slightly differs between
+containers. Read on to see what are the problems you can face when using the <code>Registrations</code> class for setting up your 
+application.</p>
+
+
+		
+		<a href="/blog/2016/04/nancy-registration-gotchas/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-30T10:55:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:55 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/event-storming/'>event storming</a>, <a class='category' href='/blog/categories/wikibus/'>wikibus</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/wikibus-event-storming/" itemprop="url">Solitary Event Storming to Discover Application Domain</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Inspired by recent training sessions on <a href="http://www.meetup.com/drugpl/events/228508826/">DRUG Software Craftmanship</a> and
+another on the following week on <a href="http://www.meetup.com/DDD-WRO/events/229281801/">DDD Wro meetup</a> I decided that it would
+be best for me to explore the wikibus.org domain by conducting a solitary <a href="http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html"><strong>event storming</strong></a>.</p>
+
+
+		
+		<a href="/blog/2016/03/wikibus-event-storming/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-29T13:25:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:25 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/gearhost/'>gearhost</a>, <a class='category' href='/blog/categories/heroku/'>heroku</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/goodbye-heroku-welcome-gearhost/" itemprop="url">Goodbye Heroku, Welcome Gearhost (for Now)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>In a <a href="/2016/03/mono-paket-heroku-deployment/">previous post</a> I detailed my struggle with deploying a .NET (<a href="http://github.com/nancyfx/nancy">Nancy</a>)
+application to Heroku. Longer story short, <strong>I failed</strong>. I guess it should be possible with .NET Core, but I don’t plan
+to migrate just yet, because I don’t see clear benefits and there are some limitations. Running my application on Linux
+is not a goal itself, so instead I looked for an alternative.</p>
+
+
+		
+		<a href="/blog/2016/03/goodbye-heroku-welcome-gearhost/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-24T14:55:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:55 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/argolis/'>argolis</a>, <a class='category' href='/blog/categories/c-number/'>c#</a>, <a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/to-attribute-or-not-to-attribute/" itemprop="url">To [Decorate] or Not to [Decorate]</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Attributes are a very useful feature of many languages but I personally feel that they are used too often and in wrong
+circumstances. They’re primary shortcoming is the fact that attributes are set up at compile time. During code execution
+they can only be read but not modified.</p>
+
+
+		
+		<a href="/blog/2016/03/to-attribute-or-not-to-attribute/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-21T13:30:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>1:30 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/argolis/'>argolis</a>, <a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/nancy/'>nancy</a>, <a class='category' href='/blog/categories/solid/'>solid</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/strategy-pattern-nancy/" itemprop="url">Strategy Pattern and (One Reason) Why I Love Nancy</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>The open-closed principle is the second letter of the <a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a> acronym. SOLID is a set of software design guidelines 
+which help build better software. The open-closed principle declares that</p>
+
+<blockquote>
+  <p>software entities should be open for extension, but closed for modification</p>
+</blockquote>
+
+<p>One way to satisfy this principle is through the use of the <a href="http://www.oodesign.com/strategy-pattern.html">Strategy design pattern</a>, sometimes called Policy. I’d
+like to show how easy it is to employ this pattern in reusable and extensible components for a <a href="https://github.com/NancyFx/Nancy/">Nancy</a> application.</p>
+
+
+		
+		<a href="/blog/2016/03/strategy-pattern-nancy/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-19T22:55:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:55 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/c-number/'>c#</a>, <a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/struct-implcit-cast/" itemprop="url">Cautious With Implicit Cast Operators in Structs</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I find overloading operators a very powerful tool in a programmer’s arsenal, yet it seems a very rare practice among C#
+developers. I’ve just got bitten by a simple scenario where an explicit cast operator is a questionable idea.</p>
+
+
+		
+		<a href="/blog/2016/03/struct-implcit-cast/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-03-17T15:35:00+00:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:35 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dajsiepoznac/'>dajsiepoznac</a>, <a class='category' href='/blog/categories/hydra/'>hydra</a>, <a class='category' href='/blog/categories/nancy/'>nancy</a>, <a class='category' href='/blog/categories/wikibus/'>wikibus</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/03/wikibus-real-technology-details/" itemprop="url">Technology Side of wikibus.org</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I just noticed that I forgot to change the permalink of my <a href="/blog/2016/03/wikibus-technology-details/">last post</a>. I intended to write about tech, but ended up writing
+about buses only. Too bad, but I’m not going to change that now. I this post I will write a little bit more about what
+I’m actually implementing for wikibus.org</p>
+
+
+		
+		<a href="/blog/2016/03/wikibus-real-technology-details/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+        <a href="/blog/posts/2" class="prev">Prev</a>
+    
+    
+        <a href="/blog/posts/4" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

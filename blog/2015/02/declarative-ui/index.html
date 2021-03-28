@@ -1,0 +1,614 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Declarative UI "routing" with Web Components - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Managing application state in a RESTful client in a declarative way">
+    
+        <meta name="keywords" content="dajsiepoznac, declarative, web components, html, javascript, js">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2015/02/declarative-ui/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Declarative UI "Routing" With Web Components</h1>
+	<div class="entry-content" itemprop="articleBody"><p>For a long time now W3C has been working on <a href="http://webcomponents.org/">Web Components</a>, the groundbreaking
+specification, which will dramatically change the way web applications are
+created. Google’s own <a href="https://twitter.com/ebidel">Eric Bidelman</a> calls it a <a href="http://webcomponents.org/presentations/web-components-a-tectonic-shift-for-web-development-at-google-io/">Tectonic Shift</a>
+and for good reason.</p>
+
+<!--more-->
+
+<p>In my <a href="/blog/2015/01/hateoas-as-if-you-meant-it/">previous post</a> I proposed a novel way for managing the application state of RESTful
+clients - that is clients of RESTful services. To recap, the idea is that the user interface should be rendered first
+and foremost based on the resource returned by the server rather. I propose that is an alternative to client-side
+URL routing.</p>
+
+<h2 id="web-components">Web Components</h2>
+
+<p>I will be showing examples written with custom elements - part of an upcoming W3C standard, which will allow creating
+custom HTML elements. Those custom elements act like the standard HTML tags, accepting attributes and exposing methods
+and firing events. Altogether the Web Components specification will define four complementary standards:</p>
+
+<ul>
+  <li><a href="http://w3c.github.io/webcomponents/spec/shadow/">Shadow DOM</a> - allowing encapsulation and separation of markup and CSS</li>
+  <li><a href="https://html.spec.whatwg.org/multipage/scripting.html#the-template-element">Templates</a> - for defining reusable portions HTML (not just text)</li>
+  <li><a href="http://w3c.github.io/webcomponents/spec/imports/">Imports</a> - so that elements can be loaded on demand</li>
+  <li><a href="http://w3c.github.io/webcomponents/spec/custom/">Custom elements</a> - to enrich HTML with custom, semantically significant elements</li>
+</ul>
+
+<p>Combined, though each could be used separately if needed, these standards empower web developers to create web applications
+in ways unimagined before. For example, there is a custom google maps element, which makes adding a map to your page as
+simple as shown below.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;/bower_components/webcomponentsjs/webcomponents.min.js&quot;</span> <span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;import&quot;</span> <span class="na">href=</span><span class="s">&quot;/bower_components/google-map/google-map.html&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="nt">&lt;style&gt;</span>
+</span><span class="line">    <span class="nt">google-map</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">height</span><span class="o">:</span> <span class="m">400px</span><span class="p">;</span>
+</span><span class="line">        <span class="k">display</span><span class="o">:</span> <span class="k">block</span><span class="p">;</span>
+</span><span class="line">        <span class="k">margin-top</span><span class="o">:</span> <span class="m">15px</span><span class="p">;</span>
+</span><span class="line">        <span class="k">margin-bottom</span><span class="o">:</span> <span class="m">15px</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="nt">&lt;/style&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="nt">&lt;google-map</span> <span class="na">latitude=</span><span class="s">&quot;51.110921&quot;</span> <span class="na">longitude=</span><span class="s">&quot;17.028160&quot;</span> <span class="na">zoom=</span><span class="s">&quot;15&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="nt">&lt;google-map-marker</span> <span class="na">latitude=</span><span class="s">&quot;51.110921&quot;</span> <span class="na">longitude=</span><span class="s">&quot;17.028160&quot;</span>
+</span><span class="line">                     <span class="na">title=</span><span class="s">&quot;Wrocław .NET user group&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://wrocnet.github.io&quot;</span> <span class="na">target=</span><span class="s">&quot;_blank&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">      <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://wrocnet.github.io/images/logo.png&quot;</span> <span class="na">alt=</span><span class="s">&quot;wrocnet logo&quot;</span> <span class="nt">/&gt;</span>
+</span><span class="line">    <span class="nt">&lt;/a&gt;</span>
+</span><span class="line">  <span class="nt">&lt;/google-map-marker&gt;</span>
+</span><span class="line"><span class="nt">&lt;/google-map&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+
+<link rel="import" href="/bower_components/google-map/google-map.html" />
+
+<style>
+    google-map {
+        height: 400px;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+</style>
+
+<google-map latitude="51.110921" longitude="17.028160" zoom="15">
+  <google-map-marker latitude="51.110921" longitude="17.028160" title="Wrocław .NET user group">
+    <a href="http://wrocnet.github.io" target="_blank">
+      <img src="http://wrocnet.github.io/images/logo.png" alt="wrocnet logo" />
+    </a>
+  </google-map-marker>
+</google-map>
+
+<p>No boilerplate JavaScript that would traditionally obscure intent. <em>And</em> it would be so much easier to replace Google
+map with <a href="https://github.com/just-boris/polymer-ymaps">Yandex</a>, <a href="https://github.com/ruben96/open-map">Open Street Map</a>,
+<a href="https://github.com/nhnb/leaflet-map">Leaflet</a> or <a href="http://customelements.io/?q=map">other from custom elements</a>.</p>
+
+<p><strong>Note</strong> The <code>webcomponents.js</code> is a polyfill currently required for browsers other than Chrome and Opera.</p>
+
+<p>You can find dozens more components on <a href="http://component.kitchen/">component kitchen</a>, <a href="http://customelements.io/">customelements.io</a>
+and <a href="http://googlewebcomponents.github.io/">some more experiments by google</a>.</p>
+
+<p>I really, really love how Web Components turn the traditional <a href="http://drupal.stackexchange.com/questions/2917/can-you-do-anything-about-the-div-soup"><code>&lt;div&gt;&lt;soup&gt;</code></a>
+into <strong><em>meaningful</em></strong> code. They are a tool for creating <a href="http://en.wikipedia.org/wiki/Domain-specific_language">Domain-Specific Language</a> for HTML.</p>
+
+<h2 id="routing-with-custom-elements">Routing with Custom Elements</h2>
+
+<p>There is a neat component, which implements traditional URL routing as a custom <a href="https://github.com/erikringsmuth/app-router"><code>&lt;app-router&gt;</code></a> element.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;app-router&gt;</span>
+</span><span class="line">  <span class="c">&lt;!-- matches an exact path --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;app-route</span> <span class="na">path=</span><span class="s">&quot;/home&quot;</span> <span class="na">import=</span><span class="s">&quot;/pages/home-page.html&quot;</span><span class="nt">&gt;&lt;/app-route&gt;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c">&lt;!-- matches using a wildcard --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;app-route</span> <span class="na">path=</span><span class="s">&quot;/customer/*&quot;</span> <span class="na">import=</span><span class="s">&quot;/pages/customer-page.html&quot;</span><span class="nt">&gt;&lt;/app-route&gt;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c">&lt;!-- matches using a path variable --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;app-route</span> <span class="na">path=</span><span class="s">&quot;/order/:id&quot;</span> <span class="na">import=</span><span class="s">&quot;/pages/order-page.html&quot;</span><span class="nt">&gt;&lt;/app-route&gt;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c">&lt;!-- matches a pattern like &#39;/word/number&#39; --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;app-route</span> <span class="na">path=</span><span class="s">&quot;/^\/\w+\/\d+$/i&quot;</span> <span class="na">regex</span> <span class="na">import=</span><span class="s">&quot;/pages/regex-page.html&quot;</span><span class="nt">&gt;&lt;/app-route&gt;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c">&lt;!-- matches everything else --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;app-route</span> <span class="na">path=</span><span class="s">&quot;*&quot;</span> <span class="na">import=</span><span class="s">&quot;/pages/not-found-page.html&quot;</span><span class="nt">&gt;&lt;/app-route&gt;</span>
+</span><span class="line"><span class="nt">&lt;/app-router&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It supports imported and inline templates, binding to route parameters and all other features found in all-javascript
+routers.</p>
+
+<p>It is still URL-routing though. Also the approach to handle routing and browser history in one component violates the
+<a href="http://www.oodesign.com/single-responsibility-principle.html">single responsibility principle</a> IMO.</p>
+
+<h2 id="linked-data-to-the-rescue">Linked Data to the rescue</h2>
+
+<p>The <code>&lt;app-router&gt;</code> component is a great base, which can be adapted to handle REST models. Below is my idea, which I have
+been experimenting with by modifying the app-router’s code, thus retaining the template loading functionality and events.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;ld-presenter</span> <span class="na">id=</span><span class="s">&quot;main-content&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="c">&lt;!-- load a view asynchronously for Person --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;ld-view</span> <span class="na">type=</span><span class="s">&quot;http://schema.org/Person&quot;</span> <span class="na">import=</span><span class="s">&quot;/views/person.html&quot;</span><span class="nt">&gt;&lt;/ld-view&gt;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c">&lt;!-- no type attribute would match anything --&gt;</span>
+</span><span class="line">  <span class="nt">&lt;ld-view&gt;</span>
+</span><span class="line">    <span class="nt">&lt;template&gt;</span>
+</span><span class="line">      Sorry, unsupported model
+</span><span class="line">    <span class="nt">&lt;/template&gt;</span>
+</span><span class="line">  <span class="nt">&lt;/ld-view&gt;</span>
+</span><span class="line"><span class="nt">&lt;/ld-presenter&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Unlike <code>&lt;app-router&gt;</code> I think that <code>&lt;ld-presenter&gt;</code> should only handle selecting a view to honour the <a href="http://www.oodesign.com/single-responsibility-principle.html">Single
+Responsibility Principle</a>. History could be handled by another custom element created for that specific task:</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;ld-history</span> <span class="na">baseUri=</span><span class="s">&quot;http://example.com/my-api/&quot;</span> <span class="nt">&gt;&lt;/ld-history&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Dropping the above anywhere in the page would automatically change the page URL (by using hashes or HTML5 history)
+whenever the model changes.</p>
+
+<h3 id="so-where-is-the-model-actually-and-how-is-it-retrieved">So where is the model actually? And how is it retrieved?</h3>
+
+<p>The approach to build UI based on a model has an important implication - it has to be connected to some remote (RESTful)
+data source. Because the <code>&lt;ld-presenter&gt;</code> is only responsible for handling UI changes, a separate object is needed to
+retrieve the model.</p>
+
+<p>Speaking of single responsibilities, the <code>&lt;ld-presenter&gt;</code> should probably work simply by being bound to the object displayed.
+This would be achieved by setting a model attribute on the presenter’s node.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="c">&lt;!-- set declaratively --&gt;</span>
+</span><span class="line"><span class="nt">&lt;ld-presenter</span> <span class="na">model=</span><span class="s">&quot;{{ boundModel }}&quot;</span> <span class="na">id=</span><span class="s">&quot;main-content&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="c">&lt;!-- routes here --&gt;</span>
+</span><span class="line"><span class="nt">&lt;/ld-presenter&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- set from javascript --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+</span><span class="line">  <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;#main-content&quot;</span><span class="p">).</span><span class="nx">model</span> <span class="o">=</span> <span class="nx">model</span><span class="p">;</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Either way the model must come from somewhere. For a complete solution the <a href="https://facebook.github.io/flux/">Flux pattern from Facebook</a> can be used
+to achieve low coupling. Out of a number of solutions <a href="https://github.com/spoike/refluxjs">reflux</a> appealed to me most, but the idea is similar
+regardless of the implementation. The idea behind Flux is that all communication should be unidirectional. The views fire
+actions, which are simply events. Those events are handled by stores. Stores are anything ranging from simple local storage
+to proxies for a remote service. When stores are ready they also signal changes via events to all listening views so
+that the can be updated.</p>
+
+<p><img src="/uploads/2015/02/flux.png" alt="flux" /></p>
+
+<p>What’s important, is that stores and views never communicate directly. This way it is easier to keep things decoupled and
+synchronized. Note that in Reflux’s case there is no dispatcher. Stores listen directly to actions.</p>
+
+<h3 id="using-reflux-to-handle-a-linked-data-api">Using Reflux to handle a Linked Data API</h3>
+
+<p>Because in Linked Data any identifier is a URI, readible links can be rendered simply as an anchor <code>&lt;a&gt;</code>. Let’s take a
+simple JSON-LD model of a person (<code>@context</code> ignored for brevity):</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="s2">&quot;@id&quot;</span><span class="o">:</span> <span class="s2">&quot;/person/tomasz&quot;</span>
+</span><span class="line">  <span class="s2">&quot;foaf:givenName&quot;</span><span class="o">:</span> <span class="s2">&quot;Tomasz&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="s2">&quot;ex:friends&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="s2">&quot;@id&quot;</span><span class="o">:</span> <span class="s2">&quot;/person/tomasz/friends&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>That model could be displayed using the template below (think Polymer/mustache syntax)</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;template&gt;</span>
+</span><span class="line"><span class="nt">&lt;p&gt;</span>Hi, my name is {{ model[&#39;foaf:givenName&#39;] }}<span class="nt">&lt;/p&gt;</span>
+</span><span class="line">  <span class="nt">&lt;p&gt;</span>
+</span><span class="line">    Here&#39;s a list of my
+</span><span class="line">    <span class="nt">&lt;a</span> <span class="na">id=</span><span class="s">&quot;friendsLink&quot;</span> <span class="na">href=</span><span class="s">&quot;{{ model[&#39;ex:friends&#39;] }}&quot;</span><span class="nt">&gt;</span>friends<span class="nt">&lt;/a&gt;</span>.
+</span><span class="line">  <span class="nt">&lt;/p&gt;</span>
+</span><span class="line"><span class="nt">&lt;/template&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The link will by default navigate the browser to a new address, so the click event must be handled to prevent that from
+happening. Instead an action will be triggered. Below is how that could work with Reflux and requirejs. First we define
+the actions.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;navigation&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Reflux&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Reflux</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">Reflux</span><span class="p">.</span><span class="nx">createAction</span><span class="p">({</span>
+</span><span class="line">    <span class="nx">children</span><span class="o">:</span> <span class="p">[</span> <span class="s1">&#39;success&#39;</span> <span class="p">]</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>We fire the action when the link is clicked.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">require</span><span class="p">([</span><span class="s1">&#39;navigation&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">navigation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">friendsLink</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;friendsLink&#39;</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">friendsLink</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">ev</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">navigation</span><span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">href</span><span class="p">);</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>It is handled in a store. When that happens, a GET request is fired. After the request has been processed (JSON-LD here),
+it is forwarded with the child action <code>success</code>.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">define</span><span class="p">(</span>
+</span><span class="line">  <span class="s1">&#39;modelStore&#39;</span><span class="p">,</span>
+</span><span class="line">  <span class="p">[</span><span class="s1">&#39;navigation&#39;</span><span class="p">,</span> <span class="s1">&#39;jsonld&#39;</span><span class="p">],</span>
+</span><span class="line">  <span class="kd">function</span><span class="p">(</span><span class="nx">navigation</span><span class="p">,</span> <span class="nx">jsonld</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">promises</span> <span class="o">=</span> <span class="nx">jsonld</span><span class="p">.</span><span class="nx">Promises</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="nx">Reflux</span><span class="p">.</span><span class="nx">createStore</span><span class="p">({</span>
+</span><span class="line">      <span class="nx">model</span><span class="o">:</span> <span class="p">{},</span>
+</span><span class="line">      <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="nx">navigation</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">loadResource</span><span class="p">);</span>
+</span><span class="line">      <span class="p">},</span>
+</span><span class="line">      <span class="nx">loadResource</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">uri</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">        <span class="nx">executeXhr</span><span class="p">(</span><span class="nx">uri</span><span class="p">)</span>
+</span><span class="line">          <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resource</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="nx">promises</span><span class="p">.</span><span class="nx">expand</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span>
+</span><span class="line">          <span class="p">})</span>
+</span><span class="line">          <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">expanded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">navigation</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">expanded</span><span class="p">);</span>
+</span><span class="line">          <span class="p">});</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Lastly the <code>navigation.success</code> action is handled to update the ld-presenter.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">require</span><span class="p">([</span><span class="s1">&#39;navigation&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">navigation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">navigation</span><span class="p">.</span><span class="nx">success</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">fuction</span><span class="p">(</span><span class="nx">resource</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">presenter</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;ld-presenter&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">presenter</span><span class="p">.</span><span class="nx">model</span> <span class="o">=</span> <span class="nx">resource</span><span class="p">;</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<h3 id="rough-edges">Rough edges</h3>
+
+<p>My current <a href="https://github.com/tpluscode/polymer-flux/tree/master">experiment I’ve implemented</a> more or less follows this pattern but the <code>&lt;ld-presenter&gt;</code> 
+(there called <code>&lt;hydra-router&gt;</code>) is tied to the navigation actions, which means that anyone using such presenter is 
+automatically required to use Reflux. Real presenter should be independent from any third party components. Such
+integration could be achieved with minimal javascript code. Preferably by <a href="http://www.html5rocks.com/en/tutorials/webcomponents/customelements/">extending the custom element</a> or
+inside an angular directive, etc.</p>
+
+<p>Also with a hard dependency on navigation action, any instance of the presenter element in DOM would every time react to 
+the action being fired. This may be less than ideal when multiple and maybe nested presenters are used on a page. In a 
+real app there could be multiple model stores for various parts of the UI like main menu or master-detail kind of view.</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2015/02/declarative-ui/';
+        var disqus_url = 'http://t-code.pl/blog/2015/02/declarative-ui/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

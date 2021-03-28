@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mono | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/mono/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Deploying .NET app to Heroku is not fun &#35;dajsiepoznac]]></title>
+    <link href="http://t-code.pl/blog/2016/03/mono-paket-heroku-deployment/"/>
+    <updated>2016-03-03T20:50:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/mono-paket-heroku-deployment</id>
+    <content type="html"><![CDATA[<p>I’ve been building my wikibus.org code on AppVeyor, which is quite neat and used it to publish over WebDeploy to my VPS.
+Having recently watched a convincing presentation about Heroku on <a href="http://wrocnet.github.io">Wrocław .NET User Group</a> I decided that maybe
+it will be an interesting experience.</p>
+
+<!--more-->
+
+<h2 id="first-lets-find-a-mono-buildpack">First let’s find a mono buildpack</h2>
+
+<p>For those who don’t know <a href="http://heroku.com">Heroku</a>, it’s a cloud hosting platform with support for anything really. It works by
+creating Ubuntu a deployment image called a <em><a href="https://devcenter.heroku.com/articles/dyno-types">dyno</a></em>, which can be bootstrapped with any technology stack. The bootstrapping
+is done by setting up the process with a <em><a href="https://devcenter.heroku.com/articles/buildpacks">buildpack</a></em>. There are a <a href="https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks">number of buildpacks</a> 
+available for a number of languages out of the box: Java, node.js, Python, Ruby, etc.</p>
+
+<p>Unfortunately, for obvious reasons, there isn’t an official package for .NET or mono. An exception is a new <a href="https://elements.heroku.com/buildpacks/heroku/dotnet-buildpack">ASP.NET 5</a>.
+There are however quite a few <a href="https://github.com/AdamBurgess/heroku-buildpack-mono">buildpacks</a> <a href="https://github.com/brandur/heroku-buildpack-mono">for</a> <a href="https://github.com/friism/heroku-buildpack-mono">.NET</a>. This didn’t come as a surprise. After all the 
+online community proves very resourceful <img class="emoji" title=":construction_worker:" alt=":construction_worker:" src="https://assets.github.com/images/icons/emoji/unicode/1f477.png" height="20" width="20" align="absmiddle" />.</p>
+
+<p>There is however comes another catch - I use Paket <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /> instead of NuGet Package Manager. I figured, meh, I’ll just
+fork a buildpack - preferably a one with recent mono, like version 4+ and just customize it to use Paket instead. So I 
+went with <a href="https://github.com/AdamBurgess/heroku-buildpack-mono">a buildpack by Adam Burgess</a> and adjusted the bash script…</p>
+
+<h2 id="mono-isnt-as-ready-as-id-hoped-for-img-classemoji-titleunamused-altunamused-srchttpsassetsgithubcomimagesiconsemojiunicode1f612png-height20-width20-alignabsmiddle">Mono isn’t as ready as I’d hoped for <img class="emoji" title=":unamused:" alt=":unamused:" src="https://assets.github.com/images/icons/emoji/unicode/1f612.png" height="20" width="20" align="absmiddle" /></h2>
+
+<p>And it doesn’t work. It seems that mono 4.2, or whatever version the buildpack currently uses has some issues with ssl
+certificates. I tried various remedies and I kept getting weird errors whenever Paket tried to do some network activity
+over https.</p>
+
+<p>So I though, okay maybe I can try another buildpack, which uses an older version of mono. There is actually 
+<a href="https://github.com/robocat/mono-paket-buildpack">one already set up with Paket</a>. I did some tweaks, so that it plays nicer with my repository, and now the solution
+won’t build! <img class="emoji" title=":rage:" alt=":rage:" src="https://assets.github.com/images/icons/emoji/unicode/1f621.png" height="20" width="20" align="absmiddle" /></p>
+
+<p>LibGit2Sharp native libraries don’t work on mono:</p>
+
+<blockquote>
+  <p>Error executing task Zoltu.Versioning.GitTask: An exception was thrown by the type initializer for LibGit2Sharp.Core.NativeMethods</p>
+</blockquote>
+
+<p>This one is <a href="https://github.com/Fody/Resourcer">Resourcer.Fody</a> misbehaving:</p>
+
+<blockquote>
+  <p>Fody: Could not find a resource.</p>
+</blockquote>
+
+<p>And I also had issues with referencing assemblies. Enough of that.</p>
+
+<h2 id="how-about-i-deploy-a-pre-built-package">How about I deploy a pre-built package?</h2>
+
+<p>Who said I had to build the entire solution on Heroku? I already use AppVeyor to build an run test, so maybe I could just 
+package all projects as nupkgs and deploy just a simple OWIN self-hosted application?</p>
+
+<p>Stay tuned, I’ll come back when that’s ready <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" /></p>
+
+]]></content>
+  </entry>
+  
+</feed>

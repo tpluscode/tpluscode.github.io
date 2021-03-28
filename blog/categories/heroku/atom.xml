@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: heroku | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/heroku/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Goodbye Heroku, welcome Gearhost (for now)]]></title>
+    <link href="http://t-code.pl/blog/2016/03/goodbye-heroku-welcome-gearhost/"/>
+    <updated>2016-03-29T13:25:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/goodbye-heroku-welcome-gearhost</id>
+    <content type="html"><![CDATA[<p>In a <a href="/2016/03/mono-paket-heroku-deployment/">previous post</a> I detailed my struggle with deploying a .NET (<a href="http://github.com/nancyfx/nancy">Nancy</a>)
+application to Heroku. Longer story short, <strong>I failed</strong>. I guess it should be possible with .NET Core, but I don’t plan
+to migrate just yet, because I don’t see clear benefits and there are some limitations. Running my application on Linux
+is not a goal itself, so instead I looked for an alternative.</p>
+
+<!--more-->
+
+<h2 id="appharbor---for-now-ill-pass">AppHarbor - for now I’ll pass</h2>
+
+<p>Unfortunately, there aren’t many options for hosting .NET code in the cloud. One provider I’ve known about for some time
+now is <a href="https://appharbor.com/">AppHarbor</a>. Unfortunately it seems somewhat limited in terms of the deployment flow. As I understand,
+the only way is to push code, much like with Heroku, which is then picked up and the Web Application is deployed. One the
+up side AppHarbor also executes unit tests and does monitoring and load balancing but all in all it strikes me as poorly
+documented and not at all customizable.</p>
+
+<p>That said I may yet try it in the future however for now I will be using a simpler option call <a href="https://www.gearhost.com/">Gear Host</a>.</p>
+
+<h2 id="gearhost">Gear.host</h2>
+
+<p>Just like Heroku and AppHarbor, GearHost is a cloud hosting solution and free albeit with limitations. More about that
+later.</p>
+
+<p><img src="/uploads/2016/03/gearhost-logo.png" alt="gearhost logo" /></p>
+
+<p>Upon logging in for the first time (surprisingly no GitHub login, etc.) we are presented with a simple dashboard from
+which it is possible to create <em>Cloud Sites</em> and databases and buy/add SSL certificates.</p>
+
+<h3 id="cloud-sites">Cloud Sites</h3>
+
+<p>In the free plan each cloud site comes with</p>
+
+<ul>
+  <li>1 GB storage</li>
+  <li>1 GB bandwidth, which resets every 61 hrs</li>
+  <li>256 MB RAM, which resets every 60 minutes</li>
+  <li>60 minutes of CPU time, which resets every 24 hrs</li>
+</ul>
+
+<p>I don’t really understand how the running limit works for memory consumption. Needless to say, whenever these limits are
+exceeded, the site becomes suspended until it resets. Paid plans come for $5 and $25 per month.</p>
+
+<p>Each site comes with a minimal overview page where it is possible to view resource usage graph and statistics and recycle
+the application pool.</p>
+
+<h3 id="publishing">Publishing</h3>
+
+<p>Publishing can be done by copying the files directly over FTP and WebDeploy or in continuous deployment fashion from
+GitHub, Bitbucket or Git repository hosted by GearHost. Personally I chose WebDeploy, because it plays nicely with my
+AppVeyor setup. I was already publishing my web applications as zipped packages and pushing to GearHost. On AppVeyor I 
+created testing environments. Here’s a screenshot showing one of them:</p>
+
+<p><img src="/uploads/2016/03/appveyor-deploy-env.png" alt="Web Deploy environment on AppVeyor" /></p>
+
+<p>Whenever there is a successful build AppVeyor pushes the zipped web project to GearHost. To do that there must be an
+<code>appveyor.yml</code> which defines when and what to deploy. In my case its relevant contents are as follows.</p>
+
+<p>``` yaml
+build:
+  publish_wap: true</p>
+
+<p>configuration:<br />
+  - Debug
+  - Release</p>
+
+<p>deploy:
+  - provider: Environment
+    name: ‘[TEST] data.wikibus.org’
+    on:
+      Configuration: Debug
+  - provider: Environment
+    name: ‘[TEST] wikibus.org’
+    on:
+      Configuration: Debug
+```</p>
+
+<p>This means that:</p>
+
+<ol>
+  <li>msbuild will create zip packages for all Web Application projects within the solution</li>
+  <li>I’m building both Debug and Release</li>
+  <li>Debug build is automatically pushed to testing environment</li>
+</ol>
+
+<h3 id="other-features">Other features</h3>
+
+<p>I’ve not used most of what GearHost has to offer but it seems featured enough. It is possible to configure per-site app
+settings and connection string, attach custom domains and enable logging (accessible via FTP). There is also an add-ons
+tab, but only a Scheduler addon is showing.</p>
+
+<p>Outside Cloud Sites I mentioned certificates and databases. The former seem quite expensive but of course it is possible
+to use one bought from a third-party vendor. Database is offered for free albeit with a very modest 5 MB size limitation.
+of course larger databases are also available for $5 per month for up to 10 GB.</p>
+
+<p>Lastly there an email tab, but I haven’t been able to use this feature without verifying my account which means adding
+credit card details to the account.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I’m a bit unsure about the free account limitation. It will be enough for testing but it seems that hitting the ceiling
+will be quite easy. I suppose I would try the $5 plan in the future to see how it works.</p>
+
+<p>Other that that it’s a very pleasant experience. The website is very simple and the hosting just works :)</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Deploying .NET app to Heroku is not fun &#35;dajsiepoznac]]></title>
+    <link href="http://t-code.pl/blog/2016/03/mono-paket-heroku-deployment/"/>
+    <updated>2016-03-03T20:50:00+00:00</updated>
+    <id>http://t-code.pl/blog/2016/03/mono-paket-heroku-deployment</id>
+    <content type="html"><![CDATA[<p>I’ve been building my wikibus.org code on AppVeyor, which is quite neat and used it to publish over WebDeploy to my VPS.
+Having recently watched a convincing presentation about Heroku on <a href="http://wrocnet.github.io">Wrocław .NET User Group</a> I decided that maybe
+it will be an interesting experience.</p>
+
+<!--more-->
+
+<h2 id="first-lets-find-a-mono-buildpack">First let’s find a mono buildpack</h2>
+
+<p>For those who don’t know <a href="http://heroku.com">Heroku</a>, it’s a cloud hosting platform with support for anything really. It works by
+creating Ubuntu a deployment image called a <em><a href="https://devcenter.heroku.com/articles/dyno-types">dyno</a></em>, which can be bootstrapped with any technology stack. The bootstrapping
+is done by setting up the process with a <em><a href="https://devcenter.heroku.com/articles/buildpacks">buildpack</a></em>. There are a <a href="https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks">number of buildpacks</a> 
+available for a number of languages out of the box: Java, node.js, Python, Ruby, etc.</p>
+
+<p>Unfortunately, for obvious reasons, there isn’t an official package for .NET or mono. An exception is a new <a href="https://elements.heroku.com/buildpacks/heroku/dotnet-buildpack">ASP.NET 5</a>.
+There are however quite a few <a href="https://github.com/AdamBurgess/heroku-buildpack-mono">buildpacks</a> <a href="https://github.com/brandur/heroku-buildpack-mono">for</a> <a href="https://github.com/friism/heroku-buildpack-mono">.NET</a>. This didn’t come as a surprise. After all the 
+online community proves very resourceful <img class="emoji" title=":construction_worker:" alt=":construction_worker:" src="https://assets.github.com/images/icons/emoji/unicode/1f477.png" height="20" width="20" align="absmiddle" />.</p>
+
+<p>There is however comes another catch - I use Paket <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://assets.github.com/images/icons/emoji/unicode/2728.png" height="20" width="20" align="absmiddle" /> instead of NuGet Package Manager. I figured, meh, I’ll just
+fork a buildpack - preferably a one with recent mono, like version 4+ and just customize it to use Paket instead. So I 
+went with <a href="https://github.com/AdamBurgess/heroku-buildpack-mono">a buildpack by Adam Burgess</a> and adjusted the bash script…</p>
+
+<h2 id="mono-isnt-as-ready-as-id-hoped-for-img-classemoji-titleunamused-altunamused-srchttpsassetsgithubcomimagesiconsemojiunicode1f612png-height20-width20-alignabsmiddle">Mono isn’t as ready as I’d hoped for <img class="emoji" title=":unamused:" alt=":unamused:" src="https://assets.github.com/images/icons/emoji/unicode/1f612.png" height="20" width="20" align="absmiddle" /></h2>
+
+<p>And it doesn’t work. It seems that mono 4.2, or whatever version the buildpack currently uses has some issues with ssl
+certificates. I tried various remedies and I kept getting weird errors whenever Paket tried to do some network activity
+over https.</p>
+
+<p>So I though, okay maybe I can try another buildpack, which uses an older version of mono. There is actually 
+<a href="https://github.com/robocat/mono-paket-buildpack">one already set up with Paket</a>. I did some tweaks, so that it plays nicer with my repository, and now the solution
+won’t build! <img class="emoji" title=":rage:" alt=":rage:" src="https://assets.github.com/images/icons/emoji/unicode/1f621.png" height="20" width="20" align="absmiddle" /></p>
+
+<p>LibGit2Sharp native libraries don’t work on mono:</p>
+
+<blockquote>
+  <p>Error executing task Zoltu.Versioning.GitTask: An exception was thrown by the type initializer for LibGit2Sharp.Core.NativeMethods</p>
+</blockquote>
+
+<p>This one is <a href="https://github.com/Fody/Resourcer">Resourcer.Fody</a> misbehaving:</p>
+
+<blockquote>
+  <p>Fody: Could not find a resource.</p>
+</blockquote>
+
+<p>And I also had issues with referencing assemblies. Enough of that.</p>
+
+<h2 id="how-about-i-deploy-a-pre-built-package">How about I deploy a pre-built package?</h2>
+
+<p>Who said I had to build the entire solution on Heroku? I already use AppVeyor to build an run test, so maybe I could just 
+package all projects as nupkgs and deploy just a simple OWIN self-hosted application?</p>
+
+<p>Stay tuned, I’ll come back when that’s ready <img class="emoji" title=":wink:" alt=":wink:" src="https://assets.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20" align="absmiddle" /></p>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: linked data | Tomasz Pluskiewicz]]></title>
+  <link href="http://t-code.pl/blog/categories/linked-data/atom.xml" rel="self"/>
+  <link href="http://t-code.pl/"/>
+  <updated>2021-03-28T12:28:09+00:00</updated>
+  <id>http://t-code.pl/</id>
+  <author>
+    <name><![CDATA[Tomasz Pluskiewicz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HATEOAS as if you meant it]]></title>
+    <link href="http://t-code.pl/blog/2015/01/hateoas-as-if-you-meant-it/"/>
+    <updated>2015-01-27T21:00:00+00:00</updated>
+    <id>http://t-code.pl/blog/2015/01/hateoas-as-if-you-meant-it</id>
+    <content type="html"><![CDATA[<p>Lately I have been considering employing Web Components in my ever-upcoming hobby
+project. The missing piece I haven’t found in modern web app frameworks is UI
+based on application state (think <a href="http://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/">REST</a>). Typically the UI displayed to the use
+is tied to the route - or address, which is potentially brittle and not ideal for
+a truly <a href="http://restcookbook.com/Basics/hateoas/">hypermedia-driven application</a>.</p>
+
+<!--more-->
+
+<p>I have already written about <a href="/2014/06/rest-rdf-and-hypermedia/">Hypermedia-driven applications with RDF
+backend</a>. There I explained what is REST and
+how it fits the Semantic Web. This time I’ll delve into effectively managing
+client state using resource representations.</p>
+
+<h2 id="haters-gonna-hateoas">Haters gonna HATEOAS</h2>
+
+<p><em>FYI I pronounce HATOAS as <strong>hideous</strong></em></p>
+
+<p>REST has become a de-facto standard for many web services out there. Actual
+understanding varies but the general community has long ago recognized its
+elegance in building services. At the same however there has been too little
+adoption of what many find the crucial bit - Hypermedia. The idea is strikingly
+simple: whatever the server returns is enough for clients to perform all
+subsequent requests.</p>
+
+<p>But lets ignore that fact for now and assume we built a perfect, holy grail
+HATEAOS server and now need a client. In JavaScript, so that we’re trendy
+<img class="emoji" title=":sunglasses:" alt=":sunglasses:" src="https://assets.github.com/images/icons/emoji/unicode/1f60e.png" height="20" width="20" align="absmiddle" />.</p>
+
+<h2 id="managing-application-state">Managing application state</h2>
+
+<h3 id="routing">Routing</h3>
+
+<p>Modern JavaScript frameworks typically manage their UI state with routing, which
+means that each application state is bound to a specific path. It works this way
+in every major contender.</p>
+
+<p><a href="http://emberjs.com/guides/routing/defining-your-routes/">Ember</a>:</p>
+
+<p><code>js
+App.Router.map(function() {
+  this.route("about", { path: "/about" });
+});
+</code>
+<a href="https://docs.angularjs.org/api/ngRoute/service/$route#example">Angular’s ng-router</a>:</p>
+
+<p><code>js
+$routeProvider
+  .when('/Book/:bookId', {
+    templateUrl: 'book.html'
+  })
+</code></p>
+
+<p><a href="https://github.com/angular-ui/ui-router">Angular’s ui-router</a>:</p>
+
+<p><code>js
+$stateProvider
+  .state('state1', {
+    url: "/state1"
+  })
+</code></p>
+
+<p>The list could go on and include Backbone, Durandal, Knockout routers and standalone
+solutions.</p>
+
+<p>This approach doesn’t work very well with a truly hypermedia-driven API where the
+state of an application is determined by the server’s response. The problem is
+that the flow is reversed. With routing client-side navigation works like this:</p>
+
+<blockquote>
+  <ol>
+    <li>User clicks a link</li>
+    <li>A route is matched to the path</li>
+    <li>Client performs a request to the server</li>
+    <li>Server returns a resource</li>
+    <li>Route’s view is rendered</li>
+  </ol>
+</blockquote>
+
+<p>There is more than one issue here. Managing the route paths is unnecessary burden.
+And what if the server returns something we didn’t expect? Not to mention that
+parametrized routes are effectively holding developers back from building
+real, self-descriptive back ends by introducing out-of-band information. After all
+the REST paradigm states that the resource is the one and only place where clients
+get information necessary to perform requests. Path on the client is not.</p>
+
+<p>We are inadvertedly falling back to inferior design and the real “gain” is usually increased maintenance.</p>
+
+<h3 id="hateoas-as-if-you-meant-it">HATEOAS as if you meant it</h3>
+
+<p>To my surprise and despair I haven’t found a real solution for resource-based
+navigation. With Hypermedia-driven APIs the resource is king - as per the <strong>R</strong> in REST.
+As described by Ruben Verborgh in his <a href="http://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/">post</a>:</p>
+
+<blockquote>
+  <p>Application state is information about where you are in the interaction.
+Changes to this state are possible by the controls in hypermedia representations.</p>
+</blockquote>
+
+<p>Here’s how I see the process of changing the application state.</p>
+
+<blockquote>
+  <ol>
+    <li>User clicks a link/posts a form/etc.</li>
+    <li>The client performs a request to the server</li>
+    <li>Server returns a resource</li>
+    <li>Application state is changed (or not)</li>
+  </ol>
+</blockquote>
+
+<p>There a some very important implications of such approach. There is no notion of a route or path.
+At least it is not necessary for the client-server interaction. This means however that the
+requested address must be included in the hyperlink or form.</p>
+
+<p>Is it possible now? To some extent yes! Every hypermedia-aspiring media type, which
+includes links and operation definitions, like <a href="http://www.markus-lanthaler.com/hydra/">Hydra</a> but also even <a href="http://stateless.co/hal_specification.html">HAL</a>
+and <a href="https://github.com/kevinswiber/siren">SIREN</a> and others, empower to developers to build clients actually driven
+by that hypermedia. At least to some extent. Yet we still don’t!</p>
+
+<h2 id="linked-data-to-the-rescue">Linked Data to the rescue</h2>
+
+<p>In my eyes the root of the problem is refusal of using URIs as identifiers. I get the impression
+that URLs, even in RESTful services, are an afterthought. Or at least a derivative of some other
+identifier scheme, like database primary keys or user-supplied values. With such mindset it is
+natural that that <strong>true</strong> identifier would be used as part of a route, say <code>user/:id</code> only so
+that <code>user/10</code> it is later transformed into the <strong>secondary</strong> id (URL) like <code>http://example.com/users/10.json</code>
+or whatever.</p>
+
+<p>With Linked Data the URI is king. If you accept the fact that your resource is identified by the
+address <code>http://example.com/users/10</code>, there will be little incentive to unnecessarily transform it.
+Of course in real-life web application one would prefer <code>http://example.com/app/#!/users/10</code>
+over an ugly slug similar to <code>http://example.com/app/#!/http://example.com/users/10</code>. Still this is not only
+browser-specific and originally a solution for handling history in single-page applications but
+actually completely optional. A hypermedia-driven web app can happily work without any routing and
+browser history management. Granted it may be unfriendly and not bookmarkable beyond the entry point,
+but <strong>it will still work</strong>.</p>
+
+<h2 id="further-read">Further read</h2>
+
+<p>In a future post I’ll try to give some concrete examples of how I imagine implementing a browser
+client driven by a Linked Data API.</p>
+
+]]></content>
+  </entry>
+  
+</feed>

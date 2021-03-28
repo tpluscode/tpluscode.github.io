@@ -1,0 +1,304 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Introduction to Dydra, the cloud-based RDF store - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="First steps with Dydra, the free, cloud-based graph store">
+    
+        <meta name="keywords" content="dajsiepoznac, dydra, rdf, cloud storage">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/2016/03/getting-started-with-dydra/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Introduction to Dydra, the Cloud-based RDF Store</h1>
+	<div class="entry-content" itemprop="articleBody"><p>For anyone interested in the <a href="https://www.w3.org/standards/semanticweb/">Semantic Web</a>, data storage continues to be an issue. Although there is a fair number
+of <a href="https://en.wikipedia.org/wiki/Triplestore">triple- and quadstore</a>, your mileage may vary. Some triple stores offer mediocre performance, there are
+stability issues, missing features or unsupported platforms. There however one simple, but hassle-free alternative in the
+cloud.</p>
+
+<!--more-->
+
+<h2 id="in-the-beginning-there-was-file">In the beginning there was file</h2>
+
+<p>As I wrote, I am a keen collector of any printed, public transport-related material such as promotional brochures and books.
+I’ve created a small tool, which helps me manage my collection. It was crucial for me at some point, because it had happened
+more than once that I bought another copy of something I already had <img class="emoji" title=":grimacing:" alt=":grimacing:" src="https://assets.github.com/images/icons/emoji/unicode/1f62c.png" height="20" width="20" align="absmiddle" />. With the tool I can scan and import the 
+cover and input some basic data about my collection.</p>
+
+<p><img src="/uploads/2016/03/sources-kb-list.png" alt="My knowledge base tool" /></p>
+
+<p><img src="/uploads/2016/03/sources-kb-item.png" alt="My knowledge base tool" /></p>
+
+<p>Default and obvious choice at the time was SQL Server. Now however, lured by the glorious vision of <a href="http://linkeddata.org/">Linked Data</a> I
+intend to publish my collection (and other, <em>real</em> wikibus stuff later) as <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a>. Thus I convert my tables from
+relations to graphs using <a href="https://www.w3.org/TR/r2rml/">R2RML</a> - that I will also expand upon in another post. But because my experience with
+triplestores was rocky at best, I decided to keep the small dataset (roughly 20k facts) in a file. That would be generated
+at first application start and loaded to memory for querying.</p>
+
+<p>Of course that’s not a perfect solution and so I recalled that out there a free, cloud-based triple store exist.</p>
+
+<h2 id="welcome-dydra-the-data-tree">Welcome Dydra, the data tree</h2>
+
+<p><img src="/uploads/2016/03/datatree.png" alt="data tree" /></p>
+
+<p>Dydra signup page says that invite code is required to create an account. It doesn’t mean that another registered user
+is required. It simply means that an invitation request must be sent, before one can register. I didn’t have high hopes
+but to my pleasant surprise, I got my code within two days. <img class="emoji" title=":+1:" alt=":+1:" src="https://assets.github.com/images/icons/emoji/unicode/1f44d.png" height="20" width="20" align="absmiddle" />.</p>
+
+<p>Interestingly, Dydra is completely free of charge. A paid service is available, but on a case-by-case basis as far as I
+can tell.</p>
+
+<h3 id="creating-a-repository">Creating a repository</h3>
+
+<p>Dydra hosts their files somewhere over at Amazon <img class="emoji" title=":cloud:" alt=":cloud:" src="https://assets.github.com/images/icons/emoji/unicode/2601.png" height="20" width="20" align="absmiddle" />, and user’s data is split into virtual <strong><em>repositories</em></strong>. Upon
+logging in for the first time in I can create on straight away and then import some existing data. I imported my converted 
+triples.</p>
+
+<video width="900" height="658" preload="metadata" controls="" poster="/uploads/2016/03/dydra-repo.png"><source src="/uploads/2016/03/dydra-repo.webm" type="video/webm; codecs=vp8, vorbis" /></video>
+
+<p>As you see above, a repository can be assigned various levels of privacy between <em>completely private</em> to <em>visible to anyone</em>.
+Unfortunately, <a href="https://github.com/dydra/support/issues/41">what looks like a bug to me</a>, a public repository can not only be viewed by anyone but also modified.
+<strong>Beware</strong> <img class="emoji" title=":skull:" alt=":skull:" src="https://assets.github.com/images/icons/emoji/unicode/1f480.png" height="20" width="20" align="absmiddle" /></p>
+
+<h3 id="accessing-dydra-repositories">Accessing Dydra repositories</h3>
+
+<p>Dydra repositories are accessible over standard SPARQL endpoints and can also be downloaded in various RDF syntaxes. Simple.</p>
+
+<video width="900" height="658" preload="metadata" controls="" poster="/uploads/2016/03/dydra-endpoints.png"><source src="/uploads/2016/03/dydra-endpoints.webm" type="video/webm; codecs=vp8, vorbis" /></video>
+
+<p>Private repositories can be access by using a <a href="http://docs.dydra.com/api/authentication">number of authentication options</a> <img class="emoji" title=":+1:" alt=":+1:" src="https://assets.github.com/images/icons/emoji/unicode/1f44d.png" height="20" width="20" align="absmiddle" />.</p>
+
+<h3 id="sparql-online">SPARQL Online</h3>
+
+<p>Lastly, Dydra has this cool little feature they call views, which can be used to create canned queries. Those queries can
+then be accessed over the web in a number of formats. <a href="https://github.com/dydra/support/issues/24">If only they allowed input parameters</a> <img class="emoji" title=":pray:" alt=":pray:" src="https://assets.github.com/images/icons/emoji/unicode/1f64f.png" height="20" width="20" align="absmiddle" />.</p>
+
+<video width="900" height="658" preload="metadata" controls="" poster="/uploads/2016/03/dydra-views.png"><source src="/uploads/2016/03/dydra-views.mp4" type="video/mp4; codecs=&quot;avc1.42E01E, mp4a.40.2&quot;" /></video>
+
+<h2 id="go-dydra">Go Dydra!</h2>
+
+<p>I must say I like Dydra pretty much. There may be minor issues, like <a href="https://github.com/dydra/support/issues/42">not using <code>https</code> by default</a> and problems
+I mentioned above. However all in all it’s a very simple yet powerful solution. Did I mention it’s free? <img class="emoji" title=":smile:" alt=":smile:" src="https://assets.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle" /> I remains
+to see how performant the repositories are and how quick the team responds to <a href="https://github.com/dydra/support">support issues</a>.</p>
+
+<h2 id="usage-with-net">Usage with .NET</h2>
+
+<p>I’m using <a href="http://dotnetrdf.org">dotNetRDF</a> and with the SPARQL endpoints it works like charm.</p>
+
+<figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="csharp"><span class="line"><span class="kt">var</span> <span class="n">endpointUri</span> <span class="p">=</span> <span class="s">&quot;http://dydra.com/repository/path/sparql&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="k">return</span> <span class="k">new</span> <span class="nf">RemoteQueryProcessor</span><span class="p">(</span><span class="k">new</span> <span class="n">SparqlRemoteEndpoint</span><span class="p">(</span><span class="n">endpointUri</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://t-code.pl/blog/2016/03/getting-started-with-dydra/';
+        var disqus_url = 'http://t-code.pl/blog/2016/03/getting-started-with-dydra/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

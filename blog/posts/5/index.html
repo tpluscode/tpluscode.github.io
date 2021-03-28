@@ -1,0 +1,534 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog - Tomasz Pluskiewicz</title>
+	<meta name="author" content="Tomasz Pluskiewicz">
+
+	
+	<meta name="description" content="Feb 24th, 2016 9:40 pm hypermedia, rest REST Misconceptions Part 1 - the URI Confusion This is the second post in a series about REST, where I &hellip;">
+    
+        <meta name="keywords" content="semantic web, .net, programming, blog">
+    
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="http://t-code.pl/atom.xml" rel="alternate" title="Tomasz Pluskiewicz" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://t-code.pl/blog/posts/5/">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/resume.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-24217426-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<img src="http://www.gravatar.com/avatar/1497654c2d1af3cef4987234d1aced57?s=160" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+<hgroup>
+  <h1><a href="/">Tomasz Pluskiewicz</a></h1>
+  
+  <h2>Awaiting the Semantic Web</h2>
+  
+</hgroup>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/me">About</a></li>
+    <li><a href="/resume">Resume</a></li>
+    <li><a href="/">Blog</a></li>
+    <li><a href="/talks">Presentations</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/links">Links</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+
+</nav>
+<nav id="flairs">
+    <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework" target='_blank'> 
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_developer_button.48" alt="RDF Resource Description Framework Developer Icon"/>
+    </a>
+
+    <a href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" target='_blank'>
+        <img src="http://stackoverflow.com/users/flair/1103498.png?theme=clean" width="208" height="58" alt="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tomasz Pluskiewicz at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+    </a>
+
+    <a href='https://www.openhub.net/accounts/132022?ref=Detailed' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='35' src='https://www.openhub.net/accounts/132022/widgets/account_detailed.gif' width='230' />
+    </a>
+</nav>
+
+<nav id="smallFlairs">
+    <a href='https://www.openhub.net/accounts/132022?ref=Tiny' target='_blank'>
+        <img alt='Open Hub profile for Tomasz Pluskiewicz' border='0' height='15' src='https://www.openhub.net/accounts/132022/widgets/account_tiny.gif' width='80' />
+    </a>
+</nav>
+
+<nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/tpluscode" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/tpluscode" title="GitHub">GitHub</a>
+		
+		
+        
+            <a class="stackoverflow" href="http://stackoverflow.com/users/1103498/tomasz-pluskiewicz" title="StackOverflow"></a>
+        
+        
+            <a class="semanticweb" href="http://answers.semanticweb.com/users/1788/tomasz-pluskiewicz" title="SemanticWeb answers"></a>
+        
+        <a class="ohloh" href="https://www.openhub.net/accounts/132022?ref=Rank" title="Ohloh rank"></a>
+		
+			<a class="linkedin" href="http://www.linkedin.com/in/tpluskiewicz" title="LinkedIn">LinkedIn</a>
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-02-24T21:40:00+00:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:40 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/02/rest-misconceptions-1/" itemprop="url">REST Misconceptions Part 1 - the URI Confusion</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>This is the second post in a series about REST, where I intend to debunk some commonly repeated mistakes and bad advice
+for practitioners of RESTful services. The central, and agreeably most important element of any API, is the resource. 
+On the Web resources are identified and addressed by URLs. REST defines some clear rules about these identifiers, yet we
+so commonly break them. Let’s see how this happens and what are the consequences.</p>
+
+
+		
+		<a href="/blog/2016/02/rest-misconceptions-1/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2016-02-20T14:40:00+00:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:40 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2016/02/rest-misconceptions-0/" itemprop="url">REST Misconceptions Part 0 - Do You Really Understand the REST?</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>This is the first in a series of posts where I want to discuss misconceptions about the REST architectural style. 
+Much has been written and told about REST, yet there are a number of common mistakes prevalent in the community. In 
+this post I will introduce (again) the basics of REST as defined by Roy T. Fielding.</p>
+
+
+		
+		<a href="/blog/2016/02/rest-misconceptions-0/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2015-12-13T13:30:00+00:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:30 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hypermedia/'>hypermedia</a>, <a class='category' href='/blog/categories/rest/'>rest</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/12/hypermedia-maturity-model/" itemprop="url">Hypermedia API vs Complex Processes</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I the process of preparing my talk at <a href="http://boilingfrogs.pl/schedule/hateoas-as-if-you-meant-it/">Boiling Frogs conference</a> in Wrocław I’ve been reading a lot about REST 
+and Hypermedia APIs. Just today I came across two interesting <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-i-hypermedia-ness/">blog</a> <a href="http://apihandyman.io/hypermedia-api-maturity-model-part-ii-the-missing-links/">posts</a> by <a href="https://twitter.com/apihandyman">Arnaud Lauret aka API handyman</a>, 
+who proposes a <strong>Hypermedia API Maturity Model</strong> (HAMM). A concept similar to the <a href="http://martinfowler.com/articles/richardsonMaturityModel.html">Richardson Maturity Model</a>, but 
+applicable only to Level 3 REST APIs. I’d like to share my thoughts on some of the proposal.</p>
+
+
+		
+		<a href="/blog/2015/12/hypermedia-maturity-model/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2015-08-23T10:00:00+00:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>10:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/html/'>html</a>, <a class='category' href='/blog/categories/js/'>js</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/08/polymer-templatizer/" itemprop="url">Creating Cool Components With Polymer.Templatizer</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I’ve been looking for a way to create a collection component, in which I would declare the collection 
+item template in the <a href="http://webcomponents.org/polyfills/shadow-dom/">Light DOM</a> and then render that template bound to each item. I’m using
+Polymer, because it is fun and insanely productive tool for creating Web Components. When I was already
+close to actually writing my component in pure Web Component API I discovered the <a href="https://github.com/Polymer/polymer/blob/master/src/lib/template/templatizer.html">Templatizer bevahiour</a>.</p>
+
+
+		
+		<a href="/blog/2015/08/polymer-templatizer/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2015-02-01T10:00:00+00:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>10:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/html/'>html</a>, <a class='category' href='/blog/categories/js/'>js</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/02/declarative-ui/" itemprop="url">Declarative UI "Routing" With Web Components</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>For a long time now W3C has been working on <a href="http://webcomponents.org/">Web Components</a>, the groundbreaking
+specification, which will dramatically change the way web applications are
+created. Google’s own <a href="https://twitter.com/ebidel">Eric Bidelman</a> calls it a <a href="http://webcomponents.org/presentations/web-components-a-tectonic-shift-for-web-development-at-google-io/">Tectonic Shift</a>
+and for good reason.</p>
+
+
+		
+		<a href="/blog/2015/02/declarative-ui/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2015-01-27T21:00:00+00:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:00 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/linked-data/'>linked data</a>, <a class='category' href='/blog/categories/rest/'>rest</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/01/hateoas-as-if-you-meant-it/" itemprop="url">HATEOAS as if You Meant It</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Lately I have been considering employing Web Components in my ever-upcoming hobby
+project. The missing piece I haven’t found in modern web app frameworks is UI
+based on application state (think <a href="http://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/">REST</a>). Typically the UI displayed to the use
+is tied to the route - or address, which is potentially brittle and not ideal for
+a truly <a href="http://restcookbook.com/Basics/hateoas/">hypermedia-driven application</a>.</p>
+
+
+		
+		<a href="/blog/2015/01/hateoas-as-if-you-meant-it/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2014-12-05T20:00:00+00:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:00 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/c-number/'>c#</a>, <a class='category' href='/blog/categories/unit-tests/'>unit tests</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/12/literate-documentation/" itemprop="url">Living Documentation With Literate Programming</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Two months ago, at the <a href="http://wrocnet.github.io/2014/09/16/69-spotkanie-wroclawskiej-grupy-net.html">Wrocław .NET User Group</a>, <a href="http://lucabolognese.wordpress.com/">Luca Bolognese</a> talked about Literate Programming.</p>
+
+<p>For those who don’t know, Luca Bolognese is best known for being the father of Microsoft’s functional language <strong>F#</strong>.
+He currently works for Credit Suisse - the Swiss-American investment bank where he implements uber-geek algorithms for
+counting a lot of money :).</p>
+
+
+		
+		<a href="/blog/2014/12/literate-documentation/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T10:00:00+00:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:00 am</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/r2rml/'>r2rml</a>, <a class='category' href='/blog/categories/sparql/'>sparql</a>, <a class='category' href='/blog/categories/sqlserver/'>sqlserver</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/11/r2rml-and-SQL-store/" itemprop="url">Using R2RML to Translate SPARQL to SQL</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>A long time ago, back in 2011, I have implemented the <a href="http://www.w3.org/TR/r2rml/">R2RML</a> using <a href="http://dotnetrdf.org">dotNetRDF</a>.</p>
+
+<p>R2RML is a specification, which defines how to map SQL databases to RDF triples. This way it is possible to publish existing data from relational databases as <a href="http://en.wikipedia.org/wiki/Linked_data">Linked Data</a> to give one example</p>
+
+
+		
+		<a href="/blog/2014/11/r2rml-and-SQL-store/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2014-08-29T13:18:23-04:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:18 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dot-net/'>.net</a>, <a class='category' href='/blog/categories/git/'>git</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/08/versioning-git-projects/" itemprop="url">Versioning .NET Git Projects</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>I myself have always struggled with proper versioning of .NET software. I’m not alone:</p>
+
+<ul>
+  <li><a href="http://stackoverflow.com/questions/3768261/best-practices-guidance-for-maintaining-assembly-version-numbers">Best practices/guidance for maintaining assembly version numbers</a></li>
+  <li><a href="http://stackoverflow.com/questions/64602/what-are-differences-between-assemblyversion-assemblyfileversion-and-assemblyin">What are differences between AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion?</a></li>
+</ul>
+
+<p>A linked issue, which adds to the complexity is mixing .NET versioning with NuGet SemVer guidelines.
+This has been described for example in this <a href="http://ruthlesslyhelpful.net/2012/03/05/build-numbering-and-versioning/">blog post</a></p>
+
+
+		
+		<a href="/blog/2014/08/versioning-git-projects/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		
+
+
+
+
+<time class='entry-date' datetime='2014-06-15T19:33:57-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:33 pm</span></time>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hydra/'>hydra</a>, <a class='category' href='/blog/categories/rdf/'>rdf</a>, <a class='category' href='/blog/categories/rest/'>rest</a>, <a class='category' href='/blog/categories/semantic-web/'>semantic web</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/rest-rdf-and-hypermedia/" itemprop="url">REST, RDF and Hypermedia</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2 id="rest">REST</h2>
+<p><a href="http://en.wikipedia.org/wiki/REST">Representational state transfer</a> or REST defines a number of architectural constraints,
+which when applied allow building software, which is fast, scalable and simply interacted with.</p>
+
+<p>TL;DR; RESTful application works very much like the Internet. A client requests a known resource by its identifier and
+follows links included in the representations to move to another state. No further information should be required by the
+client to know except the initial identifier.</p>
+
+
+		
+		<a href="/blog/2014/06/rest-rdf-and-hypermedia/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+        <a href="/blog/posts/4" class="prev">Prev</a>
+    
+    
+        <a href="/blog/posts/6" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2021
+
+    Tomasz Pluskiewicz
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+      var disqus_shortname = 'tcode';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>
