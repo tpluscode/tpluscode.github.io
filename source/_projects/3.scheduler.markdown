@@ -6,5 +6,5 @@ technologies:
   - Quartz.NET
   - WPF
   - SQL Server
-print: true
+print: false
 ---
