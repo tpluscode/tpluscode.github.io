@@ -3,6 +3,6 @@ company: PGS Software
 title: Software developer
 description: "Implementation of web applications in the .NET stack: ASP.NET MVC, ASP.NET WebAPI, Entity Framework, knockout.js"
 from: 01/2015
-current: true
+to: 06/2017
 print: true
 ---
